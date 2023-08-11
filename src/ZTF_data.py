@@ -1,3 +1,12 @@
+import dask.dataframe as dd 
+from ztfquery import lightcurve
+from astroML.datasets import fetch_LINEAR_sample
+import os
+from concurrent.futures import ProcessPoolExecutor
+import numpy as np
+
+data = fetch_LINEAR_sample(data_home='../inputs') # fetching the data from astroML data library
+
 '''
 This Python file contains 2 functions which are used for querying ZTF light curves using equatorial
 coordinates of LINEAR light curves.
@@ -58,3 +67,26 @@ def lc_access(iD):
     ra, dec = StarAttributes[3], StarAttributes[4] # access the equatorial coordinates
     light = (iD,getZTFlightcurve(ra, dec, iD)) # search for light curve
     return light # save the data
+
+def data_ztf():
+    '''
+    Defines a function for creating a ZTF dataset using the previous functions. 
+
+    Arguments:
+    '''
+    if os.path.isfile('../inputs/ZTF_data.npy'):
+        ZTF_data = np.load('../inputs/ZTF_data.npy', allow_pickle=True) # loading the data
+    else:
+        num_cores = os.cpu_count()
+        num = [x for x in range(7010)]
+        ZTF_data = [] # empty list for the data
+
+        # the asynchronous querying for data
+        if __name__ == '__main__':
+            ZTF_data = []
+            with ProcessPoolExecutor(max_workers=num_cores) as exe:
+                exe.submit(lc_access,2)
+
+                ZTF_data = list(exe.map(lc_access, num))
+        np.save('../inputs/ZTF_data.npy', np.array(ZTF_data, dtype=object), allow_pickle=True) # saving the data as an .npy file which can be used across notebooks
+    return ZTF_data
