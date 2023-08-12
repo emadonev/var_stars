@@ -101,6 +101,7 @@ def plotting_lc(data_type, num, rows, columns):
             time, mag, mag_error = lc['mjd'], lc['mag'], lc['magerr']
             ax = axs[i]    
             ax.errorbar(time, mag, yerr=mag_error, fmt='.b', ecolor='b')
+            ax.invert_yaxis()
             ax.xaxis.set_major_formatter(plt.NullFormatter())
             ax.xaxis.set_major_locator(ticker.MaxNLocator(4)) 
             ax.yaxis.set_major_locator(ticker.MaxNLocator(4))
@@ -110,15 +111,45 @@ def plotting_lc(data_type, num, rows, columns):
     else:
         print('Incorrect data_type. It must be either LINEAR or ZTF.')
 
-def plotting_lc_phased(data_type, period, num, rows, columns):
+def plotting_lc_phased(data, data_type, num, rows, columns):
     '''
     Function for plotting phased light curves from both LINEAR and ZTF datasets.
 
     Arguments:
+    data(DataFrame): data from which we plot
     data_type(str): either 'LINEAR' or 'ZTF' to denote which datatype to use
-    period(float): period of the light curve 
     num(int): number of light curves to plot
     rows(int): number of rows for the subplots
     columns(int): number of columns for the subplots
     '''
-
+    fig, axs = plt.subplots(rows,columns, figsize=(20,18)) # creating subplots with 2 columms and 3 rows
+    axs = axs.flatten() # flatten the axes
+    indexes = [ random.randint(0,7010) for i in range(num)]
+    if data_type=='LINEAR':
+        for i in range(num):
+            period = data.iloc[indexes[i]]['Period']
+            light_curve = data.get_light_curve(indexes[i]) # accessing light curve data
+            time, mag, mag_error = light_curve.T
+            phase = (time / period) % 1
+            ax = axs[i]    
+            ax.errorbar(phase, mag, yerr=mag_error, fmt='.b', ecolor='b')
+            ax.invert_yaxis()
+            ax.xaxis.set_major_locator(ticker.MaxNLocator(4)) 
+            ax.yaxis.set_major_locator(ticker.MaxNLocator(4))
+            ax.set_title(indexes[i])
+        plt.tight_layout()
+        plt.show()
+    elif data_type=='ZTF':
+        for i in range(num):
+            period = data.iloc[indexes[i]]['Period']
+            lc = data[indexes[i]][1]
+            time, mag, mag_error = lc['mjd'], lc['mag'], lc['magerr']
+            phase = (time / period) % 1
+            ax = axs[i]    
+            ax.errorbar(phase, mag, yerr=mag_error, fmt='.b', ecolor='b')
+            ax.invert_yaxis()
+            ax.xaxis.set_major_locator(ticker.MaxNLocator(4)) 
+            ax.yaxis.set_major_locator(ticker.MaxNLocator(4))
+            ax.set_title(indexes[i])
+        plt.tight_layout()
+        plt.show()
