@@ -8,7 +8,7 @@ import numpy as np
 data = fetch_LINEAR_sample(data_home='../inputs') # fetching the data from astroML data library
 
 '''
-This Python file contains 2 functions which are used for querying ZTF light curves using equatorial
+This Python file contains 3 functions which are used for querying ZTF light curves using equatorial
 coordinates of LINEAR light curves.
 '''
 

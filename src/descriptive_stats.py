@@ -91,4 +91,5 @@ def lc_descriptive_stats_table_ZTF(data_type):
                 descriptive_stats = pd.concat([descriptive_stats, dt], axis=0)
         descriptive_stats.index.name='index'
         descriptive_stats['Amplitude'] = descriptive_stats['amax'] - descriptive_stats['amin']
+    return descriptive_stats
 

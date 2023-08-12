@@ -17,6 +17,10 @@ sys.path.insert(0,'../src/')
 sys.path
 from ZTF_data import*
 
+'''
+This Python file is used to plot correlations, descriptive statistics and various forms of light curves. All of the plotting functions are found here.
+'''
+
 #data
 data = fetch_LINEAR_sample(data_home='../inputs') # fetching the data from astroML data library
 ZTF_data = data_ztf()
@@ -80,11 +84,12 @@ def plotting_lc(data_type, num, rows, columns):
             light_curve = data.get_light_curve(indexes[i]) # accessing light curve data
             time, mag, mag_error = light_curve.T # assigning time, magnitude and errors
             ax = axs[i]    
-            ax.errorbar(time, mag, yerr=mag_error, fmt='.b', ecolor='b') # drawing an errorbar graph
+            ax.errorbar(time, mag, mag_error, fmt='.b', ecolor='blue')
+            ax.set(xlabel='Time (days)', ylabel='magitude',title='LINEAR object {0}'.format(data.ids[10]))
+            ax.invert_yaxis()
             ax.xaxis.set_major_formatter(plt.NullFormatter()) # no numbers on the x axis
             ax.xaxis.set_major_locator(ticker.MaxNLocator(4)) # 4 ticks on the x axis
             ax.yaxis.set_major_locator(ticker.MaxNLocator(4)) # 4 ticks on the y axis
-            ax.set_title(indexes[i]) # setting the title
         plt.tight_layout()
         plt.show()
     elif data_type=='ZTF':
@@ -104,3 +109,16 @@ def plotting_lc(data_type, num, rows, columns):
         plt.show()
     else:
         print('Incorrect data_type. It must be either LINEAR or ZTF.')
+
+def plotting_lc_phased(data_type, period, num, rows, columns):
+    '''
+    Function for plotting phased light curves from both LINEAR and ZTF datasets.
+
+    Arguments:
+    data_type(str): either 'LINEAR' or 'ZTF' to denote which datatype to use
+    period(float): period of the light curve 
+    num(int): number of light curves to plot
+    rows(int): number of rows for the subplots
+    columns(int): number of columns for the subplots
+    '''
+
