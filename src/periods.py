@@ -23,14 +23,13 @@ This Python file is used to calculate the periods of LINEAR and ZTF data with on
 ZTF_data = data_ztf()
 data = fetch_LINEAR_sample(data_home='../inputs') # fetching the data from astroML data library
 
-
-def calculating_period(data_type, n_terms, nyquist=350, testing=True, name):
+def calculating_period(data_type, nterms, name,nyquist=350, testing=True):
     '''
     This function calculates the period of light curves from either LINEAR or ZTF data. 
 
     Arguments:
         data_type(str): either LINEAR or ZTF
-        n_terms(int): number of terms for the Lomb-Scargle algorithm
+        nterms(int): number of terms for the Lomb-Scargle algorithm
         nyquist(int): the highest frequency the algorithm should search. The higher the value, the more it takes to run. Default is 350
         testing(bool): True: we are testing the function with a Default of 30 values, False: running the function for all the data. Default is True.
         name(str): name of the file we want to save/load
@@ -47,7 +46,7 @@ def calculating_period(data_type, n_terms, nyquist=350, testing=True, name):
 
                 for i in ids:
                     t, mag, mager = data.get_light_curve(i).T # get the data for every light curve
-                    ls = LombScargle(t, mag, mager, n_terms=n_terms) # set up a LombScargle object to model the frequency and power
+                    ls = LombScargle(t, mag, mager, nterms=nterms) # set up a LombScargle object to model the frequency and power
                     frequency, power = ls.autopower(nyquist_factor=nyquist) # calculate the frequency and power
 
                     period = 1. / frequency # calculating the periods
@@ -76,7 +75,7 @@ def calculating_period(data_type, n_terms, nyquist=350, testing=True, name):
                 for i in ids:
                     if ZTF_data[i][1].shape[0] > 0:
                         t, mag, mager = ZTF_data[i][1]['mjd'], ZTF_data[i][1]['mag'],ZTF_data[i][1]['magerr'] # get the data for every light curve
-                        ls = LombScargle(t, mag, mager, n_terms=n_terms) # set up a LombScargle object to model the frequency and power
+                        ls = LombScargle(t, mag, mager, nterms=nterms) # set up a LombScargle object to model the frequency and power
                         f, p = ls.autopower(nyquist_factor=nyquist) # calculate the frequency and power
 
                         period = 1. / f # calculating the periods
@@ -91,7 +90,10 @@ def calculating_period(data_type, n_terms, nyquist=350, testing=True, name):
                         LC = pd.concat([LC, lc_p_ztf], axis=0) # concatenate tables 
                         print(f'Current ID:{i}') # print current ID
                     else:
-                        lc_p_ztf = None
+                        lc_p_ztf = pd.DataFrame([i, 0, 0, 0])
+                        lc_p_ztf = lc_p_ztf.transpose()
+                        columns = ['ID', 'Frequency','Period','N']
+                        lc_p_ztf.columns = columns 
                         LC = pd.concat([LC, lc_p_ztf], axis=0)
                         print(f'Current ID:{i}') # print current ID
 
@@ -109,7 +111,7 @@ def calculating_period(data_type, n_terms, nyquist=350, testing=True, name):
                 LC = pd.DataFrame() # creating the empty DataFrame
                 for i in data.ids:
                     t, mag, mager = data.get_light_curve(i).T # get the data for every light curve
-                    ls = LombScargle(t, mag, mager, n_terms=n_terms) # set up a LombScargle object to model the frequency and power
+                    ls = LombScargle(t, mag, mager, nterms=nterms) # set up a LombScargle object to model the frequency and power
                     frequency, power = ls.autopower(nyquist_factor=nyquist) # calculate the frequency and power
 
                     period = 1. / frequency # calculating the periods
@@ -137,7 +139,7 @@ def calculating_period(data_type, n_terms, nyquist=350, testing=True, name):
                 for i in num:
                     if ZTF_data[i][1].shape[0] > 0:
                         t, mag, mager = ZTF_data[i][1]['mjd'], ZTF_data[i][1]['mag'],ZTF_data[i][1]['magerr'] # get the data for every light curve
-                        ls = LombScargle(t, mag, mager, n_terms=n_terms) # set up a LombScargle object to model the frequency and power
+                        ls = LombScargle(t, mag, mager, nterms=nterms) # set up a LombScargle object to model the frequency and power
                         f, p = ls.autopower(nyquist_factor=nyquist) # calculate the frequency and power
 
                         period = 1. / f # calculating the periods
@@ -157,7 +159,7 @@ def calculating_period(data_type, n_terms, nyquist=350, testing=True, name):
                         print(f'Current ID:{i}') # print current ID
 
                 LC.reset_index(drop=True, inplace=True)
-                LC.to_csv('../outputs/'name+'.csv', index=False)
+                LC.to_csv('../outputs/'+name+'.csv', index=False)
         else:
             print("Wrong input for data_type! Can only be LINEAR or ZTF.")
     return LC

@@ -23,7 +23,7 @@ This Python file is used to plot correlations, descriptive statistics and variou
 
 #data
 data = fetch_LINEAR_sample(data_home='../inputs') # fetching the data from astroML data library
-ZTF_data = data_ztf()
+ZTF = data_ztf()
 
 def plotting_descriptive_stats(data, bins):
     '''
@@ -97,7 +97,7 @@ def plotting_lc(data_type, num, rows, columns):
         axs = axs.flatten() 
         indexes = [ random.randint(0,7009) for i in range(num)]
         for i in range(num):
-            lc = ZTF_data[indexes[i]][1]
+            lc = ZTF[indexes[i]][1]
             time, mag, mag_error = lc['mjd'], lc['mag'], lc['magerr']
             ax = axs[i]    
             ax.errorbar(time, mag, yerr=mag_error, fmt='.b', ecolor='b')
@@ -111,7 +111,7 @@ def plotting_lc(data_type, num, rows, columns):
     else:
         print('Incorrect data_type. It must be either LINEAR or ZTF.')
 
-def plotting_lc_phased(data, data_type, num, rows, columns):
+def plotting_lc_phased(DATA, data_type, num, rows, columns):
     '''
     Function for plotting phased light curves from both LINEAR and ZTF datasets.
 
@@ -124,11 +124,11 @@ def plotting_lc_phased(data, data_type, num, rows, columns):
     '''
     fig, axs = plt.subplots(rows,columns, figsize=(20,18)) # creating subplots with 2 columms and 3 rows
     axs = axs.flatten() # flatten the axes
-    indexes = [ random.randint(0,7010) for i in range(num)]
+    indexes = [random.randint(0,7009) for x in range(num)]
     if data_type=='LINEAR':
         for i in range(num):
-            period = data.iloc[indexes[i]]['Period']
-            light_curve = data.get_light_curve(indexes[i]) # accessing light curve data
+            period = DATA.iloc[indexes[i]]['Period']
+            light_curve = data.get_light_curve(data.ids[indexes[i]]) # accessing light curve data
             time, mag, mag_error = light_curve.T
             phase = (time / period) % 1
             ax = axs[i]    
@@ -141,8 +141,8 @@ def plotting_lc_phased(data, data_type, num, rows, columns):
         plt.show()
     elif data_type=='ZTF':
         for i in range(num):
-            period = data.iloc[indexes[i]]['Period']
-            lc = data[indexes[i]][1]
+            period = DATA.iloc[indexes[i]]['Period']
+            lc = ZTF_data[indexes[i]][1]
             time, mag, mag_error = lc['mjd'], lc['mag'], lc['magerr']
             phase = (time / period) % 1
             ax = axs[i]    
