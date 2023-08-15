@@ -23,7 +23,7 @@ This Python file is used to calculate the periods of LINEAR and ZTF data with on
 ZTF_data = data_ztf()
 data = fetch_LINEAR_sample(data_home='../inputs') # fetching the data from astroML data library
 
-def calculating_period(data_type, nterms, name,nyquist=350, testing=True):
+def calculating_period(data_type, n_terms, name, nyquist=350, testing=True):
     '''
     This function calculates the period of light curves from either LINEAR or ZTF data. 
 
@@ -46,7 +46,7 @@ def calculating_period(data_type, nterms, name,nyquist=350, testing=True):
 
                 for i in ids:
                     t, mag, mager = data.get_light_curve(i).T # get the data for every light curve
-                    ls = LombScargle(t, mag, mager, nterms=nterms) # set up a LombScargle object to model the frequency and power
+                    ls = LombScargle(t, mag, mager, nterms=n_terms) # set up a LombScargle object to model the frequency and power
                     frequency, power = ls.autopower(nyquist_factor=nyquist) # calculate the frequency and power
 
                     period = 1. / frequency # calculating the periods
