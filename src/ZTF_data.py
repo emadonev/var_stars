@@ -84,8 +84,7 @@ def data_ztf():
         ZTF_data = [] # empty list for the data
 
         # the asynchronous querying for data
-        if __name__ == '__main__':
-            with ProcessPoolExecutor(max_workers=num_cores) as exe:
-                ZTF_data = list(exe.map(lc_access, num))
+        with ProcessPoolExecutor(max_workers=num_cores) as exe:
+            ZTF_data = list(exe.map(lc_access, num))
         np.save('../inputs/ZTF_lc.npy', np.array(ZTF_data, dtype=object), allow_pickle=True) # saving the data as an .npy file which can be used across notebooks
     return ZTF_data

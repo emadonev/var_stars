@@ -1,3 +1,5 @@
+# IMPORTS
+#----------
 import numpy as np
 import pandas as pd
 import scipy as sc
@@ -14,15 +16,25 @@ sys.path.insert(0,'../src/')
 sys.path
 from ZTF_data import*
 from config import*
+#--------
 
+#DESCRIPTION
+#------------
 '''
 This Python file is used to calculate the periods of LINEAR and ZTF data with one term or multi-term. 
 '''
+#------------
 
-# data
+# DATA
+#--------
 ZTF_data = data_ztf()
 data = fetch_LINEAR_sample(data_home='../inputs') # fetching the data from astroML data library
+#--------
 
+
+#-----------
+# FUNCTIONS
+#-----------
 def calculating_period(data_type, n_terms, name, nyquist=350, testing=True):
     '''
     This function calculates the period of light curves from either LINEAR or ZTF data. 
@@ -163,3 +175,32 @@ def calculating_period(data_type, n_terms, name, nyquist=350, testing=True):
         else:
             print("Wrong input for data_type! Can only be LINEAR or ZTF.")
     return LC
+
+def period_comp_LINEAR_m(ID):
+    t, mag, mager = data.get_light_curve(ID).T # get the data for every light curve
+    ls = LombScargle(t, mag, mager, nterms=5) # set up a LombScargle object to model the frequency and power
+    frequency, power = ls.autopower(nyquist_factor=350) # calculate the frequency and power
+
+    period = 1. / frequency # calculating the periods
+    best_period = period[np.argmax(power)] # choosing the period with the highest power
+    best_frequency = frequency[np.argmax(power)] # choosing the frequency with the highest power
+    N = len(t) # number of points used in calculation
+
+    parameters = [ID, best_frequency, best_period, N]
+    return parameters
+
+def period_comp_ZTF_m(ID):
+    if ZTF_data[ID][1].shape[0] > 0:
+        t, mag, mager = ZTF_data[ID][1]['mjd'], ZTF_data[ID][1]['mag'],ZTF_data[ID][1]['magerr'] # get the data for every light curve
+        ls = LombScargle(t, mag, mager, nterms=5) # set up a LombScargle object to model the frequency and power
+        frequency, power = ls.autopower(nyquist_factor=350)# calculate the frequency and power
+
+        period = 1. / frequency # calculating the periods
+        best_period = period[np.argmax(power)] # choosing the period with the highest power
+        best_frequency = frequency[np.argmax(power)] # choosing the frequency with the highest power
+        N = len(t) # number of points used in calculation
+
+        parameters = [ID, best_frequency, best_period, N]
+    else:
+        parameters = [ID, 0, 0, N]
+    return parameters
