@@ -72,11 +72,11 @@ def data_ztf():
     '''
     Defines a function for creating a ZTF dataset using the previous functions. 
     '''
-    file_path = '../inputs/ZTF_data.npy'
+    file_path = '../inputs/ZTF_lc.npy'
 
     if os.path.isfile(file_path):
         print("Loading the data!")
-        ZTF_data = np.load('../inputs/ZTF_curves.npy', allow_pickle=True) # loading the data
+        ZTF_data = np.load('../inputs/ZTF_lc.npy', allow_pickle=True) # loading the data
     else:
         print("Accessing the data!")
         num_cores = os.cpu_count()
@@ -86,7 +86,6 @@ def data_ztf():
         # the asynchronous querying for data
         if __name__ == '__main__':
             with ProcessPoolExecutor(max_workers=num_cores) as exe:
-                exe.submit(lc_access,2)
                 ZTF_data = list(exe.map(lc_access, num))
-    np.save('../inputs/ZTF_curves.npy', np.array(ZTF_data, dtype=object), allow_pickle=True) # saving the data as an .npy file which can be used across notebooks
+        np.save('../inputs/ZTF_lc.npy', np.array(ZTF_data, dtype=object), allow_pickle=True) # saving the data as an .npy file which can be used across notebooks
     return ZTF_data
