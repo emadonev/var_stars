@@ -55,6 +55,7 @@ def calculating_period(data_type, n_terms, name, nyquist=350, testing=True):
             else:
                 LC = pd.DataFrame() # creating the empty DataFrame
                 ids = [x for x in data.ids]
+                ids = ids[:5]
 
                 for i in ids:
                     t, mag, mager = data.get_light_curve(i).T # get the data for every light curve
