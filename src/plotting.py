@@ -142,7 +142,7 @@ def plotting_lc_phased(DATA, data_type, num, rows, columns):
     elif data_type=='ZTF':
         for i in range(num):
             period = DATA.iloc[indexes[i]]['Period']
-            lc = ZTF_data[indexes[i]][1]
+            lc = ZTF[indexes[i]][1]
             time, mag, mag_error = lc['mjd'], lc['mag'], lc['magerr']
             phase = (time / period) % 1
             ax = axs[i]    
