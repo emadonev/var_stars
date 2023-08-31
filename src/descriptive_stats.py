@@ -17,7 +17,7 @@ This Python file is used to create descriptive statistics tables for a variety o
 '''
 
 data = fetch_LINEAR_sample(data_home='../inputs') # fetching the data from astroML data library
-ZTF_data = data_ztf()
+ZTF_data = data_ztf('ZTF_light_curves.npy')
 
 
 def lc_descriptive_stats_table_LINEAR(data_type):
@@ -55,20 +55,21 @@ def lc_descriptive_stats_table_LINEAR(data_type):
         print('Wrong input for data_type! Must be either mag or magerr.')
     return descriptive_stats
 
-def lc_descriptive_stats_table_ZTF(data_type):
+def lc_descriptive_stats_table_ZTF(data_type, DATA):
     '''
     This function creates a table of descriptive statistics for ZTF data.
     The arguents are mean, median, standard deviation, minimum, maximum, skewness, kurtosis and amplitude.
 
     Arguments:
         data_type(str): can be 'mag' or 'magerr', denoting which type to analyze.
+        DATA(list): input data based on filter
     '''
     num = [x for x in range(7010)]
     descriptive_stats = pd.DataFrame()
     if data_type == 'mag':
         for i in num: # looping over the id's of the dataset
-            if ZTF_data[i][1].shape[0] > 0:
-                df = pd.DataFrame(ZTF_data[i][1]['mag']) 
+            if DATA[i][1].shape[0] > 0:
+                df = pd.DataFrame(DATA[i][1]['mag']) 
                 dt = df.agg([np.mean, np.median, np.std, np.min, np.max]) 
                 dt = dt.transpose()
                 dt['skew'], dt['kurtosis'] = sc.stats.skew(df['mag']), sc.stats.kurtosis(df['mag'])
@@ -80,8 +81,8 @@ def lc_descriptive_stats_table_ZTF(data_type):
         descriptive_stats['Amplitude'] = descriptive_stats['amax'] - descriptive_stats['amin']
     elif data_type == 'magerr':
         for i in num: # looping over the id's of the dataset
-            if ZTF_data[i][1].shape[0] > 0:
-                df = pd.DataFrame(ZTF_data[i][1]['magerr']) 
+            if DATA[i][1].shape[0] > 0:
+                df = pd.DataFrame(DATA[i][1]['magerr']) 
                 dt = df.agg([np.mean, np.median, np.std, np.min, np.max]) 
                 dt = dt.transpose()
                 dt['skew'], dt['kurtosis'] = sc.stats.skew(df['magerr']), sc.stats.kurtosis(df['magerr'])
