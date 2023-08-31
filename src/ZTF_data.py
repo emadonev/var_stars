@@ -41,7 +41,7 @@ def getZTFlightcurve(ra:float,
                 print(f"Something went wrong when filerting catflags: {iD}")
         finally:   
             # when done with everything, always remove select columns
-            ZTFdata = ZTFdata.drop(['catflags','filtercode'],axis=1)
+            ZTFdata = ZTFdata.drop(['catflags'],axis=1)
     except:
         # if the light curve could not be found, assign the data to None
         print(f"Something went wrong with finding the light curve: {iD}")
@@ -60,15 +60,18 @@ def lc_access(iD):
     light = (iD,getZTFlightcurve(ra, dec, iD)) # search for light curve
     return light # save the data
 
-def data_ztf():
+def data_ztf(name):
     '''
     Defines a function for creating a ZTF dataset using the previous functions. 
-    '''
-    file_path = '../inputs/ZTF_lc_G.npy'
 
-    if os.path.isfile(file_path):
+    Arguments:
+        name(str): provide name to save file or load with
+    '''
+    file_path = name
+
+    if os.path.isfile(name):
         print("Loading the data!")
-        ZTF_data = np.load(file_path, allow_pickle=True) # loading the data
+        ZTF_data = np.load(name, allow_pickle=True) # loading the data
     else:
         print("Accessing the data!")
         num_cores = os.cpu_count()
@@ -78,5 +81,5 @@ def data_ztf():
         # the asynchronous querying for data
         with ProcessPoolExecutor(max_workers=num_cores) as exe:
             ZTF_data = list(exe.map(lc_access, num))
-        np.save(file_path, np.array(ZTF_data, dtype=object), allow_pickle=True) # saving the data as an .npy file which can be used across notebooks
+        np.save(name, np.array(ZTF_data, dtype=object), allow_pickle=True) # saving the data as an .npy file which can be used across notebooks
     return ZTF_data
