@@ -10,14 +10,14 @@ import dask.dataframe as dd
 import sys
 sys.path.insert(0,'../src/')
 sys.path
-from ZTF_data import*
+from ZTF_data import *
 
 '''
 This Python file is used to create descriptive statistics tables for a variety of data sources. 
 '''
 
 data = fetch_LINEAR_sample(data_home='../inputs') # fetching the data from astroML data library
-ZTF_data = data_ztf('ZTF_light_curves.npy')
+ZTF_data = data_ztf('../inputs/ZTF_light_curves.npy')
 
 
 def lc_descriptive_stats_table_LINEAR(data_type):

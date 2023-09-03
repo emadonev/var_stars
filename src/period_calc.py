@@ -55,6 +55,17 @@ This Python file contains all the functions necessary to calculate the LINEAR an
 
 # ORIGINAL AUTOPOWER CALCULATION
 def doPeriodsOrig(time, mag, magErr, nterms, lsPS=False, nyquist=300):
+    """
+    This function calculates the period of a LINEAR light curve using .autopower()
+
+    Arguments:
+        time(array): array of time values for the light curve
+        mag(array): array of magnitude values for the light curve
+        magErr(array): array of magnitude errors for the light curve
+        nterms(int): number of terms for the Fourier fitting
+        lsPS(Bool): flag, Default False
+        nyquist(int): highest frequency, Default 300
+    """
     try:
         ls = LombScargle(time, mag, magErr, nterms=nterms) # set up a LombScargle object to model the frequency and power
         if (1):
@@ -79,6 +90,18 @@ def doPeriodsOrig(time, mag, magErr, nterms, lsPS=False, nyquist=300):
 # note: freqFac=1.02 allows search for Blazhko periods longer than 50*basic period, so ~25 days and longer
 
 def doPeriods(time, mag, magErr, nterms, lsPS=False, nyquist=100, freqFac=1.02):
+    """
+    This function calculates the period of a LINEAR light curve using .autopower()
+
+    Arguments:
+        time(array): array of time values for the light curve
+        mag(array): array of magnitude values for the light curve
+        magErr(array): array of magnitude errors for the light curve
+        nterms(int): number of terms for the Fourier fitting
+        lsPS(Bool): flag, Default False
+        nyquist(int): highest frequency, Default 300
+        freqFac(int): max frequency for later Blazhko analysis, Default 1.02
+    """
     try:
         ls = LombScargle(time, mag, magErr, nterms=nterms) # set up a LombScargle object to model the frequency and power
         frequencyAuto, powerAuto = ls.autopower(nyquist_factor=nyquist) # calculate the frequency and power
@@ -99,8 +122,27 @@ def doPeriods(time, mag, magErr, nterms, lsPS=False, nyquist=100, freqFac=1.02):
 # ----------------------
 
 def getZTFperiod(ZTFdata, nterms, ZTFbands=['zg', 'zr', 'zi'], lsPS=False, nyquist=300, orig=False):
-    try:
-        ZTFperiods = []
+    """
+    This function calculates the period of a ZTF light curve by taking the median of the periods of the 3 filters.
+
+    Arguments:
+        ZTFdata(array): an array of ZTF data for a light curve
+        nterms(int): number of terms for the Fourier fitting
+        ZTFbands(list): list of filters, Default ["zg", "zr", "zi"]
+        lsPS(Bool): flag, Default False
+        nyquist(int): highest frequency, Default 300
+        orig(bool): using the original doPeriodsOrig function or the new doPeriods function, default False
+    """
+    failed = []
+    ZTFperiods = []
+    if ZTFdata.empty == True:
+        #print("Empty")
+        ZTFbestPeriod = 0
+        Zfreq = np.array(())
+        Zpow = np.array(())
+        ZTFperiods.append(ZTFbestPeriod)
+    else:
+        #print("Not empty")
         for b in ZTFbands:
             BandData = ZTFdata.loc[ZTFdata['filtercode'] == b]
             timeZ = BandData['mjd']
@@ -115,7 +157,8 @@ def getZTFperiod(ZTFdata, nterms, ZTFbands=['zg', 'zr', 'zi'], lsPS=False, nyqui
                     ZTFperiods.append(ZTFperiod)
                 except:
                     ZTFperiod = -9.99
-                    print('failed for band', b, 'Ndata=', np.size(timeZ))
+                    failed.append(b)
+
             else:
                 ZTFperiods.append(doPeriods(timeZ, magZ, magErrZ, nterms))
         ZTFbestPeriod = np.median(ZTFperiods)
@@ -123,6 +166,4 @@ def getZTFperiod(ZTFdata, nterms, ZTFbands=['zg', 'zr', 'zi'], lsPS=False, nyqui
             return ZTFbestPeriod, Zfreq, Zpow
         else:
             return ZTFbestPeriod
-    except:
-        print('failed: error in getZTFperiod') 
-        return 'Error in getZTFperiod'
+    return ZTFbestPeriod, Zfreq, Zpow
