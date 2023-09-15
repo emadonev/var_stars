@@ -177,7 +177,8 @@ def sort3arr(a, b, c):
     return a[ind], b[ind], c[ind]
 
 def getCoordinatesFromLINEARid(tbl, id0):
-    return tbl[3], tbl[4]
+    return tbl[tbl['ID'].astype(str)==id0]['ra'][0], tbl[tbl['ID'].astype(str)==id0]['dec'][0]
+
 
 # retrieve ZTF data for a single object specified by (RA, Dec)
 def getZTFlightcurve(ra, dec, radius=3.0):
@@ -185,7 +186,7 @@ def getZTFlightcurve(ra, dec, radius=3.0):
     try:
        lcq = lightcurve.LCQuery()
        res = lcq.from_position(ra, dec, radius)
-       ZTFdata = res.data # this is basically a DataFrame then
+       ZTFdata = res.data[['mjd', 'mag', 'magerr', 'catflags', 'filtercode']]
        # M. Graham recommends to get rid of obvious spurious points
        ZTFdata = ZTFdata.loc[ZTFdata['catflags'] < 32768]
     except Exception as e:
@@ -312,14 +313,14 @@ def makeLCplot4(L1, L2, Z1, Z2, plotrootname='LCplot4', plotSave=False):
 
 # PERIODOGRAM ANALYSIS
 # ----------------------
-def periodogram_blazhko(power, limit, shift):
+def periodogram_blazhko(power, limit, perc_xshift):
     '''
     This function analyzes the peaks of periodograms from all RR Lyrae stars and determines if they are possible Blazhko stars.
 
     Arguments:
         power(array) arraw of power
         limit(float): a bar above which peaks are found
-        shift(integer): how big of a range you want to zoom into
+        shift(integer): how big of a range you want to zoom into; # In % how much to cut the x-axis range
     '''
     matches = []
     c = 0
@@ -328,12 +329,29 @@ def periodogram_blazhko(power, limit, shift):
     cless = 0
     cmore = 0
     indicator = 2
+    x = 0
+    a = 0
+    
 
-    peaks, _ = find_peaks(power, height=limit)
-    max_peak_x = peaks[np.argmax(power[peaks])]
-    min_lim = max_peak_x-shift
-    max_lim = max_peak_x+shift
-    p = power[min_lim:max_lim]
+    while x != 1:
+        peaks, _ = find_peaks(power, height=limit)
+        if any(peaks) != True:
+            limit -= 0.05
+        else:
+            x = 1
+    
+    while a != 1:
+        max_peak_x = peaks[np.argmax(power[peaks])]
+        min_lim = max_peak_x - int((len(power) * perc_xshift))
+        max_lim = max_peak_x + int((len(power) * perc_xshift))
+        p = power[min_lim:max_lim]
+        
+        if any(p) == False:
+            perc_xshift -= 0.05
+        elif len(p) == 1:
+            perc_xshift += 0.05
+        else:
+            a = 1
 
     for x in range(len(peaks)):
         matches.append((power[peaks][x], peaks[x]))
@@ -375,4 +393,4 @@ def periodogram_blazhko(power, limit, shift):
     else:
         indicator = 0
 
-    return indicator
+    return indicator, limit
