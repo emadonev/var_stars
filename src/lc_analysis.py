@@ -339,58 +339,62 @@ def periodogram_blazhko(power, limit, perc_xshift):
             limit -= 0.05
         else:
             x = 1
-    
-    while a != 1:
-        max_peak_x = peaks[np.argmax(power[peaks])]
-        min_lim = max_peak_x - int((len(power) * perc_xshift))
-        max_lim = max_peak_x + int((len(power) * perc_xshift))
-        p = power[min_lim:max_lim]
+
+    if len(peaks)>50:
+        indicator = 0
+    else:
+
+        while a != 1:
+            max_peak_x = peaks[np.argmax(power[peaks])]
+            min_lim = max_peak_x - int((len(power) * perc_xshift))
+            max_lim = max_peak_x + int((len(power) * perc_xshift))
+            p = power[min_lim:max_lim]
+            
+            if any(p) == False:
+                perc_xshift -= 0.05
+            elif len(p) == 1:
+                perc_xshift += 0.05
+            else:
+                a = 1
+
+        for x in range(len(peaks)):
+            matches.append((power[peaks][x], peaks[x]))
+
         
-        if any(p) == False:
-            perc_xshift -= 0.05
-        elif len(p) == 1:
-            perc_xshift += 0.05
-        else:
-            a = 1
+        for x in power[peaks]:
+            if x in p:
+                c += 1
+                peaks_inside.append(x)
 
-    for x in range(len(peaks)):
-        matches.append((power[peaks][x], peaks[x]))
+        x_peaks = []
+        for x in matches:
+            if x[0] in peaks_inside:
+                x_peaks.append(x[1])
+        x_peaks.remove(max_peak_x)    
 
-    
-    for x in power[peaks]:
-        if x in p:
-            c += 1
-            peaks_inside.append(x)
+        
+        for i in x_peaks:
+            if max_peak_x<i:
+                distance.append(i-max_peak_x)
+                cmore += 1
+            else:
+                distance.append(max_peak_x-i)
+                cless += 1
 
-    x_peaks = []
-    for x in matches:
-        if x[0] in peaks_inside:
-            x_peaks.append(x[1])
-    x_peaks.remove(max_peak_x)    
-
-    
-    for i in x_peaks:
-        if max_peak_x<i:
-            distance.append(i-max_peak_x)
-            cmore += 1
-        else:
-            distance.append(max_peak_x-i)
-            cless += 1
-
-    if cmore>=1 and cless>=1:
-        if ((c-1)==2 or (c-1)==3):
-            indicator = 1
-        else:
-            within_range = [a for a in distance if a < 700]
-            if len(within_range) in [2, 3]:
-                outof_range = [b for b in distance if b > 1000]
-                if len(outof_range) == len(distance) - len(within_range):
-                    indicator = 1
+        if cmore>=1 and cless>=1:
+            if ((c-1)==2 or (c-1)==3):
+                indicator = 1
+            else:
+                within_range = [a for a in distance if a < 700]
+                if len(within_range) in [2, 3]:
+                    outof_range = [b for b in distance if b > 1000]
+                    if len(outof_range) == len(distance) - len(within_range):
+                        indicator = 1
+                    else:
+                        indicator = 0
                 else:
                     indicator = 0
-            else:
-                indicator = 0
-    else:
-        indicator = 0
+        else:
+            indicator = 0
 
     return indicator, limit
