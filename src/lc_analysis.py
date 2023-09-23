@@ -70,10 +70,10 @@ def doPeriodsOrig(time, mag, magErr, nterms, lsPS=False, nyquist=300):
         else:
             return best_period
     except:
-        print('failed for ID=', Lid)
+        print('failed for id=', Lid)
         return 'Error in doPeriods'
 
-# BETTER FREQUENCY GRID
+# BETTER FREQUENCY GRid
 # -------------------------
 # + "zoom-in" around the highest LS power peak 
 
@@ -105,7 +105,7 @@ def doPeriods(time, mag, magErr, nterms, lsPS=False, nyquist=100, freqFac=1.02):
         else:
             return best_period
     except:
-        print('failed for ID=', Lid)
+        print('failed for id=', Lid)
         return 'Error in doPeriods'
 
 # CALCULATE ZTF PERIOD
@@ -177,7 +177,7 @@ def sort3arr(a, b, c):
     return a[ind], b[ind], c[ind]
 
 def getCoordinatesFromLINEARid(tbl, id0):
-    return tbl[tbl['ID'].astype(str)==id0]['ra'][0], tbl[tbl['ID'].astype(str)==id0]['dec'][0]
+    return tbl[tbl['id'].astype(str)==id0]['ra'][0], tbl[tbl['id'].astype(str)==id0]['dec'][0]
 
 
 # retrieve ZTF data for a single object specified by (RA, Dec)
@@ -315,7 +315,7 @@ def makeLCplot4(L1, L2, Z1, Z2, plotrootname='LCplot4', plotSave=False):
 # ----------------------
 def periodogram_blazhko(power, limit, perc_xshift, limit_percentage, verbose:bool=False):
     '''
-    This function analyzes the peaks of periodograms from all RR Lyrae stars and determines if they are possible Blazhko stars.
+    This function analyzes the peaks of PD from all RR Lyrae stars and determines if they are possible Blazhko stars.
 
     Arguments:
         power(array) arraw of power
@@ -469,3 +469,94 @@ def periodogram_blazhko(power, limit, perc_xshift, limit_percentage, verbose:boo
                 if verbose: print(f"Blazhko effect probably not present.")
 
     return indicator, limit, distance # save the indicator value,the limit and the distances
+
+def make_blazhko_analysis_dataset(dataset, chi=None, pratio=None, lindicator=None, zindicator=None):
+    '''
+    This function prepares the blazhko analysis table which will be used for later analysis.
+
+    Arguments:
+        dataset(DataFrame): dataset from which we gather the chi, pratio, id and indicator values
+        chi(float): a limit value above which we search for Blazhko stars, Default None
+        pratio(tuple): a limit value above or below which we search for Blazhko stars, Default None
+        lindicator(integer): 1 or 0 depending on if included or not, Default None
+        zindicator(integer): 1 or 0 depending on if included or not, Default None
+    '''
+    if chi != None:  
+        light_curve_dataset = dataset.loc[(dataset['LPlin_chi2dofR'] > chi) or (dataset['ZPztf_chi2dofR'] >chi)]
+    if pratio != None:
+        light_curve_dataset = dataset.loc[(dataset['Pratio'] > pratio[0]) or (dataset['ZPztf_chi2dofR'] < pratio[1])]
+    if lindicator != None and zindicator == None:
+        light_curve_dataset = dataset.loc[dataset['Lindicator'] ==1]
+    if lindicator == None and zindicator != None:
+        light_curve_dataset = dataset.loc[dataset['Zindicator'] ==1]
+    if lindicator != None and zindicator != None:
+        light_curve_dataset = dataset.loc[(dataset['Lindicator'] ==1) & (dataset['Zindicator'] ==1)]
+    
+    return light_curve_dataset
+
+def blazhko_analysis(dataset, Lid, order, PD, fits):
+    '''
+    This function draws data fits depending on certain characteristics (chi square values, pratio values, indicator values) and PD.
+
+    Arguments:
+        dataset(DataFrame): a dataframe already preconfigured based on our preferences in the function 'make_blazhko_analysis_dataset'
+        Lid(integer): linear id
+        order(integer): the row id which we want to access
+        PD(list): list of periodogram data
+        fits(array): array of fit data
+    '''
+    
+    # PLOTTING THE FITS
+    # ------------------
+    for x in range(len(fits)):
+        if fits[x][0] == Lid:
+            L1 = fits[x][1][0]
+            L2 = fits[x][1][1]
+            Z1 = fits[x][1][2]
+            Z2 = fits[x][1][3]
+            break
+    
+    makeLCplot4(L1, L2, Z1, Z2)
+
+    fig = plt.figure(figsize=(10, 12))
+    fig.subplots_adjust(hspace=0.1, bottom=0.06, top=0.94, left=0.12, right=0.94)
+
+    # PLOTTING the periodograms
+    flin = 1/(dataset['Plinear'].to_numpy()[order])
+    fztf = 1/(dataset['Pztf'].to_numpy()[order])
+    fmean = (flin+fztf)/2
+
+    fL = PD[dataset.index[order]][0]
+    pL = PD[dataset.index[order]][1]
+    fZ = PD[dataset.index[order]][2]
+    pZ = PD[dataset.index[order]][3]
+
+    for i in range(2):
+        # plot the power spectrum
+        ax = fig.add_subplot(321 + i)
+        
+        if (i==0):
+            ax.plot(fL, pL, c='b')
+            ax.plot([flin, flin], [0,1], lw = 1, c='r')
+            ax.plot([fmean, fmean], [0,1], lw = 1, c='b')
+            ax.text(0.03, 0.96, "LINEAR", ha='left', va='top', transform=ax.transAxes)
+
+        if (i==1):
+            ax.plot(fZ, pZ, c='red')
+            ax.plot([fztf, fztf], [0,1], lw = 1, c='r')
+            ax.plot([fmean, fmean], [0,1], lw = 1, c='b')
+            ax.text(0.03, 0.96, "ZTF", ha='left', va='top', transform=ax.transAxes)
+
+        fac = 1.01
+        ax.set_xlim(fmean/fac, fmean*fac)
+        ax.yaxis.set_major_locator(plt.MaxNLocator(4))
+
+        ylim = ax.get_ylim()
+        ax.set_ylim(ylim[0], ylim[0] + 1.1 * (ylim[1] - ylim[0]))
+        if i % 2 == 0:
+            ax.set_ylabel('Lomb-Scargle power')
+            
+        if i in (0, 1, 4, 5):
+            ax.set_xlabel('frequency (d$^{-1}$)')
+
+    plt.show()
