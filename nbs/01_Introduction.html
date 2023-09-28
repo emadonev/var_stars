@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.335">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>ANALYZING VARIABLE STARS WITH LONG TIMEFRAME OF OBSERVATION FOR THE BLAZHKO EFFECT</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="01_Introduction_files/libs/clipboard/clipboard.min.js"></script>
+<script src="01_Introduction_files/libs/quarto-html/quarto.js"></script>
+<script src="01_Introduction_files/libs/quarto-html/popper.min.js"></script>
+<script src="01_Introduction_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="01_Introduction_files/libs/quarto-html/anchor.min.js"></script>
+<link href="01_Introduction_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="01_Introduction_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="01_Introduction_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="01_Introduction_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="01_Introduction_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">ANALYZING VARIABLE STARS WITH LONG TIMEFRAME OF OBSERVATION FOR THE BLAZHKO EFFECT</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p><em>By Ema Donev and dr. Iveić, 2023.</em></p>
+<section id="goals" class="level2">
+<h2 class="anchored" data-anchor-id="goals">Goals</h2>
+<p>In this project, we will analyze the light curves from the LINEAR database and determine their periods and types. Afterward, we will compare them to the ZTF database of light curves by matching the LINEAR dataset’s IDs to the ZTF dataset’s ID. Plotting the two light curves, which are ten years apart, should yield new insights into variable star behavior over more extended periods. We will further analyze the stars that have changed their behavior over ten years.</p>
+</section>
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<section id="variable-stars" class="level2">
+<h2 class="anchored" data-anchor-id="variable-stars">Variable stars</h2>
+<p><strong>Variable stars</strong> are stars that change in brightness or magnitude periodically or semi-periodically. Every periodic variable star has its <strong>period</strong>, a measure between 2 sequential minima and maxima in brightness. The change in the magnitude of a variable star over time is recorded as <code>time series</code> data or in a <strong>light curve</strong> format.</p>
+<div class="cell" data-execution_count="2">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> Image</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>Image(filename<span class="op">=</span><span class="st">"../images/light_curve_eg.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<div id="fig_light_curve" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="01_Introduction_files/figure-html/fig_light_curve-output-1.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">An example of a long period variable star. Reference https://www.aavso.org/overview-long-term-visual-light-curves</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>There are many variable stars, and we can categorize them as <strong>Intrinsic or Extrinsic</strong>. An <strong>Intrinsic</strong> variable star means that the cause of the star’s variability is due to its expanding and contracting because of a process called the <em>Eddington valve</em>. <strong>Extrinsic</strong> variables are stars whose cause of variability is due to external influences. These can be stars found in binary star systems or whose variability is caused by <em>rotation</em>.</p>
+</section>
+<section id="intrinsic-variable-stars" class="level2">
+<h2 class="anchored" data-anchor-id="intrinsic-variable-stars">Intrinsic variable stars</h2>
+<section id="pulsating-variables" class="level3">
+<h3 class="anchored" data-anchor-id="pulsating-variables">Pulsating variables</h3>
+<p>The first and most famous type of variable stars are <strong>pulsating variables</strong>. The pulsation of the entirety of the star causes the variability. There are, of course, multiple ways of pulsation. The first is the <em>fundamental mode of pulsation</em>. This mode of pulsation is when the star expands in volume.</p>
+<p>So, most variable stars are older because they stopped fusing hydrogen and started fusing helium, which is crucial for pulsation. In the star, doubly ionized helium is more opaque, meaning that the light from the star or radiation cannot escape efficiently from the core to the surface. Helium absorbs the radiation and slowly heats up due to the extra energy. Due to the expansion of substances because of heat, the helium expands in volume and becomes more ionized. Because helium expands in volume, the layers of the star increase in volume, and the whole star expands. Due to the expansion, it decreases in brightness because less light is radiated per square meter of surface area. However, once the star expands in volume, heat is lost due to a larger surface area, and the temperature starts to drop. Once this process begins, the star begins to contract, the helium becoming less ionized, allowing radiation to escape into space again. Due to the contraction of the layers, more radiation is emitted per square meter, which is the brightest point in the cycle. Because the star heats up again, the entire process is repeated.</p>
+<p>A star can technically exhibit infinite pulsation modes. The simplest is called the <em>fundamental overtone:</em> this is when all parts of the star expand and contract.The following one is called the <em>first overtone:</em> here a <span style="color:CadetBlue">nodal sphere</span> is present, where the layers beneath this sphere <em>contract</em> during pulsation the layers of the star after the nodal sphere <em>expand</em>. The nodal sphere itself <span style="color:CadetBlue">doesn’t expand or contract</span>. The <em>second overtone</em> has 2 nodal spheres, the third has 3 nodal spheres, etc.</p>
+<p>There is another pulsation mode called a <strong>non-radial</strong> mode. This mode means that the star pulsates not by expansion but by a change in shape. By changing the star’s shape due to some parameters, the amount of light reaching Earth varies at different times due to a different amount of visible surface area.</p>
+<p>We will describe some important variable star types in the following few sections.</p>
+</section>
+<section id="cepheid-variables-and-rr-lyrae-stars" class="level3">
+<h3 class="anchored" data-anchor-id="cepheid-variables-and-rr-lyrae-stars">Cepheid variables and RR Lyrae stars</h3>
+<p><strong>Cepheid variables</strong> pulsate in a steady, periodic cycle, and these stars are typically yellow supergiants. Their period ranges from 1 to 100 days, with an amplitude from 0.1 to 2.0 magnitudes. Cepheid variables are famous for exhibiting the period-luminosity relationship, which states that the longer the period of a cepheid, the larger its luminosity or intrinsic brightness is. There are two types of Cepheids: 1. <strong>Classical cepheids or Delta Cepheids</strong>: these stars are O-B type stars. 2. <strong>Type II Cepheids</strong>: These stars are less massive and older than the first type, which means they are population II-type stars. These types of cepheids also follow a different period-luminosity relationship.</p>
+<div class="cell" data-execution_count="5">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Image(filename<span class="op">=</span><span class="st">"../images/cepheid.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<div id="fig_cepheid" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="01_Introduction_files/figure-html/fig_cepheid-output-1.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">light curve of cepheid variables. Reference https://astrolab.awh.durham.ac.uk/cepheid.html</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>RR Lyrae</strong> stars are very old white giants of A spectral class with low metallicity. Since these variables are old, they are commonly found in globular clusters. RR Lyraes have very short periods, ranging from 0.05 to 1.2 days and 0.3 to 2 magnitudes in amplitude.</p>
+<p>A very peculiar aspect of RR Lyraes is the <strong>Blazhko effect</strong>. This effect needs to be better understood in astronomy, and we do not know why it occurs. The effect states that some variables, notably RR Lyraes, exhibit <strong>modulations in their light curves</strong>, meaning that over some time, their light curves change in amplitude and sometimes in the period. We would like to find more information about this effect by studying RR Lyrae stars for very long periods (with a difference of 10 years, like in this project).</p>
+<p>There are three subtypes of RR Lyrae variables:</p>
+<ol type="1">
+<li><p><strong>RRAB type:</strong> These stars have asymmetrical light curves, with periods from 0.3 to 1.2 days and amplitudes of 0.5 to 2 magnitudes. These types generally pulsate in the fundamental mode.</p></li>
+<li><p><strong>RRC type:</strong> These stars have nearly symmetrical light curves with periods from 0.2 to 0.5 days and small amplitude changes. These types generally pulsate in the first overtone.</p></li>
+<li><p><strong>RRD types:</strong> These stars pulsate both in the fundamental and first overtone, with potentially non-radial modes interveening. On average, the more extended period (radial) is 0.74 days, while the shorter period (non-radial) is, on average, 0.5 days.</p></li>
+</ol>
+<div class="cell" data-execution_count="6">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Image(filename<span class="op">=</span><span class="st">"../images/rr lyare.jpeg"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<div id="fig_rrlyrae" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="01_Introduction_files/figure-html/fig_rrlyrae-output-1.jpeg" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">light curve of an RR Lyrae variable star, REFERENCE https://www.researchgate.net/figure/Example-of-light-curve-of-RR-Lyrae-a_fig7_343309076</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="the-blazhko-effect" class="level2">
+<h2 class="anchored" data-anchor-id="the-blazhko-effect">The Blazhko effect</h2>
+<p>The <em>Blazhko effect</em> is one of the mysteries left unsolved regarding variable stars. The effect is when light curves <em>modulate their phase, shape or amplitude</em> over a long period of time.</p>
+<div class="cell" data-execution_count="8">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Image(filename<span class="op">=</span><span class="st">"../images/blazhko_effect_lc.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<div id="fig_blazhko" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="01_Introduction_files/figure-html/fig_blazhko-output-1.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">light curve of a Blazhko star</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>There is currently no explanation for the Blazhko effect. However, there are plenty of theories and discoveries thus far which help us try to find a solution to this enigma. Stars which are most commonly Blazhko stars are <span style="color:CadetBlue">RR Lyrae</span>. The true incidence rate of Blazhko stars is unknown, since thus far we have had a fairly small sample of the population of RR Lyrae stars.</p>
+<section id="discoveries-and-theories" class="level3">
+<h3 class="anchored" data-anchor-id="discoveries-and-theories">Discoveries and theories</h3>
+<ol type="1">
+<li><p><span style="color:CadetBlue">Period Doubling</span>: this effect was discovered in the <em>Kepler</em> survey of RR Lyrae stars. In a normal RR Lyrae light curve, there is one peak and one trough during 1 cycle. However, during period doubling, there are 2 maxima and 2 minima, hinting that something more complex is going on. The best theory right now is that period doubling is caused by <em>resonances between pulsation overtones in RR Lyrae</em>.</p></li>
+<li><p>Resonances between fundamental modes and overtones have been shown. This is a strong sign of a potential cause of the Blazhko effect, but we aren’t completely sure yet. A theory based entirely on the modes of pulsation is the <span style="color:CadetBlue">Mode mixing theory</span>, when different modes pulsate at the same time.</p></li>
+<li><p>Another potential theory has been the <span style="color:CadetBlue">Nonadiabatic effect</span>: this is when the star pulsates, different layers of the star push against each other causing luminosity changes and spikes.</p></li>
+<li><p>There have been some ideas regarding magnetic fields and how the rotation of the field isn’t aligned with the star’s rotation, however Blazhko stars don’t have a very strong magnetic field so this theory probably isn’t true.</p></li>
+<li><p>Finally, the non-radial modes, resonances and period doubling altogether might be the solution to the problem, as they spark low-dimensional chaos in the Blazhko star system, enabling dynamic structures.</p></li>
+</ol>
+<p>Using the evidence we have so far, we cannot discern which theory is correct, or even think of a new one. We hope that with this project we can bring some insight into this century-old problem.</p>
+</section>
+<section id="long-period-variables" class="level3">
+<h3 class="anchored" data-anchor-id="long-period-variables">Long period variables</h3>
+<p>These variable stars are red giants or supergiants with very long periods, ranging from 30 to 1000 days. The two subclasses are <strong>Mira and Semiregular stars</strong>.</p>
+<p><strong>Mira stars</strong> are variables with periods from 80 to 1000 days and significant amplitude changes. Mira stars pulsate radially, and while doing so, they eject lots of material from their surfaces. A unique aspect of Mira variables is that during their cooling process, they form TiO molecules, which absorb all of the incoming light from the star, making it appear even dimmer, thus adding to the meaningful amplitude changes.</p>
+<div class="cell" data-execution_count="7">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Image(filename<span class="op">=</span><span class="st">"../images/mira.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<div id="fig_mira" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="01_Introduction_files/figure-html/fig_mira-output-1.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">light curve of a Mira variable star, reference https://www.researchgate.net/figure/left-Mira-variable-star-light-curve-Omicron-Ceti-Image-courtesy-of-AAVSO-Cambridge_fig6_260163531</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Semiregular variables</strong>, as the name suggests, do not have completely regular periods. They are typically supergiants, with a regular period for some amount of time before irregularity occurs—their “periods” last from 20 to 2000 days, with amplitude changes lower than 2.5.</p>
+<p>There are four types of semiregular variables. 1. <strong>SRA types:</strong> These stars have minimal amplitude changes and periods typically from 35-1200 days, which are relatively regular. 2. <strong>SRB types:</strong> These stars do not have a specific period (usually 20 to 2300 days). The period exhibits slow and irregular changes. 3. <strong>SRC types:</strong> These stars have small amplitudes of around one magnitude and have variations in the periods (from 30 to thousands of days). 4. <strong>SRD types:</strong> These giants and supergiants of types F, G, or K have small amplitudes ranging from 0.1 to 4. Their periods range from 30 to 1100 days.</p>
+<div class="cell" data-execution_count="10">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>Image(filename<span class="op">=</span><span class="st">"../images/semiregular.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<div id="fig_semi" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="01_Introduction_files/figure-html/fig_semi-output-1.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">light curve of a semiregular variable star, reference https://en.wikipedia.org/wiki/Semiregular_variable_star</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Other types of pulsating stars include RV Tauri stars, W Virginis variables, Delta-scuti variables and Sx Phoenix variables.</p>
+</section>
+<section id="cataclysmic-stars" class="level3">
+<h3 class="anchored" data-anchor-id="cataclysmic-stars">Cataclysmic stars</h3>
+<p>These stars undergo sudden outbursts of energy, resulting in a rapid increase in brightness and a slow decline. ### Supernova, Nova, Recurrent novas and Dwarf nova</p>
+<p>Supernovae are some of the brightest events in the universe, with an amplitude of around 20 magnitudes or more. There are four types of supernovae: 1. Type 1a: These types of supernovae occur in a binary star system where one component is a white dwarf and the other a giant star. In this system, the white dwarf accretes mass from the giant star, and once it passes the Chandrasekhar limit, it explodes, resulting in a supernova. 2. Types II, Ib, and Ic occur when massive stars collapse and explode due to immense pressure.</p>
+<p>Novas are also events in binary star systems, where one component is a white dwarf and the other a giant star. The white dwarf accretes material into its atmosphere, and once it grows hot enough, it starts nuclear fusion reactions, and due to the immense energy released, it explodes into a nova. If the system’s parameters enable it, these systems can become recurrent novae, meaning these explosions repeat periodically.</p>
+<p>Finally, dwarf novae are very similar to novae, except they form an accretion disk around themselves, and the disk begins nuclear fusion rather than the atmosphere. These explosions are typically much smaller in magnitude compared to novae or supernovae.</p>
+<p>Other types of cataclysmic stars are symbiotic stars and R Coronae Borealis stars. In symbiotic stars, we have a binary system where matter constantly flows from one star to the other, and the changing shape of both stars contributes to the variability. In R Coronae Borealis, stars are unique because the formation of carbon-rich dust that envelopes the star’s surface is responsible for the star’s dimming.</p>
+</section>
+<section id="eruptive-variable-stars" class="level3">
+<h3 class="anchored" data-anchor-id="eruptive-variable-stars">Eruptive variable stars</h3>
+</section>
+<section id="flare-stars-s-doradus-stars-and-wolf-rayet-stars" class="level3">
+<h3 class="anchored" data-anchor-id="flare-stars-s-doradus-stars-and-wolf-rayet-stars">Flare stars, S Doradus stars and Wolf-Rayet stars</h3>
+<p>Flare stars are faint red dwarfs that exhibit sudden changes in brightness due to flares, similar to solar flares. They occur when the large magnetic loops on the stellar surface break and release significant quantities of energy.</p>
+<p>S Doradus stars are also known as Luminous Blue variables. They are short-lived stars, which are variables due to a combination of pulsations, eruptions, changes in the star’s atmosphere, or due to the loss of material.</p>
+<p>Wolf-Rayet stars are old and massive stars that constantly lose mass due to solar winds. They are poorly understood, and we do not know much about them.</p>
+</section>
+<section id="young-stellar-objects" class="level3">
+<h3 class="anchored" data-anchor-id="young-stellar-objects">Young stellar objects</h3>
+<p>T Tau variables are young protostars or objects which have yet to become stars because they have not begun nuclear fusion. Their variability is caused by numerous factors which change a lot during a star’s formation process, like the protoplanetary disk’s accretion rate, rotation, starspots, and other factors.</p>
+<p>FU Orionis variables are also very young stellar objects like T Tau variables. They have a gradual increase in magnitude by 4 to 6 magnitudes. They stay at their maximum brightness for many years before slowly dimming to their standard brightness.</p>
+<p>EXor variables are eruptive T Tauri stars. They erupt and brighten over a few months and then dim. The pattern generally repeats.</p>
+<p>Finally, we have UXor variables. Their nature is poorly understood, but we know they are pre-main sequence stars with irregular periods.</p>
+</section>
+</section>
+<section id="extrinsic-variable-stars" class="level2">
+<h2 class="anchored" data-anchor-id="extrinsic-variable-stars">Extrinsic variable stars</h2>
+<p>These types of stars are not changing in shape or volume; instead, external influences cause their variability.</p>
+<section id="eclipsing-binaries" class="level3">
+<h3 class="anchored" data-anchor-id="eclipsing-binaries">Eclipsing binaries</h3>
+<p>These are one of the most interesting variable types. These variables are a binary system, where one star passes before the other, light is blocked, and the magnitude decreases. The change in luminosity depends on the two stars’ sizes, distance, and geometry. Even for slightly different star systems, the light curves can look completely different. There are many types of eclipsing binaries, but three distinct types are Algol variables, Beta Lyrae variables, and W Ursae Majoris variables.</p>
+<div class="cell" data-execution_count="11">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>Image(filename<span class="op">=</span><span class="st">"../images/eclipsing-b.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<div id="fig_eclipsing" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="01_Introduction_files/figure-html/fig_eclipsing-output-1.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">a light curve of an eclipsing binary, reference https://vs-compas.belastro.net/bulletin/issue/2/p6</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="rotating-variables" class="level3">
+<h3 class="anchored" data-anchor-id="rotating-variables">Rotating variables</h3>
+<p>Pulsars are rapidly rotating neutron stars that emit pulses of radiation in regular periods due to a beam of radiation that sweeps out of both ends of the star as it rotates. Their periods are a few milliseconds long.</p>
+<p>Ellipsoidal stars are parts of binary systems where the two components are close enough not to be spherical anymore. Due to the high gravitational forces, the stars are ellipsoidal, and depending on how much surface area we see from Earth, that is how bright the star is at the moment.</p>
+<p>Magnetic variables are stars whose cause of variability is magnetic fields. There are two types: polars and intermediate polars. Intermediate polar are stars in binary systems where one is a white dwarf, and another is a low-mass secondary star. As an accretion disk forms around the white dwarf due to matter flowing from the low-mass star, it is disrupted around the white dwarf due to a powerful magnetic field. Because of this, there are sudden peaks of brightness that fade out over a long time. Polars are stars in the same system as previously described. However, the magnetic field is even more powerful, so the stars are tidally locked, rotating at the same speed around each other. The stream of matter enters the magnetic field, causing an X-ray shock, which is the cause for spikes in brightness which fade out relatively quickly.</p>
+<p>Some stars where stellar spots are the reason for their variability are By Dra variables and RS CVn variables. Gamma Cas stars are variables that change brightness due to the formation of rings around their equator or disk formation.</p>
+</section>
+<section id="microlensing-variables" class="level3">
+<h3 class="anchored" data-anchor-id="microlensing-variables">Microlensing variables</h3>
+<p>Furthermore, we have microlensing variables. These variables brighten and dim when some object, which acts as a gravitational lens, passes in front of the star from our point of view, which magnifies the star’s light. As it passes, the star’s brightness dims.</p>
+<hr>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>In the following notebook we will discuss the data we are using in this project and its descriptive statistics.</p>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
