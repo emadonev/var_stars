@@ -1,0 +1,60 @@
+\documentclass[12pt,preprint]{aastex}
+\usepackage{lsst}
+\usepackage{xspace}
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{comment}
+\usepackage{booktabs}
+
+% Croatian letter "dj"
+\def\d   {{d $\mkern-14.3mu \mathchar'26 $}}
+
+\newcommand{\Be}{{Blazhko effect}\xspace}
+\newcommand{\B}{{Blazhko}\xspace}
+
+\begin{document}
+\title{Analysis of the Blazhko Effect for Field RR Lyrae Stars using LINEAR and ZTF Light Curves}
+
+\author{Ema Donev\altaffilmark{1},
+\v{Z}eljko Ivezi\'{c}\altaffilmark{2} 
+}
+\altaffiltext{1}{MIOC, Zagreb, Croatia}
+\altaffiltext{2}{Department of Astronomy, University of Washington, Box 351580, Seattle, WA 98195, USA}
+
+\begin{abstract}
+We analyzed the incidence and properties of stars that show evidence for amplitude, period, and
+phase modulation (the so-called Blazhko Effect in a sample of $\sim$2,000 field RR Lyrae stars with
+LINEAR and ZTF light curve data. A preliminary subsample of about $\sim$800 stars was selected
+using various light curve statistics, and then $\sim$200 stars were confirmed visually as displaying
+the Blazhko effect. Although there are close to 8,000 Blazhko stars discovered in the Galactic bulge
+and LMC/SMC by the OGLE-III survey, there are only about 200 stars in total reported in all the studies
+of field RR Lyrae stars to date and thus the sample presented here doubles the number of such stars.
+We found that...
+\end{abstract}
+
+\keywords{Variable stars --- RR Lyrae stars -- Blazhko Effect}
+
+\include{intro}
+\include{analysis}
+\include{results}
+\include{discussion}
+
+\acknowledgements
+LINEAR and ZTF acknowledgements. Software acknowledgements\footnote{For an example, see
+  https://iopscience.iop.org/article/10.3847/1538-3881/acb596/pdf}.
+Thanks to Mathew Graham for {\it ztfquery} example.
+\v{Z}.I. acknowledges funding by the Fulbright Foundation and thanks the
+Ru\d er Bo\v{s}kovi\'{c} Institute for hospitality. 
+
+
+%\appendix
+%\include{appendix}
+
+\bibliography{paper}
+\end{document}
+
+ 

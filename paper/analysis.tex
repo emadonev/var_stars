@@ -1,0 +1,80 @@
+
+
+\section{Data Description and Analysis Methodology\label{sec:analysis}}
+
+We describe here how the starting sample of RR Lyrae stars was selected, the two datesets used in this work,
+and the method used to search for the Blazhko effect.
+
+Ema can start the first draft, with information from emails and notebooks, and then we'll go from there...
+
+
+\subsection{LINEAR Dataset}
+
+The properties of asteroid LINEAR survey and its photometric re-calibration based on SDSS data are discussed in \cite{2011AJ....142..190S}.
+Briefly, the LINEAR survey covered about 10,000 deg$^2$ of the northern sky in white light (no filters were used, see Figure 1 in \citealt{2011AJ....142..190S}),
+with photometric errors ranging from $\sim$0.03 mag at an equivalent SDSS magnitude of $r=15$ to 0.20 mag at $r\sim18$. Light curves used
+in this work include on average 250 data points, collected better December 2002 and March 2008.
+ 
+A sample of $\sim$7,000 periodic variable stars with $r<17$ discovered in LINEAR data was robustly classified by \cite{2013AJ....146..101P}, including
+about $\sim$4,000 field RR Lyrae stars detected to distances of about 30 kpc \citep{2013AJ....146...21S}. 
+
+We focus here on ab type (fundamental mode) RR Lyrae because their larger number and amplitudes result in statistically
+more reliable samples than those available for c type (first overtone) stars \cite{2016CoKon.105...61K}.
+We started with XXX ab-type RR Lyrae, according to classifications from \cite{2013AJ....146..101P}.
+
+We accessed LINEAR light curve data using astroML...
+
+
+\subsection{ZTF Dataset}
+
+The Zwicky Transient Facility (ZTF) is an optical time-domain survey that uses the Palomar 48 inch Schmidt telescope
+and a camera with 47 deg$^2$ field of view \citep{2019PASP..131a8002B}. The data analyzed here was obtained with
+SDSS-like $g$, $r$, and $i$ band filters. Light curves for objects in common with the LINEAR RR Lyrae sample typically
+have smaller random photometric errors than LINEAR light curves because ZTF data are deeper (compared to LINEAR,
+ZTF data have about 2-3 magnitudes fainter  $5\sigma$ depth).
+
+We accessed ZTF light curve data using {\it ztfquery}...
+
+
+
+
+\subsection{Lomb-Scargle Periodogram Analysis}
+
+Here we describe details about how we contructed the initial sample for LS periodogram analysis and all the
+steps we did up to the first step of search for the Blazhko effect... 
+
+For a good example of writing style on this topic, see sections 3.1 and 3.2 in
+\begin{verbatim}
+  https://iopscience.iop.org/article/10.3847/1538-3881/acb596/pdf
+\end{verbatim}
+
+\subsection{Searching for the Blazhko Effect}
+
+The periodic shape change of light curves for Blazhko stars is equivalent to periodic phase and amplitude changes of the
+harmonics which make up the light curve. The effect can be identified in the Lomb-Scargle power spectrum (periodogram)
+by additional peaks (called sidebands) around the peak corresponding to the main pulsation, at frequencies $f_-$ and $f_+$,
+with $f_- < f_0 < f_+$, where $f_0$ is the frequency of the main pulsation. The sideband peaks can be highly asymmetric
+\cite{2003ApJ...598..597A}. We note that observed periodograms can sometimes be much more complex \cite{2007MNRAS.377.1263S}. 
+
+The Blazhko period is defined as
+\begin{equation}
+  P_{BL} = (f_{-,+} - f_0)^{-1},
+\end{equation}
+where $f_{-,+}$ simply means that the Blazhko sideband frequency with higher amplitude is chosen. 
+
+The Blazhko periods range from 3 days to 3,000 days, and Blazhko amplitudes range from 0.01 mag to about 0.3 mag \cite{2007MNRAS.377.1263S}.
+
+% According to Collinge, Sumi \& Fabrycky (2006) (perhaps Alcock et al.?): 
+%
+% First pre-whiten: subtract a Fourier series of best-fitting harmonics of the main pulsation period from the data.
+% If $T$ is the overall time baseline of the observations for the given light curve, then $\Delta f = P_{BL}^{-1}$ must
+% be larger than $1/T$ and smaller than 0.3 d$^{-1}$ (empirically, Blazhko periods are larger than 3 days).
+% --> did we do that?
+
+Based on the LS periodogram plot for LINEAR ID=20668112 and ZTF data, at least for that star we are
+sensitive to Blazhko periods in the range 30 days (limited by the plotted frequency window width) to
+1000 days (limited by the ability to see the sidebands separated from the main peak). 
+
+
+Here we describe first how we constructed the sample of 805 stars (for example, what exactly happens in
+{\it periodogram\_blazhko}), and then how exactly was this sample cut down to 192 stars with visual inspection... 
