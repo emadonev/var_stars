@@ -515,10 +515,8 @@ def blazhko_analysis(dataset, Lid, order, PD, fits):
             Z1 = fits[x][1][2]
             Z2 = fits[x][1][3]
             break
-    if len(L1)==0 or len(L2)==0 or len(Z1)==0 or len(Z2)==0:
-        print('No plots!')
-    else:
-        makeLCplot4(L1, L2, Z1, Z2)
+    
+    makeLCplot4(L1, L2, Z1, Z2)
 
     fig = plt.figure(figsize=(10, 12))
     fig.subplots_adjust(hspace=0.1, bottom=0.06, top=0.94, left=0.12, right=0.94)
