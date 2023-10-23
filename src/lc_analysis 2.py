@@ -251,13 +251,12 @@ def LCanalysisFromP(time, mag, magErr, P, ntermsModels):
 
 # PLOTTING LIGHT CURVES
 # -----------------------
-def makeLCplot4(iD, L1, L2, Z1, Z2, plotrootname, plotSave=False):
+def makeLCplot4(L1, L2, Z1, Z2, plotrootname='LCplot4', plotSave=False):
     '''
     This function plots 4 light curves: LINEAR light curves with the best period and the mean period, as well as the ZTF light curves with the best period and the mean period.
     '''
     fig, axs = plt.subplots(2,2, figsize=(14,10))  
-    fig.set_facecolor('white')
-    fig.suptitle('LINEAR ID:'+str(iD), fontsize=30)
+
     ### LINEAR plots
     ## TOP LEFT: with best-fit LINEAR period
     axs[0,0].set(xlabel='Data phased with BEST-FIT LINEAR period', ylabel='LINEAR normalized light curve')
@@ -268,6 +267,8 @@ def makeLCplot4(iD, L1, L2, Z1, Z2, plotrootname, plotSave=False):
     axs[0,0].errorbar(xx, yy, zz, fmt='.k', ecolor='gray', lw=1, ms=4, capsize=1.5, alpha=0.3)
     # fit for Plinear
     axs[0,0].plot(L1['modelPhaseGrid'], L1['modTemplate'], 'black', markeredgecolor='black', lw=2, fillstyle='top', linestyle='solid')
+    # fit for mean period
+    axs[0,0].plot(L2['modelPhaseGrid'], L2['modTemplate'], 'red', markeredgecolor='red', lw=2, fillstyle='top', linestyle='solid')
 
     ## TOP RIGHT: with the mean period
     axs[0,1].set(xlabel='Data phased with the MEAN period', ylabel='LINEAR normalized light curve')
@@ -290,6 +291,8 @@ def makeLCplot4(iD, L1, L2, Z1, Z2, plotrootname, plotSave=False):
     axs[1,0].errorbar(xx, yy, zz, fmt='.k', ecolor='gray', lw=1, ms=4, capsize=1.5, alpha=0.3)
     # fit for powertf
     axs[1,0].plot(Z1['modelPhaseGrid'], Z1['modTemplate'], 'black', markeredgecolor='black', lw=2, fillstyle='top', linestyle='solid')
+    # fit for mean period
+    axs[1,0].plot(Z2['modelPhaseGrid'], Z2['modTemplate'], 'red', markeredgecolor='red', lw=2, fillstyle='top', linestyle='solid')
 
     ## BOTTOM RIGHT: with the mean period
     axs[1,1].set(xlabel='data phased with the MEAN period', ylabel='ZTF normalized light curve')
@@ -303,7 +306,8 @@ def makeLCplot4(iD, L1, L2, Z1, Z2, plotrootname, plotSave=False):
     
     if plotSave:
         plotName = plotrootname + '.png'
-        plt.savefig("../images_blazhko/"+plotName, dpi=600, facecolor='white')
+        plt.savefig(plotName, dpi=600)
+        print('saved plot as:', plotName) 
     plt.show()     
     return
 
@@ -466,7 +470,31 @@ def periodogram_blazhko(power, limit, perc_xshift, limit_percentage, verbose:boo
 
     return indicator, limit, distance # save the indicator value,the limit and the distances
 
-def blazhko_analysis(dataset, Lid, order, PD, fits, name):
+def make_blazhko_analysis_dataset(dataset, chi=None, pratio=None, lindicator=None, zindicator=None):
+    '''
+    This function prepares the blazhko analysis table which will be used for later analysis.
+
+    Arguments:
+        dataset(DataFrame): dataset from which we gather the chi, pratio, id and indicator values
+        chi(float): a limit value above which we search for Blazhko stars, Default None
+        pratio(tuple): a limit value above or below which we search for Blazhko stars, Default None
+        lindicator(integer): 1 or 0 depending on if included or not, Default None
+        zindicator(integer): 1 or 0 depending on if included or not, Default None
+    '''
+    if chi != None:  
+        light_curve_dataset = dataset.loc[(dataset['LPlin_chi2dofR'] > chi) or (dataset['ZPztf_chi2dofR'] >chi)]
+    if pratio != None:
+        light_curve_dataset = dataset.loc[(dataset['Pratio'] > pratio[0]) or (dataset['ZPztf_chi2dofR'] < pratio[1])]
+    if lindicator != None and zindicator == None:
+        light_curve_dataset = dataset.loc[dataset['Lindicator'] ==1]
+    if lindicator == None and zindicator != None:
+        light_curve_dataset = dataset.loc[dataset['Zindicator'] ==1]
+    if lindicator != None and zindicator != None:
+        light_curve_dataset = dataset.loc[(dataset['Lindicator'] ==1) & (dataset['Zindicator'] ==1)]
+    
+    return light_curve_dataset
+
+def blazhko_analysis(dataset, Lid, order, PD, fits):
     '''
     This function draws data fits depending on certain characteristics (chi square values, pratio values, indicator values) and PD.
 
@@ -476,7 +504,6 @@ def blazhko_analysis(dataset, Lid, order, PD, fits, name):
         order(integer): the row id which we want to access
         PD(list): list of periodogram data
         fits(array): array of fit data
-        name(str): name of the picture file (without path, path is already included)
     '''
     
     # PLOTTING THE FITS
@@ -488,12 +515,13 @@ def blazhko_analysis(dataset, Lid, order, PD, fits, name):
             Z1 = fits[x][1][2]
             Z2 = fits[x][1][3]
             break
-    
-    makeLCplot4(Lid, L1, L2, Z1, Z2, plotrootname=name, plotSave=True)
+    if len(L1)==0 or len(L2)==0 or len(Z1)==0 or len(Z2)==0:
+        print('No plots!')
+    else:
+        makeLCplot4(L1, L2, Z1, Z2)
 
-    fig, axs = plt.subplots(1, 3, figsize=(30,8))
-    fig.set_facecolor('white')
-    axs = axs.flatten() # flatten the axes
+    fig = plt.figure(figsize=(10, 12))
+    fig.subplots_adjust(hspace=0.1, bottom=0.06, top=0.94, left=0.12, right=0.94)
 
     # PLOTTING the periodograms
     flin = 1/(dataset['Plinear'].to_numpy()[order])
@@ -505,38 +533,32 @@ def blazhko_analysis(dataset, Lid, order, PD, fits, name):
     fZ = PD[dataset.index[order]][2]
     pZ = PD[dataset.index[order]][3]
 
-    axs[0].plot(fL, pL, c='b')
-    axs[0].plot([flin, flin], [0,1], lw = 1, c='r')
-    axs[0].plot([fmean, fmean], [0,1], lw = 1, c='b')
-    axs[0].text(0.03, 0.96, "LINEAR", ha='left', va='top', transform=axs[0].transAxes)
+    for i in range(2):
+        # plot the power spectrum
+        ax = fig.add_subplot(321 + i)
+        
+        if (i==0):
+            ax.plot(fL, pL, c='b')
+            ax.plot([flin, flin], [0,1], lw = 1, c='r')
+            ax.plot([fmean, fmean], [0,1], lw = 1, c='b')
+            ax.text(0.03, 0.96, "LINEAR", ha='left', va='top', transform=ax.transAxes)
 
-    axs[1].plot(fZ, pZ, c='red')
-    axs[1].plot([fztf, fztf], [0,1], lw = 1, c='r')
-    axs[1].plot([fmean, fmean], [0,1], lw = 1, c='b')
-    axs[1].text(0.03, 0.96, "ZTF", ha='left', va='top', transform=axs[0].transAxes)
+        if (i==1):
+            ax.plot(fZ, pZ, c='red')
+            ax.plot([fztf, fztf], [0,1], lw = 1, c='r')
+            ax.plot([fmean, fmean], [0,1], lw = 1, c='b')
+            ax.text(0.03, 0.96, "ZTF", ha='left', va='top', transform=ax.transAxes)
 
-    axs[2].axis([0, 8, 0, 10])
-    axs[2].text(1, 7, 'LINEAR period chi: '+str(dataset['LPlin_chi2dofR'][order])+', LINEAR mean period chi: '+str(dataset['LPmean_chi2dofR'][order]),fontsize=25)
-    axs[2].text(1, 6, 'ZTF period chi: '+str(dataset['ZPztf_chi2dofR'][order])+', ZTF mean period chi: '+str(dataset['ZPmean_chi2dofR'][order]),fontsize=25)
-    axs[2].text(1, 5, 'LINEAR period: '+str(dataset['Plinear'][order])+', ZTF period: '+str(dataset['Pztf'][order]),fontsize=25)
-    axs[2].text(1, 4, 'Average LINEAR magnitude: '+str(round(np.mean(data.get_light_curve(Lid).T[1]), 2)),fontsize=25)
-    axs[2].text(1, 3, 'LINEAR amplitude:'+str(dataset['Lampl'][order])+', ZTF amplitude:'+str(dataset['Zampl'][order]),fontsize=25)
-    axs[2].grid(False)
-    axs[2].axis('off')
+        fac = 1.01
+        ax.set_xlim(fmean/fac, fmean*fac)
+        ax.yaxis.set_major_locator(plt.MaxNLocator(4))
 
-    fac = 1.01
-    axs[0].set_xlim(fmean/fac, fmean*fac)
-    axs[1].set_xlim(fmean/fac, fmean*fac)
-    axs[0].yaxis.set_major_locator(plt.MaxNLocator(4))
-    axs[1].yaxis.set_major_locator(plt.MaxNLocator(4))
+        ylim = ax.get_ylim()
+        ax.set_ylim(ylim[0], ylim[0] + 1.1 * (ylim[1] - ylim[0]))
+        if i % 2 == 0:
+            ax.set_ylabel('Lomb-Scargle power')
+            
+        if i in (0, 1, 4, 5):
+            ax.set_xlabel('frequency (d$^{-1}$)')
 
-    ylim_0 = axs[0].get_ylim()
-    ylim_1 = axs[1].get_ylim()
-    axs[0].set_ylim(ylim_0[0], ylim_0[0] + 1.1 * (ylim_0[1] - ylim_0[0]))
-    axs[1].set_ylim(ylim_1[0], ylim_1[0] + 1.1 * (ylim_1[1] - ylim_1[0]))
-    axs[0].set_ylabel('Lomb-Scargle power',fontsize=15)
-    axs[1].set_xlabel('frequency (d$^{-1}$)',fontsize=15)
-
-    plotname = name + 'periodograms.png'
-    plt.savefig("../images_blazhko/"+plotname, dpi=600, facecolor='white')
     plt.show()

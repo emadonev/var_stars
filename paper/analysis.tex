@@ -14,16 +14,21 @@ in the ZTF survey. This optical time-domain survey monitored the same stars $\si
 The properties of asteroid LINEAR survey and its photometric re-calibration based on SDSS data are discussed in \cite{2011AJ....142..190S}.
 Briefly, the LINEAR survey covered about 10,000 deg$^2$ of the northern sky in white light (no filters were used, see Figure 1 in \citealt{2011AJ....142..190S}),
 with photometric errors ranging from $\sim$0.03 mag at an equivalent SDSS magnitude of $r=15$ to 0.20 mag at $r\sim18$. Light curves used
-in this work include on average 264.2 data points, collected better December 2002 and March 2008.
+in this work include on average 264 data points, collected better December 2002 and March 2008.
  
 A sample of 7,010 periodic variable stars with $r<17$ discovered in LINEAR data was robustly classified by \cite{2013AJ....146..101P}, including
-about $\sim$4,000 field RR Lyrae stars detected to distances of about 30 kpc \citep{2013AJ....146...21S}. 
+about $\sim$3,000 field RR Lyrae stars detected to distances of about 30 kpc \citep{2013AJ....146...21S}. 
 
 We focus here on ab type (fundamental mode) RR Lyrae because their larger number and amplitudes result in statistically
 more reliable samples than those available for c type (first overtone) stars \cite{2016CoKon.105...61K}.
-We started with XXX ab-type RR Lyrae, according to classifications from \cite{2013AJ....146..101P}.
+We started with 2144 ab-type RR Lyrae  and 566 c-type RR Lyrae stars, according to classifications from \cite{2013AJ....146..101P},. 
 
-We accessed LINEAR light curve data using astroML...
+We accessed LINEAR light curve data using astroML, a Python library for astronomy with large datasets. We used the {\it fetch_LINEAR_sample} function to access LINEAR data. The data contained a list of all the 
+LINEAR IDs of the stars, the light curve data stored in nested arrays which had to be transposed to access the time, magnitude and magnitude error data. Finally, the dataset also included
+a list of target variables such as rectascension and declination for every star ID.
+In the LINEAR dataset there are 7010 periodic variable stars, with a total of 1851936 individual observations. 
+Most stars have an observation time frame from 1800 to 2000 days. After some essential statistical analysis, we concluded that the LINEAR dataset has larger error values than the ZTF dataset which we built. 
+The average magnitude is around 15-16 magnitudes, and the distribution of magnitude values for LINEAR light curves approximates a central distribution.
 
 
 \subsection{ZTF Dataset}
@@ -34,7 +39,10 @@ SDSS-like $g$, $r$, and $i$ band filters. Light curves for objects in common wit
 have smaller random photometric errors than LINEAR light curves because ZTF data are deeper (compared to LINEAR,
 ZTF data have about 2-3 magnitudes fainter  $5\sigma$ depth).
 
-We accessed ZTF light curve data using {\it ztfquery}...
+We accessed ZTF light curve data using \it{ztfquery} and finding the LINEAR counterparts using their rectascension and declination coordinates to search the sky within a small radius from these coordinates
+for the same star in the ZTF survey. The ZTF data was saved as an array of Pandas DataFrames, each containing time, magnitude, magnitude error and filter values. There are 3 filters for ZTF: $g$, $r$ and $i$,
+which we analyzed separately. After some preliminary statistical analysis, it was concluded that ZTF data had small errors overall, there were 178 stars from the LINEAR survey which didn't have counterparts
+in the ZTF survey. 
 
 
 
