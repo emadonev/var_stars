@@ -493,7 +493,7 @@ def blazhko_analysis(dataset, Lid, order, PD, fits, name):
         PD(list): list of periodogram data
         fits(array): array of fit data
     '''
-    fig, axs = plt.subplots(2, 4, figsize=(35,10))
+    fig, axs = plt.subplots(2, 4, figsize=(30,10))
     fig.set_facecolor('white')
     axs = axs.flatten() # flatten the axes
     fig.suptitle('LINEAR ID:'+str(Lid), fontsize=30)
