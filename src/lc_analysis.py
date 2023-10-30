@@ -17,7 +17,6 @@ import os
 import sys
 
 # Plotting
-import seaborn as sns
 from matplotlib import pyplot as plt
 
 # DataFrame analysis
@@ -378,7 +377,7 @@ def periodogram_blazhko(power, limit, perc_xshift, limit_percentage, verbose:boo
                             plt.show()
                     a = 1 # when finished with adjusting, break the loop
                 
-                # ADJUST 2: what if there were no values in peaks? --> the range is to large and then it cannot cut because the cut goes beyond the list
+                # ADJUST 2: what if there were no values in peaks? --> the range is too large and then it cannot cut because the cut goes beyond the list
                 elif any(p) == False:
                     perc_xshift -= 0.05 # lessen the percentage so the range falls inside the list
                     perc_xshift = round(perc_xshift, 2) # make sure the percentage is rounded
@@ -458,29 +457,6 @@ def periodogram_blazhko(power, limit, perc_xshift, limit_percentage, verbose:boo
 
     return indicator, limit, distance # save the indicator value,the limit and the distances
 
-def make_blazhko_analysis_dataset(dataset, chi=None, pratio=None, lindicator=None, zindicator=None):
-    '''
-    This function prepares the blazhko analysis table which will be used for later analysis.
-
-    Arguments:
-        dataset(DataFrame): dataset from which we gather the chi, pratio, id and indicator values
-        chi(float): a limit value above which we search for Blazhko stars, Default None
-        pratio(tuple): a limit value above or below which we search for Blazhko stars, Default None
-        lindicator(integer): 1 or 0 depending on if included or not, Default None
-        zindicator(integer): 1 or 0 depending on if included or not, Default None
-    '''
-    if chi != None:  
-        light_curve_dataset = dataset.loc[(dataset['LPlin_chi2dofR'] > chi) or (dataset['ZPztf_chi2dofR'] >chi)]
-    if pratio != None:
-        light_curve_dataset = dataset.loc[(dataset['Pratio'] > pratio[0]) or (dataset['ZPztf_chi2dofR'] < pratio[1])]
-    if lindicator != None and zindicator == None:
-        light_curve_dataset = dataset.loc[dataset['Lindicator'] ==1]
-    if lindicator == None and zindicator != None:
-        light_curve_dataset = dataset.loc[dataset['Zindicator'] ==1]
-    if lindicator != None and zindicator != None:
-        light_curve_dataset = dataset.loc[(dataset['Lindicator'] ==1) & (dataset['Zindicator'] ==1)]
-    
-    return light_curve_dataset
 
 def blazhko_analysis(dataset, Lid, order, PD, fits, name):
     '''
@@ -520,21 +496,19 @@ def blazhko_analysis(dataset, Lid, order, PD, fits, name):
     pZ = PD[dataset.index[order]][3]
 
     axs[4].plot(fL, pL, c='b')
-    axs[4].plot([flin, flin], [0,1], lw = 1, c='r')
-    axs[4].plot([fmean, fmean], [0,1], lw = 1, c='b')
     axs[4].text(0.03, 0.96, "LINEAR", ha='left', va='top', transform=axs[0].transAxes)
 
     axs[5].plot(fZ, pZ, c='red')
-    axs[5].plot([fztf, fztf], [0,1], lw = 1, c='r')
-    axs[5].plot([fmean, fmean], [0,1], lw = 1, c='b')
     axs[5].text(0.03, 0.96, "ZTF", ha='left', va='top', transform=axs[0].transAxes)
 
     axs[6].axis([0, 8, 0, 10])
-    axs[6].text(1, 7, 'LINEAR period chi: '+str(dataset['LPlin_chi2dofR'][order])+', LINEAR mean period chi: '+str(dataset['LPmean_chi2dofR'][order]),fontsize=15)
-    axs[6].text(1, 6, 'ZTF period chi: '+str(dataset['ZPztf_chi2dofR'][order])+', ZTF mean period chi: '+str(dataset['ZPmean_chi2dofR'][order]),fontsize=15)
-    axs[6].text(1, 5, 'LINEAR period: '+str(dataset['Plinear'][order])+', ZTF period: '+str(dataset['Pztf'][order]),fontsize=15)
-    axs[6].text(1, 4, 'Average LINEAR magnitude: '+str(round(np.mean(data.get_light_curve(Lid).T[1]), 2)),fontsize=15)
-    axs[6].text(1, 3, 'LINEAR amplitude:'+str(dataset['Lampl'][order])+', ZTF amplitude:'+str(dataset['Zampl'][order]),fontsize=15)
+    axs[6].text(1, 8, 'LINEAR period chi robust: '+str(dataset['LPlin_chi2dofR'][order])+', LINEAR mean period chi robust: '+str(dataset['LPmean_chi2dofR'][order]),fontsize=15)
+    axs[6].text(1, 7, 'ZTF period chi robust: '+str(dataset['ZPztf_chi2dofR'][order])+', ZTF mean period chi robust: '+str(dataset['ZPmean_chi2dofR'][order]),fontsize=15)
+    axs[6].text(1, 6, 'LINEAR period chi: '+str(dataset['LPlin_chi2dof'][order])+', LINEAR mean period chi: '+str(dataset['LPmean_chi2dof'][order]),fontsize=15)
+    axs[6].text(1, 5, 'ZTF period chi: '+str(dataset['ZPztf_chi2dof'][order])+', ZTF mean period chi: '+str(dataset['ZPmean_chi2dof'][order]),fontsize=15)
+    axs[6].text(1, 4, 'LINEAR period: '+str(dataset['Plinear'][order])+', ZTF period: '+str(dataset['Pztf'][order])+', Period difference: '+str(dataset['dP'][order]),fontsize=15)
+    axs[6].text(1, 3, 'Average LINEAR magnitude: '+str(round(np.mean(data.get_light_curve(Lid).T[1]), 2)),fontsize=15)
+    axs[6].text(1, 2, 'LINEAR amplitude:'+str(dataset['Lampl'][order])+', ZTF amplitude:'+str(dataset['Zampl'][order]),fontsize=15)
     axs[6].grid(False)
     axs[6].axis('off')
 
@@ -542,15 +516,8 @@ def blazhko_analysis(dataset, Lid, order, PD, fits, name):
     axs[7].axis('off')
 
     fac = 1.01
-    axs[4].set_xlim(fmean/fac, fmean*fac)
-    axs[5].set_xlim(fmean/fac, fmean*fac)
     axs[4].yaxis.set_major_locator(plt.MaxNLocator(4))
     axs[5].yaxis.set_major_locator(plt.MaxNLocator(4))
-
-    ylim_0 = axs[4].get_ylim()
-    ylim_1 = axs[5].get_ylim()
-    axs[4].set_ylim(ylim_0[0], ylim_0[0] + 1.1 * (ylim_0[1] - ylim_0[0]))
-    axs[5].set_ylim(ylim_1[0], ylim_1[0] + 1.1 * (ylim_1[1] - ylim_1[0]))
     axs[4].set_ylabel('Lomb-Scargle power',fontsize=15)
     axs[5].set_xlabel('frequency (d$^{-1}$)',fontsize=15)
 

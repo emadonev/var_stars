@@ -21,7 +21,6 @@ import sys
 from tqdm import tqdm
 
 # Plotting
-import seaborn as sns
 from matplotlib import pyplot as plt
 from matplotlib import ticker
 import matplotlib.colors as mcolors
