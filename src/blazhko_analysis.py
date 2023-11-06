@@ -54,6 +54,339 @@ This Python file contains all the functions and classes necessary to determine B
 light curve data.
 '''
 
+# CALCUlATING LIGHT CURVE PROPERTIES
+# ===================================
+
+# First try with auto frequency grid
+# and then "zoom-in" around the highest LS power peak 
+# note: freqFac=1.02 allows search for Blazhko periods longer than 50*basic period, so ~25 days and longer
+# note: freqFac=1.05 allows search for Blazhko periods longer than 20*basic period, so ~10 days and longer
+def doPeriods(time, mag, magErr, nterms, lsPS=False, nyquist=100, freqFac=1.05):
+    try:
+        ls = LombScargle(time, mag, magErr, nterms=nterms) # set up a LombScargle object to model the frequency and power
+        frequencyAuto, powerAuto = ls.autopower(nyquist_factor=nyquist) # calculate the frequency and power
+        best_freq = frequencyAuto[np.argmax(powerAuto)]
+        frequency = np.arange(best_freq/freqFac, best_freq*freqFac, 5e-6)
+        power = ls.power(frequency)  # compute LS periodogram again
+        period = 1. / frequency
+        best_period = period[np.argmax(power)] # choosing the period with the highest power
+        if lsPS: 
+            return best_period, frequency, power
+        else:
+            return best_period
+    except:
+        print('failed for ID=', Lid)
+        return 'Error in doPeriods'
+
+def LINEARLS(LINEARids, LINEARlightcurves, order, verbose=False):
+    
+    # array index for this LINEARid
+    LINEARid = LINEARids[order]
+    
+    if verbose:
+        print('------------------------------------------------------------')
+        print('Period and light curve analysis for LINEAR ID =', LINEARid)
+    ### first prepare light curve data
+    # LINEAR light curve for this star (specified by provided LINEARid)
+    tL, mL, mLerr = LINEARlightcurves[LINEARid].T
+
+    ### now compute periods (using LombScargle from astropy.timeseries)
+    nterms = 3
+    # LINEAR-only period
+    if verbose:
+        print('  computing LINEAR period...')
+    Plinear, fL, pL = doPeriods(tL, mL, mLerr, nterms, lsPS=True)    
+    if verbose:
+        print('            LINEAR period = ', Plinear)
+    return Plinear, fL, pL
+
+def ZTFs(ZTFids, ZTFlightcurves, order, verbose=False):
+    
+    # array index for this LINEARid
+    LINEARid = LINEARids[order]
+    
+    if verbose:
+        print('------------------------------------------------------------')
+        print('Period and light curve analysis for LINEAR ID =', LINEARid)
+    ### first prepare light curve data
+    # LINEAR light curve for this star (specified by provided LINEARid)
+    tL, mL, mLerr = LINEARlightcurves[LINEARid].T
+
+    ### now compute periods (using LombScargle from astropy.timeseries)
+    nterms = 3
+    # LINEAR-only period
+    if verbose:
+        print('  computing LINEAR period...')
+    Plinear, fL, pL = doPeriods(tL, mL, mLerr, nterms, lsPS=True)    
+    if verbose:
+        print('            LINEAR period = ', Plinear)
+    return Plinear, fL, pL
+
+def sort3arr(a, b, c):
+    ind = np.argsort(a)
+    return a[ind], b[ind], c[ind]
+
+def sort4arr(a, b, c, d):
+    ind = np.argsort(a)
+    return a[ind], b[ind], c[ind], d[ind]
+
+def sigG(x):
+    return 0.741*(np.percentile(x,75)-np.percentile(x,25))
+
+def LCanalysisFromP(time, mag, magErr, P, ntermsModels):
+    LCanalysisResults = {}
+    # first compute best-fit models for given period
+    mtf = MultiTermFit(2*np.pi/P, ntermsModels)
+    mtf.fit(time, mag, magErr)
+    a, b, c = mtf.predict(1000, return_phased_times=True, adjust_offset=False)
+    LCanalysisResults['modelPhaseGrid'] = a
+    LCanalysisResults['modelFit'] = b
+    LCanalysisResults['dataPhasedTime']= c
+    # light curve template normalization: mag = A * t(phi) + mmax, where
+    # phi is phase, t is template, A is amplitude and mmax is the magnitude at 
+    #       maximum light (note: numerically it is the minimum value of mag)
+    # also: we are using models for computing amplitude and mmax to avoid noise in data
+    A = np.max(b) - np.min(b) 
+    mmax = np.min(b) 
+    LCanalysisResults['A'] = A
+    LCanalysisResults['mmax'] = mmax
+    LCanalysisResults['modTemplate'] = (b - mmax)/A 
+    LCanalysisResults['dataTemplate'] = (mag - mmax)/A 
+    LCanalysisResults['dataTemplateErr'] = magErr/A 
+    # for chi2, first interpolate model fit to phases of data values
+    modelFit2data = np.interp(c, a, LCanalysisResults['modTemplate'])
+    LCanalysisResults['modelFit2data'] = modelFit2data 
+    delmag = LCanalysisResults['dataTemplate'] - modelFit2data
+    LCanalysisResults['rms'] = sigG(delmag)
+    LCanalysisResults['chi'] = delmag/LCanalysisResults['dataTemplateErr']
+    LCanalysisResults['chi2dof'] = np.sum(LCanalysisResults['chi']**2)/np.size(LCanalysisResults['chi'])
+    LCanalysisResults['chi2dofR'] = sigG(LCanalysisResults['chi'])
+    return LCanalysisResults 
+
+# L1 = results of period analysis
+def makeLCplot(L1, plotrootname='LCplot', plotSave=False):
+    fig, ax = plt.subplots(1,1, figsize=(7,5))  
+
+    ax.set(xlabel='data phased with best-fit LINEAR period', ylabel='LINEAR normalized light curve')
+    ax.set_xlim(-0.1, 1.1)
+    ax.set_ylim(1.3, -0.3)
+    # data
+    xx, yy, zz = sort3arr(L1['dataPhasedTime'], L1['dataTemplate'], L1['dataTemplateErr'])
+    ax.errorbar(xx, yy, zz, fmt='.k', ecolor='gray', lw=1, ms=4, capsize=1.5, alpha=0.3)
+    # fit for Plinear
+    ax.plot(L1['modelPhaseGrid'], L1['modTemplate'], 'red', markeredgecolor='red', lw=1, fillstyle='top', linestyle='dashed')
+    
+    if plotSave:
+        plotName = plotrootname + '.png'
+        plt.savefig(plotName, dpi=600)
+        print('saved plot as:', plotName) 
+    plt.show()     
+    return
+
+# L1 = results of period analysis
+def makeLCplotBySeason(id0, L1, plotrootname='LCplotBySeason', plotSave=False):
+    
+    fig = plt.figure(figsize=(10, 12))
+    fig.subplots_adjust(hspace=0.2, bottom=0.06, top=0.94, left=0.12, right=0.94)
+    
+    def plotPanel(ax, L1, season):
+        ax.set(xlabel='phase', ylabel='normalized phased light curve')
+        ax.set_xlim(-0.1, 1.1)
+        ax.set_ylim(1.3, -0.4)
+        # fit for Plinear
+        ax.plot(L1['modelPhaseGrid'], L1['modTemplate'], 'red', markeredgecolor='red', lw=1, fillstyle='top', linestyle='dashed')
+    
+        # data
+        xx, yy, zz, ww = sort4arr(L1['dataPhasedTime'], L1['dataTemplate'], L1['dataTemplateErr'], L1['obsTimes'])
+        tSmin = 52520 + (season-1)*365
+        tSmax = 52520 + season*365
+        xxS = xx[(ww>tSmin)&(ww<tSmax)]
+        yyS = yy[(ww>tSmin)&(ww<tSmax)]
+        zzS = zz[(ww>tSmin)&(ww<tSmax)]
+        wwS = ww[(ww>tSmin)&(ww<tSmax)]
+        ax.errorbar(xxS, yyS, zzS, fmt='.b', ecolor='blue', lw=1, ms=4, capsize=1.5, alpha=0.3)
+        textString = "LINEAR season " + str(season)
+        ax.text(0.03, 0.96, textString, ha='left', va='top', transform=ax.transAxes)
+        textString = "MJD=" + str(tSmin) + ' to ' + str(tSmax)
+        ax.text(0.53, 0.96, textString, ha='left', va='top', transform=ax.transAxes)
+
+        
+    # plot each season separately 
+    for season in range(1,7):
+        # plot the power spectrum
+        ax = fig.add_subplot(321 + season-1)
+        plotPanel(ax, L1, season)
+        if (season==1):
+            ax.set(title='LINEAR object {0}'.format(id0))
+
+    if plotSave:
+        plotName = plotrootname + '.png'
+        plt.savefig(plotName, dpi=600)
+        print('saved plot as:', plotName) 
+    plt.show()     
+    return
+
+
+def plotBlazhkoPeaksLINEAR(id0, fL, pL, fac=1.008, plotSave=False, verbose=True):
+    
+    print('LINEAR ID=', id0)
+    flin = fL[np.argmax(pL)]
+
+    fFolded, pFolded, fMainPeak, fBlazhkoPeak, BlazhkoPeriod, BpowerRatio, Bsignificance = \
+    getBlazhkoPeak(fL, pL, verbose=verbose)
+
+    ## at some point, we will read periodograms back from files...
+    fig = plt.figure(figsize=(10, 12))
+    fig.subplots_adjust(hspace=0.1, bottom=0.06, top=0.94, left=0.12, right=0.94)
+
+    # plot the power spectrum
+    ax = fig.add_subplot(321)
+
+    ax.plot(fL, pL, c='b')
+    ax.plot([flin, flin], [0,1], lw = 1, c='r', ls='--')
+    ax.plot([fBlazhkoPeak, fBlazhkoPeak], [0, 0.7*np.max(pFolded)], lw = 1, c='r', ls='--')
+    ax.plot([2*flin-fBlazhkoPeak, 2*flin-fBlazhkoPeak], [0, 0.7*np.max(pFolded)], lw = 1, c='r', ls='--')
+    # show 1 year alias
+    f1yr = flin+1/365.0
+    ax.plot([f1yr, f1yr], [0,0.7*np.max(pFolded)], lw = 1, ls='-.', c='green')
+    f1yr = flin-1/365.0
+    ax.plot([f1yr, f1yr], [0,0.7*np.max(pFolded)], lw = 1, ls='-.', c='green')
+
+    ax.text(0.03, 0.96, "LINEAR", ha='left', va='top', transform=ax.transAxes)
+    if (fBlazhkoPeak > flin*fac):
+        ax.set_xlim(0.99*(2*flin-fBlazhkoPeak), 1.01*fBlazhkoPeak)
+    else:
+        ax.set_xlim(flin/fac, flin*fac)
+    ax.yaxis.set_major_locator(plt.MaxNLocator(4))
+
+    ylim = ax.get_ylim()
+    ymax = ylim[0] + 1.1 * (ylim[1] - ylim[0])
+    if ymax>1.0: ymax=1.0
+    ax.set_ylim(0, ymax)
+    ax.set_ylabel('Lomb-Scargle power')
+    ax.set_xlabel('frequency (d$^{-1}$)')
+
+    # plot folder power spectrum
+    ax = fig.add_subplot(322)
+
+    ax.plot(fFolded, pFolded, c='b')
+    ax.plot([fBlazhkoPeak, fBlazhkoPeak], [0,0.4*np.max(pFolded)], lw = 1, ls='--', c='r')
+    # show 1 year alias
+    f1yr = flin+1/365.0
+    ax.plot([f1yr, f1yr], [0,0.4*np.max(pFolded)], lw = 1, ls='-.', c='green')
+    
+    powerFar = pFolded[fFolded>fBlazhkoPeak]  # frequencies beyond the second peak
+    powerFarMedian = np.median(powerFar)      # the median power
+    powerFarRMS = np.std(powerFar)            # standard deviation, i.e. "sigma"
+    noise5sig = powerFarMedian+5*powerFarRMS
+    
+    if (fBlazhkoPeak > flin*fac):
+        ax.plot([flin+0.5*(fBlazhkoPeak-flin), 1.01*fBlazhkoPeak], [noise5sig, noise5sig], lw = 1, ls='--', c='cyan')
+        ax.set_xlim(flin, 1.01*fBlazhkoPeak)
+    else:
+        ax.plot([flin+0.5*(fBlazhkoPeak-flin), flin*fac], [noise5sig, noise5sig], lw = 1, ls='--', c='cyan')
+        ax.set_xlim(flin, flin*fac)
+
+    ax.yaxis.set_major_locator(plt.MaxNLocator(4))
+
+    ylim = ax.get_ylim()
+    ymax = ylim[0] + 1.1 * (ylim[1] - ylim[0])
+    if ymax>1.0: ymax=1.0
+    ax.set_ylim(0, ymax)
+    ax.set_ylabel('folded power')
+    ax.set_xlabel('frequency (d$^{-1}$)')
+
+    if plotSave:
+        plotName = '../plots/Blazhko.png'
+        plt.savefig(plotName, dpi=600)
+        print('saved plot as:', plotName) 
+    plt.show()     
+    return fBlazhkoPeak   
+
+## plot LINEAR light curve and mark seasons
+def plotLINEARmarkSeasons(id0, LINEARlightcurves):
+    tL, mL, mLerr = LINEARlightcurves[id0].T
+    fig, ax = plt.subplots()
+    ax.errorbar(tL, mL, mLerr, fmt='.b', ecolor='blue')
+    ax.set(xlabel='Time (days)', ylabel='LINEAR magnitude', title='LINEAR object {0}'.format(id0))
+    ax.invert_yaxis()
+    plt.xlim(np.min(tL)-200, np.max(tL)+200)
+
+    for s in range(1, 8):
+        tS = 52550 + (s-1)*365
+        ax.plot([tS, tS], [np.min(mL)-0.1, np.max(mL)+0.1], c='r')
+    plt.show()     
+    return
+
+# plot standard plots to support visual analysis
+def plotAll(idList, LINEARmetadata, LINEARlightcurves, verbose=True):
+    for id0 in idList:
+        Pcomparison, fL, pL, LINEAR_Plinear = LINEARLS(LINEARmetadata, LINEARlightcurves, id0) 
+        fBlazhkoPeak = plotBlazhkoPeaksLINEAR(id0, fL, pL, fac=1.008, plotSave=False, verbose=verbose)
+        plotLINEARmarkSeasons(id0, LINEARlightcurves)
+        makeLCplotBySeason(id0, LINEAR_Plinear)
+    return fL[np.argmax(pL)], fBlazhkoPeak
+
+# BLAZHKO PEAK ANALYSIS
+# given frequency and Lomb-Scargle power, return parameters for a candidate Blazhko peak
+def getBlazhkoPeak(freq, LSpow, verbose=False):
+    # no. of points
+    Npts = np.size(LSpow)
+    # index for the main peak
+    imax = np.argmax(LSpow)
+    # 1 year alias frequency (factor 1.02 to push it a bit over the maximum)
+    f1yr = freq[imax] + 1.02/365
+    # iDelta is the max. width for folding around the main peak
+    if (imax < Npts/2):
+        iDelta = imax
+    else:
+        iDelta = Npts - imax
+    # folded versions 
+    fFolded = freq[imax:imax+1+iDelta]  
+    pLeft = LSpow[imax-iDelta:imax+1]  
+    pRight = LSpow[imax:imax+1+iDelta]
+    pFolded = 0*fFolded
+    for i in range(0, iDelta-1):
+        # multiply the two branches to increase SNR 
+        pFolded[i] = pLeft[-i-1] * pRight[i] 
+    # now search for the strongest secondary minimum (after the main one at index=0)
+    foundMin = 0
+    foldedMax = 0 
+    ifoldedMax = 0
+    # NB: the first point is the highest by construction (the main peak)
+    for i in range(1, iDelta):
+        if ((foundMin==0)&(pFolded[i] > pFolded[i-1])):
+            # the first time we passed through a local minimum
+            if (fFolded[i]>f1yr): foundMin = 1
+        if foundMin:
+            # after the first local minimum, remember the maximum power and its location
+            if (pFolded[i] > foldedMax):
+                foldedMax = pFolded[i]
+                ifoldedMax = i
+    # done, return useful quantities       
+    fMainPeak = freq[imax] # location of the main peak
+    fBlazhkoPeak = fFolded[ifoldedMax] # location of the second strongest peak
+    BlazhkoPeriod = 1/(fBlazhkoPeak - fMainPeak) # expression for Blazhko period
+    BpowerRatio = pFolded[ifoldedMax]/fFolded[0] # the ratio of power for the 2nd and 1st peaks
+    # now compare the second peak's strength to the power at larger frequencies (presumably noise)
+    powerFar = pFolded[fFolded>fBlazhkoPeak]  # frequencies beyond the second peak
+    powerFarMedian = np.median(powerFar)      # the median power
+    powerFarRMS = np.std(powerFar)            # standard deviation, i.e. "sigma"
+    Bsignificance = (pFolded[ifoldedMax]-powerFarMedian)/powerFarRMS  # how many sigma above median?
+    if (verbose):
+        print('main frequency (1/day):', fMainPeak)
+        print('detected second peak at index:', ifoldedMax)
+        print('Blazhko peak frequency (1/day):', fBlazhkoPeak)
+        print('Blazhko peak relative strength:', BpowerRatio)
+        print('median power beyond Blazhko peak:', powerFarMedian)
+        print('power rms beyond Blazhko peak:', powerFarRMS)
+        print('Blazhko peak significance:', Bsignificance)
+        print('Blazhko period (day):', BlazhkoPeriod)
+    return fFolded, pFolded, fMainPeak, fBlazhkoPeak, BlazhkoPeriod, BpowerRatio, Bsignificance
+
+
+
+
 # BUILDING THE VISUAL INTERFACE
 # ================================
 # Building a class for the visual interface
