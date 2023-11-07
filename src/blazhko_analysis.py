@@ -57,11 +57,31 @@ light curve data.
 # CALCUlATING LIGHT CURVE PROPERTIES
 # ===================================
 
+# LINEAR PERIOD CALCULATION
+# ---------------------------
+
 # First try with auto frequency grid
 # and then "zoom-in" around the highest LS power peak 
 # note: freqFac=1.02 allows search for Blazhko periods longer than 50*basic period, so ~25 days and longer
 # note: freqFac=1.05 allows search for Blazhko periods longer than 20*basic period, so ~10 days and longer
-def doPeriods(time, mag, magErr, nterms, lsPS=False, nyquist=100, freqFac=1.05):
+def doPeriods(time, mag, magErr, nterms, lsPS=True, nyquist=100, freqFac=1.05):
+    '''
+    This function calculates the best period for RR Lyrae stars using the Lomb-Scargle periodogram. It first tries with the auto
+    frequency grid, then it zooms in around the highest Lomb-Scargle power peak and searches for the best period. 
+
+    Notes:
+        - the freqFactor = 1.02 alows search for Blazhko periods longer than 50*basic period, so ~25 days and longer
+        - the freqFactor = 1.05 allows search for Blazhko periods longer than 20*basic period, so ~10 days and longer
+
+    Arguments:
+        time(array): time data array for light curve
+        mag(array): magnitude data array for light curve
+        magErr(array): magnitude error data array for light curve
+        nterms(int): number of Fourier terms with which to fit for best period
+        lsPs(bool): decide if you want to save periodogram or not, default is True so yes
+        nyquist(int): highest frequency of search
+        freqFac(float): frequency for searching (defining the grid)
+    '''
     try:
         ls = LombScargle(time, mag, magErr, nterms=nterms) # set up a LombScargle object to model the frequency and power
         frequencyAuto, powerAuto = ls.autopower(nyquist_factor=nyquist) # calculate the frequency and power
@@ -78,7 +98,17 @@ def doPeriods(time, mag, magErr, nterms, lsPS=False, nyquist=100, freqFac=1.05):
         print('failed for ID=', Lid)
         return 'Error in doPeriods'
 
+# calculating LINEAR periods
 def LINEARLS(LINEARids, LINEARlightcurves, order, verbose=False):
+    '''
+    This function accesses the LINEAR data and calculates the period.
+
+    Arguments:
+        LINEARids(list): list of all LINEAR ids
+        LINEARlightcurves(array): light curve data
+        order(int): the order of light curve in the list
+        verbose(bool): printing statements  
+    '''
     
     # array index for this LINEARid
     LINEARid = LINEARids[order]
@@ -98,42 +128,125 @@ def LINEARLS(LINEARids, LINEARlightcurves, order, verbose=False):
     Plinear, fL, pL = doPeriods(tL, mL, mLerr, nterms, lsPS=True)    
     if verbose:
         print('            LINEAR period = ', Plinear)
-    return Plinear, fL, pL
+    return Plinear, fL, pL, tL, mL, mLerr
 
-def ZTFs(ZTFids, ZTFlightcurves, order, verbose=False):
-    
-    # array index for this LINEARid
-    LINEARid = LINEARids[order]
-    
-    if verbose:
-        print('------------------------------------------------------------')
-        print('Period and light curve analysis for LINEAR ID =', LINEARid)
-    ### first prepare light curve data
-    # LINEAR light curve for this star (specified by provided LINEARid)
-    tL, mL, mLerr = LINEARlightcurves[LINEARid].T
+def getCoordinatesFromLINEARid(tbl, id0):
+    '''
+    Accesses the coordinates for ZTF data via LINEAR id values inside the table.
 
-    ### now compute periods (using LombScargle from astropy.timeseries)
+    Arguments:
+        tbl(array): table of all the necessary light curve information
+        id0(int): id of specific star you are trying to acccess data for
+    '''
+    return tbl[tbl['id'].astype(str)==id0]['ra'][0], tbl[tbl['id'].astype(str)==id0]['dec'][0]
+
+# retrieve ZTF data for a single object specified by (RA, Dec)
+def getZTFlightcurve(ra, dec, radius=3.0):
+    '''
+    This function uses the right ascension and declination coordinates to find LINEAR counterparts in ZTF data.
+
+    Arguments:
+        ra(float): right ascension values
+        da(float): declination values
+        radius(float): radius to search the sky with
+    '''
+    # matching radius is given in arcsec
+    try:
+       lcq = lightcurve.LCQuery()
+       res = lcq.from_position(ra, dec, radius)
+       ZTFdata = res.data[['mjd', 'mag', 'magerr', 'catflags', 'filtercode']]
+       # M. Graham recommends to get rid of obvious spurious points
+       ZTFdata = ZTFdata.loc[ZTFdata['catflags'] < 32768]
+    except Exception as e:
+       print(e)
+    return ZTFdata
+
+def ZTFs(ZTFdata, lsPS=False, verbose=False):
+    """
+    This function calculates the period of a ZTF light curve by taking the median of the periods of the 3 filters.
+
+    Arguments:
+        ZTFdata(array): an array of ZTF data for a light curve
+        nterms(int): number of terms for the Fourier fitting
+        ZTFbands(list): list of filters, Default ["zg", "zr", "zi"]
+        lsPS(Bool): flag, Default False
+        nyquist(int): highest frequency, Default 300
+        orig(bool): using the original doPeriodsOrig function or the new doPeriods function, default False
+        verbose(bool): printing statements
+    """
+    ZTFperiod_ograms = []
+    ZTFbands=['zg', 'zr', 'zi']
     nterms = 3
-    # LINEAR-only period
-    if verbose:
-        print('  computing LINEAR period...')
-    Plinear, fL, pL = doPeriods(tL, mL, mLerr, nterms, lsPS=True)    
-    if verbose:
-        print('            LINEAR period = ', Plinear)
-    return Plinear, fL, pL
 
+    if verbose:
+        print('And now for the ZTF counterpart -------------')
+
+    if ZTFdata.empty == True:
+        #print("Empty")
+        ZTFbestPeriod = 0
+        Zfreq = np.array(())
+        Zpow = np.array(())
+        ZTFperiod_ograms.append((ZTFbestPeriod, Zfreq, Zpow))
+    else:
+        if verbose:
+            print('  computing ZTF period...')
+        for b in ZTFbands:
+            BandData = ZTFdata.loc[ZTFdata['filtercode'] == b]
+            timeZ = BandData['mjd']
+            magZ = BandData['mag']
+            magErrZ = BandData['magerr']
+            ZTFperiod, Zfreq, Zpow = doPeriods(timeZ, magZ, magErrZ, nterms, lsPS=lsPS)
+            ZTFperiod_ograms.append((ZTFperiod, Zfreq, Zpow))
+
+            ZTFperiod_ograms = np.sort(ZTFperiod_ograms, axis=0)
+            ZTFbestPeriod = ZTFperiod_ograms[1][0]
+            ZTFbestfreq = ZTFperiod_ograms[1][1]
+            Zbestpow = ZTFperiod_ograms[1][2]
+    
+    if verbose:
+        print('            ZTF period = ', ZTFbestPeriod)
+
+    return ZTFbestPeriod, ZTFbestfreq, Zbestpow, timeZ, magZ, magErrZ
+
+# FITTING LIGHT CURVES
+# ----------------------
+
+# helper functions.
+# -----------------
 def sort3arr(a, b, c):
+    '''
+    This function sorts 3 arrays by their indexes.
+    '''
     ind = np.argsort(a)
     return a[ind], b[ind], c[ind]
 
 def sort4arr(a, b, c, d):
+    '''
+    This function sorts 4 arrays by their indexes.
+    '''
     ind = np.argsort(a)
     return a[ind], b[ind], c[ind], d[ind]
 
 def sigG(x):
+    '''
+    This function normalizes statistical values by using the interquartile range.
+    '''
     return 0.741*(np.percentile(x,75)-np.percentile(x,25))
 
+# light curve fitting from period.
+# ---------------------------------
 def LCanalysisFromP(time, mag, magErr, P, ntermsModels):
+    '''
+    This function fits light curve data with a sinusoidal wave using a certain number of terms and the period of
+    the periodic light curve.
+
+    Arguments:
+        time(array): time data array of light curve
+        mag(array): magnitude data array of light curve
+        magErr(array): magnitude error data array of light curve
+        P(float): the best fit period
+        ntermsModels(int): the number of terms with which to fit the light curve
+    '''
     LCanalysisResults = {}
     # first compute best-fit models for given period
     mtf = MultiTermFit(2*np.pi/P, ntermsModels)
@@ -163,6 +276,9 @@ def LCanalysisFromP(time, mag, magErr, P, ntermsModels):
     LCanalysisResults['chi2dofR'] = sigG(LCanalysisResults['chi'])
     return LCanalysisResults 
 
+
+# LATER ANALYSIS
+# ---------------
 # L1 = results of period analysis
 def makeLCplot(L1, plotrootname='LCplot', plotSave=False):
     fig, ax = plt.subplots(1,1, figsize=(7,5))  
@@ -182,8 +298,8 @@ def makeLCplot(L1, plotrootname='LCplot', plotSave=False):
         print('saved plot as:', plotName) 
     plt.show()     
     return
-
 # L1 = results of period analysis
+
 def makeLCplotBySeason(id0, L1, plotrootname='LCplotBySeason', plotSave=False):
     
     fig = plt.figure(figsize=(10, 12))
@@ -327,9 +443,20 @@ def plotAll(idList, LINEARmetadata, LINEARlightcurves, verbose=True):
         makeLCplotBySeason(id0, LINEAR_Plinear)
     return fL[np.argmax(pL)], fBlazhkoPeak
 
+
 # BLAZHKO PEAK ANALYSIS
+# -------------------------
 # given frequency and Lomb-Scargle power, return parameters for a candidate Blazhko peak
 def getBlazhkoPeak(freq, LSpow, verbose=False):
+    '''
+    This function searches for the Blazhko effect in periodograms of light curves. It searches for 2 subsequent peaks by
+    folding the light curve and searching for local peaks. It also accounts for year aliases. 
+
+    Arguments:
+        freq(array): frequency array
+        LSpow(array): lomb-scargle power array
+        verbose(bool): print statements
+    '''
     # no. of points
     Npts = np.size(LSpow)
     # index for the main peak
@@ -383,9 +510,6 @@ def getBlazhkoPeak(freq, LSpow, verbose=False):
         print('Blazhko peak significance:', Bsignificance)
         print('Blazhko period (day):', BlazhkoPeriod)
     return fFolded, pFolded, fMainPeak, fBlazhkoPeak, BlazhkoPeriod, BpowerRatio, Bsignificance
-
-
-
 
 # BUILDING THE VISUAL INTERFACE
 # ================================
