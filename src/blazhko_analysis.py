@@ -64,7 +64,7 @@ light curve data.
 # and then "zoom-in" around the highest LS power peak 
 # note: freqFac=1.02 allows search for Blazhko periods longer than 50*basic period, so ~25 days and longer
 # note: freqFac=1.05 allows search for Blazhko periods longer than 20*basic period, so ~10 days and longer
-def doPeriods(time, mag, magErr, nterms, lsPS=True, nyquist=100, freqFac=1.05):
+def doPeriods(time, mag, magErr, nterms, Lid, lsPS=True, nyquist=100, freqFac=1.05):
     '''
     This function calculates the best period for RR Lyrae stars using the Lomb-Scargle periodogram. It first tries with the auto
     frequency grid, then it zooms in around the highest Lomb-Scargle power peak and searches for the best period. 
@@ -93,13 +93,15 @@ def doPeriods(time, mag, magErr, nterms, lsPS=True, nyquist=100, freqFac=1.05):
         if lsPS: 
             return best_period, frequency, power
         else:
-            return best_period
+            return best_period,
     except:
-        print('failed for ID=', Lid)
-        return 'Error in doPeriods'
+        best_period = 0.0
+        frequency = np.array(())
+        power = np.array(())
+        return best_period, frequency, power
 
 # calculating LINEAR periods
-def LINEARLS(LINEARids, LINEARlightcurves, order, verbose=False):
+def LINEARLS(LINEARids, LINEARlightcurves, order, Lid, verbose=False):
     '''
     This function accesses the LINEAR data and calculates the period.
 
@@ -118,14 +120,14 @@ def LINEARLS(LINEARids, LINEARlightcurves, order, verbose=False):
         print('Period and light curve analysis for LINEAR ID =', LINEARid)
     ### first prepare light curve data
     # LINEAR light curve for this star (specified by provided LINEARid)
-    tL, mL, mLerr = LINEARlightcurves[LINEARid].T
+    tL, mL, mLerr = LINEARlightcurves.T
 
     ### now compute periods (using LombScargle from astropy.timeseries)
     nterms = 3
     # LINEAR-only period
     if verbose:
         print('  computing LINEAR period...')
-    Plinear, fL, pL = doPeriods(tL, mL, mLerr, nterms, lsPS=True)    
+    Plinear, fL, pL = doPeriods(tL, mL, mLerr, nterms, Lid, lsPS=True)    
     if verbose:
         print('            LINEAR period = ', Plinear)
     return Plinear, fL, pL, tL, mL, mLerr
@@ -161,7 +163,7 @@ def getZTFlightcurve(ra, dec, radius=3.0):
        print(e)
     return ZTFdata
 
-def ZTFs(ZTFdata, lsPS=False, verbose=False):
+def ZTFs(ZTFdata, Lid, lsPS=False, verbose=False):
     """
     This function calculates the period of a ZTF light curve by taking the median of the periods of the 3 filters.
 
@@ -184,9 +186,14 @@ def ZTFs(ZTFdata, lsPS=False, verbose=False):
     if ZTFdata.empty == True:
         #print("Empty")
         ZTFbestPeriod = 0
+        ZTFbestfreq = 0
+        Zbestpow = 0
         Zfreq = np.array(())
         Zpow = np.array(())
         ZTFperiod_ograms.append((ZTFbestPeriod, Zfreq, Zpow))
+        timeZ = np.array(())
+        magZ = np.array(())
+        magErrZ = np.array(())
     else:
         if verbose:
             print('  computing ZTF period...')
@@ -194,15 +201,21 @@ def ZTFs(ZTFdata, lsPS=False, verbose=False):
             BandData = ZTFdata.loc[ZTFdata['filtercode'] == b]
             timeZ = BandData['mjd']
             magZ = BandData['mag']
-            magErrZ = BandData['magerr']
-            ZTFperiod, Zfreq, Zpow = doPeriods(timeZ, magZ, magErrZ, nterms, lsPS=lsPS)
+            magErrZ = BandData['magerr']                
+            ZTFperiod, Zfreq, Zpow = doPeriods(timeZ, magZ, magErrZ, nterms, Lid, lsPS=lsPS)
             ZTFperiod_ograms.append((ZTFperiod, Zfreq, Zpow))
-
-            ZTFperiod_ograms = np.sort(ZTFperiod_ograms, axis=0)
+            
+        length = len(ZTFperiod_ograms)
+        ZTFperiod_ograms.sort(key=lambda x: x[0])
+        ZTFperiod_ograms.sort(key=lambda x: x[0], reverse=True)
+        if length<3:
+            ZTFbestPeriod = ZTFperiod_ograms[0][0]
+            ZTFbestfreq = ZTFperiod_ograms[0][1]
+            Zbestpow = ZTFperiod_ograms[0][2]
+        else:
             ZTFbestPeriod = ZTFperiod_ograms[1][0]
             ZTFbestfreq = ZTFperiod_ograms[1][1]
             Zbestpow = ZTFperiod_ograms[1][2]
-    
     if verbose:
         print('            ZTF period = ', ZTFbestPeriod)
 
