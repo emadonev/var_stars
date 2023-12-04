@@ -19,6 +19,7 @@ import pickle
 import os
 import sys
 from tqdm import tqdm
+from concurrent.futures import ProcessPoolExecutor
 
 # Plotting
 from matplotlib import pyplot as plt
@@ -93,8 +94,9 @@ def doPeriods(time, mag, magErr, nterms, Lid, lsPS=True, nyquist=100, freqFac=1.
         if lsPS: 
             return best_period, frequency, power
         else:
-            return best_period,
+            return best_period
     except:
+        # if there is no data, assign everything to 0 or empty
         best_period = 0.0
         frequency = np.array(())
         power = np.array(())
@@ -159,23 +161,43 @@ def getZTFlightcurve(ra, dec, radius=3.0):
        ZTFdata = res.data[['mjd', 'mag', 'magerr', 'catflags', 'filtercode']]
        # M. Graham recommends to get rid of obvious spurious points
        ZTFdata = ZTFdata.loc[ZTFdata['catflags'] < 32768]
-    except Exception as e:
-       print(e)
+    except:
+        ZTFdata = pd.DataFrame(())
     return ZTFdata
 
-def ZTFs(ZTFdata, Lid, lsPS=False, verbose=False):
+def calc_ztf_period(b, ZTFdata, nterms, Lid, lsPS):
+    '''
+    This function calculates period and creates the periodogram for ZTF light curve.
+
+    Arguments:
+        b(str) = filter for calculation
+        ZTFdata(dataframe) = ZTF data
+        nterms(int) = number of terms for period determination
+        Lid(int) = LINEAR id
+        lsPS(bool) = to save periodogram or not, Default is True
+    '''
+    BandData = ZTFdata.loc[ZTFdata['filtercode'] == b]
+    timeZ = BandData['mjd'].to_numpy()
+    magZ = BandData['mag'].to_numpy()
+    magErrZ = BandData['magerr'].to_numpy()
+
+    print(BandData.shape)
+    
+    return doPeriods(timeZ, magZ, magErrZ, nterms, Lid, lsPS=lsPS)
+
+def ZTFs(ZTFdata, Lid, lsPS=True, verbose=False):
     """
     This function calculates the period of a ZTF light curve by taking the median of the periods of the 3 filters.
 
     Arguments:
-        ZTFdata(array): an array of ZTF data for a light curve
+        ZTFdata(array): dataframe of ZTF data for a light curve
         nterms(int): number of terms for the Fourier fitting
         ZTFbands(list): list of filters, Default ["zg", "zr", "zi"]
         lsPS(Bool): flag, Default False
-        nyquist(int): highest frequency, Default 300
-        orig(bool): using the original doPeriodsOrig function or the new doPeriods function, default False
         verbose(bool): printing statements
     """
+
+    # variables
     ZTFperiod_ograms = []
     ZTFbands=['zg', 'zr', 'zi']
     nterms = 3
@@ -184,16 +206,10 @@ def ZTFs(ZTFdata, Lid, lsPS=False, verbose=False):
         print('And now for the ZTF counterpart -------------')
 
     if ZTFdata.empty == True:
-        #print("Empty")
-        ZTFbestPeriod = 0
-        ZTFbestfreq = 0
-        Zbestpow = 0
-        Zfreq = np.array(())
-        Zpow = np.array(())
+        ZTFbestPeriod, ZTFbestfreq, Zbestpow = 0, 0, 0
+        Zfreq, Zpow = np.array(()), np.array(())
         ZTFperiod_ograms.append((ZTFbestPeriod, Zfreq, Zpow))
-        timeZ = np.array(())
-        magZ = np.array(())
-        magErrZ = np.array(())
+        timeZ,magZ,magErrZ = np.array(()), np.array(()), np.array(())
     else:
         if verbose:
             print('  computing ZTF period...')
@@ -205,26 +221,20 @@ def ZTFs(ZTFdata, Lid, lsPS=False, verbose=False):
             ZTFperiod, Zfreq, Zpow = doPeriods(timeZ, magZ, magErrZ, nterms, Lid, lsPS=lsPS)
             ZTFperiod_ograms.append((ZTFperiod, Zfreq, Zpow))
             
-        length = len(ZTFperiod_ograms)
-        ZTFperiod_ograms.sort(key=lambda x: x[0])
         ZTFperiod_ograms.sort(key=lambda x: x[0], reverse=True)
-        if length<3:
-            ZTFbestPeriod = ZTFperiod_ograms[0][0]
-            ZTFbestfreq = ZTFperiod_ograms[0][1]
-            Zbestpow = ZTFperiod_ograms[0][2]
+        if len(ZTFperiod_ograms) < 3:
+            ZTFbestPeriod, ZTFbestfreq, Zbestpow = ZTFperiod_ograms[0]
         else:
-            ZTFbestPeriod = ZTFperiod_ograms[1][0]
-            ZTFbestfreq = ZTFperiod_ograms[1][1]
-            Zbestpow = ZTFperiod_ograms[1][2]
+            ZTFbestPeriod, ZTFbestfreq, Zbestpow = ZTFperiod_ograms[1]
     if verbose:
         print('            ZTF period = ', ZTFbestPeriod)
 
-    return ZTFbestPeriod, ZTFbestfreq, Zbestpow, timeZ, magZ, magErrZ
+    return ZTFbestPeriod, ZTFbestfreq, Zbestpow, Zfreq, Zpow, timeZ, magZ, magErrZ
 
 # FITTING LIGHT CURVES
 # ----------------------
 
-# helper functions.
+# helper functions
 # -----------------
 def sort3arr(a, b, c):
     '''
@@ -288,6 +298,299 @@ def LCanalysisFromP(time, mag, magErr, P, ntermsModels):
     LCanalysisResults['chi2dof'] = np.sum(LCanalysisResults['chi']**2)/np.size(LCanalysisResults['chi'])
     LCanalysisResults['chi2dofR'] = sigG(LCanalysisResults['chi'])
     return LCanalysisResults 
+
+# BLAZHKO PEAK ANALYSIS
+# -------------------------
+# given frequency and Lomb-Scargle power, return parameters for a candidate Blazhko peak
+def getBlazhkoPeak(freq, LSpow, verbose=False):
+    '''
+    This function searches for the Blazhko effect in periodograms of light curves. It searches for 2 subsequent peaks by
+    folding the light curve and searching for local peaks. It also accounts for year aliases. 
+
+    Arguments:
+        freq(array): frequency array
+        LSpow(array): lomb-scargle power array
+        verbose(bool): print statements
+    '''
+    # no. of points
+    Npts = np.size(LSpow)
+    # index for the main peak
+    imax = np.argmax(LSpow)
+    # 1 year alias frequency (factor 1.02 to push it a bit over the maximum)
+    f1yr = freq[imax] + 1.02/365
+    # iDelta is the max. width for folding around the main peak
+    if (imax < Npts/2):
+        iDelta = imax
+    else:
+        iDelta = Npts - imax
+    # folded versions 
+    fFolded = freq[imax:imax+1+iDelta]  
+    pLeft = LSpow[imax-iDelta:imax+1]  
+    pRight = LSpow[imax:imax+1+iDelta]
+    pFolded = 0*fFolded
+    for i in range(0, iDelta-1):
+        # multiply the two branches to increase SNR 
+        pFolded[i] = pLeft[-i-1] * pRight[i] 
+    # now search for the strongest secondary minimum (after the main one at index=0)
+    foundMin = 0
+    foldedMax = 0 
+    ifoldedMax = 0
+    # NB: the first point is the highest by construction (the main peak)
+    for i in range(1, iDelta):
+        if ((foundMin==0)&(pFolded[i] > pFolded[i-1])):
+            # the first time we passed through a local minimum
+            if (fFolded[i]>f1yr): foundMin = 1
+        if foundMin:
+            # after the first local minimum, remember the maximum power and its location
+            if (pFolded[i] > foldedMax):
+                foldedMax = pFolded[i]
+                ifoldedMax = i
+    # done, return useful quantities       
+    fMainPeak = freq[imax] # location of the main peak
+    fBlazhkoPeak = fFolded[ifoldedMax] # location of the second strongest peak
+    if (fBlazhkoPeak - fMainPeak)==0:
+        BlazhkoPeriod = 0
+    else:
+        BlazhkoPeriod = 1/(fBlazhkoPeak - fMainPeak) # expression for Blazhko period
+        if BlazhkoPeriod == np.inf:
+            BlazhkoPeriod = 0
+    BpowerRatio = pFolded[ifoldedMax]/fFolded[0] # the ratio of power for the 2nd and 1st peaks
+    if BpowerRatio==np.inf:
+        BpowerRatio = 0
+    # now compare the second peak's strength to the power at larger frequencies (presumably noise)
+    powerFar = pFolded[fFolded>fBlazhkoPeak]  # frequencies beyond the second peak
+    powerFarMedian = np.median(powerFar)      # the median power
+    powerFarRMS = np.std(powerFar)            # standard deviation, i.e. "sigma"
+    if powerFarRMS==0:
+        Bsignificance = 0
+    else:
+        Bsignificance = (pFolded[ifoldedMax]-powerFarMedian)/powerFarRMS  # how many sigma above median?
+        if Bsignificance==np.inf:
+            Bsignificance = 0
+
+    if (verbose):
+        print('main frequency (1/day):', fMainPeak)
+        print('detected second peak at index:', ifoldedMax)
+        print('Blazhko peak frequency (1/day):', fBlazhkoPeak)
+        print('Blazhko peak relative strength:', BpowerRatio)
+        print('median power beyond Blazhko peak:', powerFarMedian)
+        print('power rms beyond Blazhko peak:', powerFarRMS)
+        print('Blazhko peak significance:', Bsignificance)
+        print('Blazhko period (day):', BlazhkoPeriod)
+    return fFolded, pFolded, fMainPeak, fBlazhkoPeak, BlazhkoPeriod, BpowerRatio, Bsignificance
+
+# BUILDING THE VISUAL INTERFACE
+# ================================
+# Building a class for the visual interface
+class BlazhkoAnalyzer:
+    '''
+    This class builds a customizable interface for visual inspection of BE candidates.
+
+    INPUTS:
+        length(int) = how large is your dataset in length
+        data_lc(dataframe) = the dataset we are inspecting
+        save_data(dataframe) = where to send BE visual candidates
+        ids(list) = list of LINEAR ids
+        period(array) = array of periodograms
+        fit(array) = array of fits for light curves
+    '''
+
+    # initialization of the class
+    def __init__(self, length, data_lc, save_data, ids, period, fit):
+        # initialize every variable in use for this class
+        self.length = length
+        self.data_lc = data_lc
+        self.save_data = save_data
+        self.ids = ids
+        self.period = period
+        self.fit = fit
+        # used for the for loop
+        self.current_i = None
+
+        # initialize plotting 
+        self.gen = self.plot_light_curves()
+        # initalize window for where to show plot
+        self.output_plot = widgets.Output()
+        
+        # Buttons initialization
+        self.button_keeping = widgets.Button(description='Keep')
+        self.button_continue = widgets.Button(description='Continue')
+        
+        # Assigning functions to the buttons
+        self.button_keeping.on_click(self.on_keep_click)
+        self.button_continue.on_click(self.on_continue_click)
+        
+        # display buttons and plot
+        display(self.output_plot, self.button_keeping, self.button_continue)
+        
+        # starting the for loop
+        self.on_continue_click(None)
+    
+    # DEFINING NECESSARY FUNCTIONS
+    # -------
+    def plot_light_curves(self):
+        '''
+        This function plots the light curve data, periodograms and displays important information.
+        '''
+        for i in range(self.length):
+            self.current_i = i # counter for the for loop
+            LID = self.ids[i]
+            blazhko_analysis(self.data_lc, Lid=LID, order=i, PD=self.period, fits=self.fit, name=str(LID)) # plot
+            yield # don't continue until button is pressed
+
+    def on_continue_click(self, b):
+        '''
+        This button defines what happens when the CONTINUE button is clicked: the program moves
+        on to the next light curve.
+        '''
+        with self.output_plot:
+            clear_output(wait=True) # clear the previous output
+            try:
+                next(self.gen) # generate the next plot and update current_i
+            except StopIteration: # when the for loop is finished, disable the button
+                print("No more plots.")
+                self.button_continue.disabled = True
+
+    def on_keep_click(self, b):
+        '''
+        This function defines what happens when the KEEP button is clicked: the program
+        saves the specific row or light curve information into the save_data dataframe, for later use.
+        '''
+        row = pd.DataFrame(self.data_lc.iloc[[int(self.current_i)]]) # assign the current row we are analyzing
+        # concatenate that row with the save_data dataframe
+        self.save_data = pd.concat([self.save_data, row.reset_index(drop=True)], ignore_index=True, axis=0)
+
+    # Saving the save_data dataframe for outside the class
+    def get_save_data(self):
+        return self.save_data
+
+
+def RR_lyrae_analysis(end, i, Lids, ztfdata, lc_analysis, ZTF_data_best, fits, periodograms):
+    '''
+    This function analyzes RR Lyrae light curve data by calculating periods, fitting light curves and conducting BE
+    candidate analysis of local peaks. 
+
+    Arguments:
+        end(str) = how to save this iteration of the dataset
+        i(int) = iterable
+        Lids(list) = list of LINEAR ids
+        ztfdata(dict) = dictionary of ZTF data
+        lc_analysis(dict) = dictionary to save light curve analysis
+        ZTF_data_lc(list) = place to save best ztf data
+        fits(list) = list to save light curve fits
+        periodograms(list) = list to save periodograms
+    '''
+    
+            # accessing data
+    Lid = Lids[i]
+    dataL = data.get_light_curve(Lid)
+    dataZ = ztfdata[Lid]
+
+    # calculating the periods
+    Plinear, fL, pL, tL, mL, meL = LINEARLS(Lids, dataL, i, Lid)
+    Pztf, Zbestf, Zbestp, fZ, pZ, tZ, mZ, meZ = ZTFs(dataZ, Lid)
+
+    # saving the ZTF data
+    ZTF_data_best.append((Lid, (tZ, mZ, meZ)))
+
+    # blazhko periodogram analysis
+    fFoldedL, pFoldedL, fMainPeakL, fBlazhkoPeakL, BlazhkoPeriodL, BpowerRatioL, BsignificanceL = getBlazhkoPeak(fL, pL)
+    if fZ.size==0 or pZ.size==0 or Plinear==0 or Pztf==0 or dataZ.shape[0]==0:
+        fFoldedZ, pFoldedZ, fMainPeakZ, fBlazhkoPeakZ, BlazhkoPeriodZ, BpowerRatioZ, BsignificanceZ = np.array(()), np.array(()), 0, 0, 0, 0, 0
+    else:
+        fFoldedZ, pFoldedZ, fMainPeakZ, fBlazhkoPeakZ, BlazhkoPeriodZ, BpowerRatioZ, BsignificanceZ = getBlazhkoPeak(fZ, pZ)
+
+    # period analysis
+    Plinear = round(Plinear, 6)
+    Pztf = round(Pztf, 6)
+    Pmean = round((Plinear+Pztf)/2, 4)
+    Pratio = round((Pztf/Plinear), 4)
+
+    # saving the periodograms
+    periodograms.append((Lid, (fL, pL, fFoldedL, pFoldedL), (fZ, pZ, fFoldedZ, pFoldedZ)))
+
+    # fitting the light curves
+    ntermsModels = 6
+
+    if tZ.size==0 or mZ.size == 0 or meZ.size == 0 or Plinear == 0.0 or Pztf == 0.0 or tZ.size<40 or tL.size<40:
+        LINEAR_Plinear = {
+            'modelPhaseGrid': np.array(()), 
+            'modelFit': np.array(()), 
+            'dataPhasedTime': np.array(()), 
+            'A': 0.0, 
+            'mmax': 0.0, 
+            'modTemplate': np.array(()), 
+            'dataTemplate': np.array(()), 
+            'dataTemplateErr': np.array(()), 
+            'modelFit2data': np.array(()), 
+            'rms': 0.0, 
+            'chi': 0.0, 
+            'chi2dof': 0.0, 
+            'chi2dofR': 0.0
+        }
+        LINEAR_Pmean = {
+            'modelPhaseGrid': np.array(()), 
+            'modelFit': np.array(()), 
+            'dataPhasedTime': np.array(()), 
+            'A': 0.0, 
+            'mmax': 0.0, 
+            'modTemplate': np.array(()), 
+            'dataTemplate': np.array(()), 
+            'dataTemplateErr': np.array(()), 
+            'modelFit2data': np.array(()), 
+            'rms': 0.0, 
+            'chi': 0.0, 
+            'chi2dof': 0.0, 
+            'chi2dofR': 0.0
+        }
+        ZTF_Pztf = {
+            'modelPhaseGrid': np.array(()), 
+            'modelFit': np.array(()), 
+            'dataPhasedTime': np.array(()), 
+            'A': 0.0, 
+            'mmax': 0.0, 
+            'modTemplate': np.array(()), 
+            'dataTemplate': np.array(()), 
+            'dataTemplateErr': np.array(()), 
+            'modelFit2data': np.array(()), 
+            'rms': 0.0, 
+            'chi': 0.0, 
+            'chi2dof': 0.0, 
+            'chi2dofR': 0.0
+        }
+        ZTF_Pmean = {
+            'modelPhaseGrid': np.array(()), 
+            'modelFit': np.array(()), 
+            'dataPhasedTime': np.array(()), 
+            'A': 0.0, 
+            'mmax': 0.0, 
+            'modTemplate': np.array(()), 
+            'dataTemplate': np.array(()), 
+            'dataTemplateErr': np.array(()), 
+            'modelFit2data': np.array(()), 
+            'rms': 0.0, 
+            'chi': 0.0, 
+            'chi2dof': 0.0, 
+            'chi2dofR': 0.0
+        }
+    else:
+        LINEAR_Plinear = LCanalysisFromP(tL, mL, meL, Plinear, ntermsModels)
+        LINEAR_Pmean = LCanalysisFromP(tL, mL, meL, Pmean, ntermsModels)
+
+
+        ZTF_Pztf = LCanalysisFromP(tZ, mZ, meZ, Pztf, ntermsModels)
+        ZTF_Pmean = LCanalysisFromP(tZ, mZ, meZ, Pmean, ntermsModels)
+
+    STAR = [Plinear, Pztf, Pmean, Pratio, np.size(tL), LINEAR_Plinear['rms'], round(LINEAR_Plinear['chi2dof'], 1), round(LINEAR_Plinear['chi2dofR'], 1),LINEAR_Pmean['rms'],
+        round(LINEAR_Pmean['chi2dof'],1), round(LINEAR_Pmean['chi2dofR'],1), round(LINEAR_Plinear['mmax'],2), round(LINEAR_Plinear['A'],2),
+        np.size(tZ), ZTF_Pztf['rms'], round(ZTF_Pztf['chi2dof'],1), round(ZTF_Pztf['chi2dofR'],1), ZTF_Pmean['rms'], round(ZTF_Pmean['chi2dof'],1), round(ZTF_Pmean['chi2dofR'],1), round(ZTF_Pztf['mmax'],2), round(ZTF_Pztf['A'],2),
+        fMainPeakL, fBlazhkoPeakL, BlazhkoPeriodL, BpowerRatioL, BsignificanceL, fMainPeakZ, 
+        fBlazhkoPeakZ, BlazhkoPeriodZ, BpowerRatioZ, BsignificanceZ]
+        
+    lc_analysis[Lid] = STAR
+    fits.append((Lid, (LINEAR_Plinear, LINEAR_Pmean, ZTF_Pztf, ZTF_Pmean)))
+
+    return lc_analysis, periodograms, fits, ZTF_data_best
 
 
 # LATER ANALYSIS
@@ -455,156 +758,3 @@ def plotAll(idList, LINEARmetadata, LINEARlightcurves, verbose=True):
         plotLINEARmarkSeasons(id0, LINEARlightcurves)
         makeLCplotBySeason(id0, LINEAR_Plinear)
     return fL[np.argmax(pL)], fBlazhkoPeak
-
-
-# BLAZHKO PEAK ANALYSIS
-# -------------------------
-# given frequency and Lomb-Scargle power, return parameters for a candidate Blazhko peak
-def getBlazhkoPeak(freq, LSpow, verbose=False):
-    '''
-    This function searches for the Blazhko effect in periodograms of light curves. It searches for 2 subsequent peaks by
-    folding the light curve and searching for local peaks. It also accounts for year aliases. 
-
-    Arguments:
-        freq(array): frequency array
-        LSpow(array): lomb-scargle power array
-        verbose(bool): print statements
-    '''
-    # no. of points
-    Npts = np.size(LSpow)
-    # index for the main peak
-    imax = np.argmax(LSpow)
-    # 1 year alias frequency (factor 1.02 to push it a bit over the maximum)
-    f1yr = freq[imax] + 1.02/365
-    # iDelta is the max. width for folding around the main peak
-    if (imax < Npts/2):
-        iDelta = imax
-    else:
-        iDelta = Npts - imax
-    # folded versions 
-    fFolded = freq[imax:imax+1+iDelta]  
-    pLeft = LSpow[imax-iDelta:imax+1]  
-    pRight = LSpow[imax:imax+1+iDelta]
-    pFolded = 0*fFolded
-    for i in range(0, iDelta-1):
-        # multiply the two branches to increase SNR 
-        pFolded[i] = pLeft[-i-1] * pRight[i] 
-    # now search for the strongest secondary minimum (after the main one at index=0)
-    foundMin = 0
-    foldedMax = 0 
-    ifoldedMax = 0
-    # NB: the first point is the highest by construction (the main peak)
-    for i in range(1, iDelta):
-        if ((foundMin==0)&(pFolded[i] > pFolded[i-1])):
-            # the first time we passed through a local minimum
-            if (fFolded[i]>f1yr): foundMin = 1
-        if foundMin:
-            # after the first local minimum, remember the maximum power and its location
-            if (pFolded[i] > foldedMax):
-                foldedMax = pFolded[i]
-                ifoldedMax = i
-    # done, return useful quantities       
-    fMainPeak = freq[imax] # location of the main peak
-    fBlazhkoPeak = fFolded[ifoldedMax] # location of the second strongest peak
-    BlazhkoPeriod = 1/(fBlazhkoPeak - fMainPeak) # expression for Blazhko period
-    BpowerRatio = pFolded[ifoldedMax]/fFolded[0] # the ratio of power for the 2nd and 1st peaks
-    # now compare the second peak's strength to the power at larger frequencies (presumably noise)
-    powerFar = pFolded[fFolded>fBlazhkoPeak]  # frequencies beyond the second peak
-    powerFarMedian = np.median(powerFar)      # the median power
-    powerFarRMS = np.std(powerFar)            # standard deviation, i.e. "sigma"
-    Bsignificance = (pFolded[ifoldedMax]-powerFarMedian)/powerFarRMS  # how many sigma above median?
-    if (verbose):
-        print('main frequency (1/day):', fMainPeak)
-        print('detected second peak at index:', ifoldedMax)
-        print('Blazhko peak frequency (1/day):', fBlazhkoPeak)
-        print('Blazhko peak relative strength:', BpowerRatio)
-        print('median power beyond Blazhko peak:', powerFarMedian)
-        print('power rms beyond Blazhko peak:', powerFarRMS)
-        print('Blazhko peak significance:', Bsignificance)
-        print('Blazhko period (day):', BlazhkoPeriod)
-    return fFolded, pFolded, fMainPeak, fBlazhkoPeak, BlazhkoPeriod, BpowerRatio, Bsignificance
-
-# BUILDING THE VISUAL INTERFACE
-# ================================
-# Building a class for the visual interface
-class BlazhkoAnalyzer:
-    '''
-    This class builds a customizable interface for visual inspection of BE candidates.
-
-    INPUTS:
-        length(int) = how large is your dataset in length
-        data_lc(dataframe) = the dataset we are inspecting
-        save_data(dataframe) = where to send BE visual candidates
-        ids(list) = list of LINEAR ids
-        period(array) = array of periodograms
-        fit(array) = array of fits for light curves
-    '''
-
-    # initialization of the class
-    def __init__(self, length, data_lc, save_data, ids, period, fit):
-        # initialize every variable in use for this class
-        self.length = length
-        self.data_lc = data_lc
-        self.save_data = save_data
-        self.ids = ids
-        self.period = period
-        self.fit = fit
-        # used for the for loop
-        self.current_i = None
-
-        # initialize plotting 
-        self.gen = self.plot_light_curves()
-        # initalize window for where to show plot
-        self.output_plot = widgets.Output()
-        
-        # Buttons initialization
-        self.button_keeping = widgets.Button(description='Keep')
-        self.button_continue = widgets.Button(description='Continue')
-        
-        # Assigning functions to the buttons
-        self.button_keeping.on_click(self.on_keep_click)
-        self.button_continue.on_click(self.on_continue_click)
-        
-        # display buttons and plot
-        display(self.output_plot, self.button_keeping, self.button_continue)
-        
-        # starting the for loop
-        self.on_continue_click(None)
-    
-    # DEFINING NECESSARY FUNCTIONS
-    # -------
-    def plot_light_curves(self):
-        '''
-        This function plots the light curve data, periodograms and displays important information.
-        '''
-        for i in range(self.length):
-            self.current_i = i # counter for the for loop
-            LID = self.ids[i]
-            blazhko_analysis(self.data_lc, Lid=LID, order=i, PD=self.period, fits=self.fit, name=str(LID)) # plot
-            yield # don't continue until button is pressed
-
-    def on_continue_click(self, b):
-        '''
-        This button defines what happens when the CONTINUE button is clicked: the program moves
-        on to the next light curve.
-        '''
-        with self.output_plot:
-            clear_output(wait=True) # clear the previous output
-            try:
-                next(self.gen) # generate the next plot and update current_i
-            except StopIteration: # when the for loop is finished, disable the button
-                print("No more plots.")
-                self.button_continue.disabled = True
-
-    def on_keep_click(self, b):
-        '''
-        This function defines what happens when the KEEP button is clicked: the program
-        saves the specific row or light curve information into the save_data dataframe, for later use.
-        '''
-        row = pd.DataFrame(self.data_lc.iloc[[int(self.current_i)]]) # assign the current row we are analyzing
-        # concatenate that row with the save_data dataframe
-        self.save_data = pd.concat([self.save_data, row.reset_index(drop=True)], ignore_index=True, axis=0)
-
-    # Saving the save_data dataframe for outside the class
-    def get_save_data(self):
-        return self.save_data
