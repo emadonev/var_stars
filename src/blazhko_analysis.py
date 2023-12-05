@@ -654,6 +654,100 @@ def plotAll(idList, LINEARmetadata, LINEARlightcurves, verbose=True):
         makeLCplotBySeason(id0, LINEAR_Plinear)
     return fL[np.argmax(pL)], fBlazhkoPeak
 
+# BLAZHKO EFFECT CANDIDATES
+# =============================
+def blazhko_determine(df, dfnew):
+    '''
+    This algorithm sorts through a DataFrame of light curve parameters and decides which are bad Blazhko Effect candidates,
+    which are inter BE candidates, good BE candidates and excellent BE candidates. The parameters we use for determining
+    BE candidates are amplitude, chi2 of 2 both LINEAR and ZTF, period and the periodogram analysis (sign of local peaks for BE).
+
+    Arguments:
+        df(DataFrame) = input dataframe
+        dfnew(DataFrame) = new dataframe for inputing good candidates
+    '''
+    for i in range(df.shape[0]):
+        
+        # STEP 1: getting rid of trash
+        # ---------
+        if df['Ampl_diff'][i]<2:
+            if df['L_chi2dofR'][i]<9 or df['Zchi2dofR'][i]<12 or df['Plinear'][i]<4 or df['Pztf'][i]<4:
+                if df['NdataLINEAR'][i]>250 or df['NdataZTF'][i]>250:
+                    # STEP 2: determine periodogram likelihood of BE
+                    # ---------
+                    dPmin = 0.01
+                    #--- determining if LINEAR part has periodogram indication of BE ---
+                    # no daily alias of main period
+                    LINEAR_pd_period = (np.abs(df['Plinear'][i]-0.5)>dPmin)&(np.abs(df['Plinear'][i]-1.0)>dPmin)&(np.abs(df['Plinear'][i]-2.0)>dPmin)
+                    # blazhko period must be within RR Lyrae range
+                    LINEAR_pd_pB = (df['BlazhkoPeriodL'][i]>35)&(df['BlazhkoPeriodL'][i]<325) 
+                    # relative strength and significance must be above certain value for it to be noticeable
+                    LINEAR_pd_sig = (df['BpowerRatioL'][i]>0.05)&(df['BsignificanceL'][i]>5)
+                    #--- determining if ZTF part has periodogram indication of BE ---
+                    ZTF_pd_period = (np.abs(df['Pztf'][i]-0.5)>dPmin)&(np.abs(df['Pztf'][i]-1.0)>dPmin)&(np.abs(df['Pztf'][i]-2.0)>dPmin)
+                    ZTF_pd_pB = (df['BlazhkoPeriodZ'][i]>35)&(df['BlazhkoPeriodZ'][i]<325) 
+                    ZTF_pd_sig = (df['BpowerRatioZ'][i]>0.05)&(df['BsignificanceZ'][i]>5)
+                    #---
+                    BE = 0
+                    if (LINEAR_pd_period&LINEAR_pd_pB&LINEAR_pd_sig):
+                        BE += 1
+                        df.loc[i, 'IndicatorType'] = 'L'
+                    if (ZTF_pd_period&ZTF_pd_pB&ZTF_pd_sig):
+                        BE += 1
+                        df.loc[i, 'IndicatorType'] = 'Z'
+                    # ---
+                    if BE>0:
+                        row = pd.DataFrame(df.iloc[[int(i)]])
+                        dfnew = pd.concat([dfnew, row.reset_index(drop=True)], ignore_index=True, axis=0)
+                    else:
+                        # STEP 3: determine scorechart for other parameters
+                        period = df['dP'][i]
+                        chiL = df['L_chi2dofR'][i]
+                        chiZ = df['Zchi2dofR'][i]
+                        ampl = df['Ampl_diff'][i]
+
+                        # ---
+
+                        p_score = 0
+                        chi_score = 0
+                        amp_score = 0
+
+                        # ---
+
+                        # PERIOD
+                        if period > 4e-5 and period < 0.001: p_score += 2
+                        if period > 0.001: p_score += 4
+                        
+                        # CHI
+                        if (chiL > 2.5 and chiL < 4.5):
+                            chi_score += 2
+                            df.loc[i, 'ChiType'] = 'L'
+                        if (chiZ>2.5 and chiZ<4.5): 
+                            chi_score += 2
+                            df.loc[i, 'ChiType'] = 'Z'
+                        if chiL>5:
+                            chi_score += 3
+                            df.loc[i, 'ChiType'] = 'L'
+                        if chiZ>5:
+                            chi_score += 3
+                            df.loc[i, 'ChiType'] = 'Z'
+
+                        # AMPL
+                        if ampl>0.05 and ampl<0.15: amp_score += 1
+                        if ampl>0.15 and ampl<2: amp_score += 2
+
+                        # TOTAL SCORE
+                        score = p_score + chi_score + amp_score
+                        df.loc[i, 'BE_score'] = score
+
+                        if score>5:
+                            row = pd.DataFrame(df.iloc[[int(i)]])
+                            dfnew = pd.concat([dfnew, row.reset_index(drop=True)], ignore_index=True, axis=0)
+        else:
+            pass
+    return dfnew
+
+
 # BUILDING THE VISUAL INTERFACE
 # ================================
 # Building a class for the visual interface
