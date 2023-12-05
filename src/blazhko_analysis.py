@@ -165,26 +165,6 @@ def getZTFlightcurve(ra, dec, radius=3.0):
         ZTFdata = pd.DataFrame(())
     return ZTFdata
 
-def calc_ztf_period(b, ZTFdata, nterms, Lid, lsPS):
-    '''
-    This function calculates period and creates the periodogram for ZTF light curve.
-
-    Arguments:
-        b(str) = filter for calculation
-        ZTFdata(dataframe) = ZTF data
-        nterms(int) = number of terms for period determination
-        Lid(int) = LINEAR id
-        lsPS(bool) = to save periodogram or not, Default is True
-    '''
-    BandData = ZTFdata.loc[ZTFdata['filtercode'] == b]
-    timeZ = BandData['mjd'].to_numpy()
-    magZ = BandData['mag'].to_numpy()
-    magErrZ = BandData['magerr'].to_numpy()
-
-    print(BandData.shape)
-    
-    return doPeriods(timeZ, magZ, magErrZ, nterms, Lid, lsPS=lsPS)
-
 def ZTFs(ZTFdata, Lid, lsPS=True, verbose=False):
     """
     This function calculates the period of a ZTF light curve by taking the median of the periods of the 3 filters.
@@ -378,92 +358,6 @@ def getBlazhkoPeak(freq, LSpow, verbose=False):
         print('Blazhko peak significance:', Bsignificance)
         print('Blazhko period (day):', BlazhkoPeriod)
     return fFolded, pFolded, fMainPeak, fBlazhkoPeak, BlazhkoPeriod, BpowerRatio, Bsignificance
-
-# BUILDING THE VISUAL INTERFACE
-# ================================
-# Building a class for the visual interface
-class BlazhkoAnalyzer:
-    '''
-    This class builds a customizable interface for visual inspection of BE candidates.
-
-    INPUTS:
-        length(int) = how large is your dataset in length
-        data_lc(dataframe) = the dataset we are inspecting
-        save_data(dataframe) = where to send BE visual candidates
-        ids(list) = list of LINEAR ids
-        period(array) = array of periodograms
-        fit(array) = array of fits for light curves
-    '''
-
-    # initialization of the class
-    def __init__(self, length, data_lc, save_data, ids, period, fit):
-        # initialize every variable in use for this class
-        self.length = length
-        self.data_lc = data_lc
-        self.save_data = save_data
-        self.ids = ids
-        self.period = period
-        self.fit = fit
-        # used for the for loop
-        self.current_i = None
-
-        # initialize plotting 
-        self.gen = self.plot_light_curves()
-        # initalize window for where to show plot
-        self.output_plot = widgets.Output()
-        
-        # Buttons initialization
-        self.button_keeping = widgets.Button(description='Keep')
-        self.button_continue = widgets.Button(description='Continue')
-        
-        # Assigning functions to the buttons
-        self.button_keeping.on_click(self.on_keep_click)
-        self.button_continue.on_click(self.on_continue_click)
-        
-        # display buttons and plot
-        display(self.output_plot, self.button_keeping, self.button_continue)
-        
-        # starting the for loop
-        self.on_continue_click(None)
-    
-    # DEFINING NECESSARY FUNCTIONS
-    # -------
-    def plot_light_curves(self):
-        '''
-        This function plots the light curve data, periodograms and displays important information.
-        '''
-        for i in range(self.length):
-            self.current_i = i # counter for the for loop
-            LID = self.ids[i]
-            blazhko_analysis(self.data_lc, Lid=LID, order=i, PD=self.period, fits=self.fit, name=str(LID)) # plot
-            yield # don't continue until button is pressed
-
-    def on_continue_click(self, b):
-        '''
-        This button defines what happens when the CONTINUE button is clicked: the program moves
-        on to the next light curve.
-        '''
-        with self.output_plot:
-            clear_output(wait=True) # clear the previous output
-            try:
-                next(self.gen) # generate the next plot and update current_i
-            except StopIteration: # when the for loop is finished, disable the button
-                print("No more plots.")
-                self.button_continue.disabled = True
-
-    def on_keep_click(self, b):
-        '''
-        This function defines what happens when the KEEP button is clicked: the program
-        saves the specific row or light curve information into the save_data dataframe, for later use.
-        '''
-        row = pd.DataFrame(self.data_lc.iloc[[int(self.current_i)]]) # assign the current row we are analyzing
-        # concatenate that row with the save_data dataframe
-        self.save_data = pd.concat([self.save_data, row.reset_index(drop=True)], ignore_index=True, axis=0)
-
-    # Saving the save_data dataframe for outside the class
-    def get_save_data(self):
-        return self.save_data
-
 
 def RR_lyrae_analysis(end, i, Lids, ztfdata, lc_analysis, ZTF_data_best, fits, periodograms):
     '''
@@ -752,9 +646,96 @@ def plotLINEARmarkSeasons(id0, LINEARlightcurves):
 
 # plot standard plots to support visual analysis
 def plotAll(idList, LINEARmetadata, LINEARlightcurves, verbose=True):
+
     for id0 in idList:
         Pcomparison, fL, pL, LINEAR_Plinear = LINEARLS(LINEARmetadata, LINEARlightcurves, id0) 
         fBlazhkoPeak = plotBlazhkoPeaksLINEAR(id0, fL, pL, fac=1.008, plotSave=False, verbose=verbose)
         plotLINEARmarkSeasons(id0, LINEARlightcurves)
         makeLCplotBySeason(id0, LINEAR_Plinear)
     return fL[np.argmax(pL)], fBlazhkoPeak
+
+# BUILDING THE VISUAL INTERFACE
+# ================================
+# Building a class for the visual interface
+class BlazhkoAnalyzer:
+    '''
+    This class builds a customizable interface for visual inspection of BE candidates.
+
+    INPUTS:
+        length(int) = how large is your dataset in length
+        data_lc(dataframe) = the dataset we are inspecting
+        save_data(dataframe) = where to send BE visual candidates
+        ids(list) = list of LINEAR ids
+        period(array) = array of periodograms
+        fit(array) = array of fits for light curves
+    '''
+
+    # initialization of the class
+    def __init__(self, length, data_lc, save_data, ids, period, fit):
+        # initialize every variable in use for this class
+        self.length = length
+        self.data_lc = data_lc
+        self.save_data = save_data
+        self.ids = ids
+        self.period = period
+        self.fit = fit
+        # used for the for loop
+        self.current_i = None
+
+        # initialize plotting 
+        self.gen = self.plot_light_curves()
+        # initalize window for where to show plot
+        self.output_plot = widgets.Output()
+        
+        # Buttons initialization
+        self.button_keeping = widgets.Button(description='Keep')
+        self.button_continue = widgets.Button(description='Continue')
+        
+        # Assigning functions to the buttons
+        self.button_keeping.on_click(self.on_keep_click)
+        self.button_continue.on_click(self.on_continue_click)
+        
+        # display buttons and plot
+        display(self.output_plot, self.button_keeping, self.button_continue)
+        
+        # starting the for loop
+        self.on_continue_click(None)
+    
+    # DEFINING NECESSARY FUNCTIONS
+    # -------
+    def plot_light_curves(self):
+        '''
+        This function plots the light curve data, periodograms and displays important information.
+        '''
+        for i in range(self.length):
+            self.current_i = i # counter for the for loop
+            LID = self.ids[i]
+            blazhko_analysis(self.data_lc, Lid=LID, order=i, PD=self.period, fits=self.fit, name=str(LID)) # plot
+            yield # don't continue until button is pressed
+
+    def on_continue_click(self, b):
+        '''
+        This button defines what happens when the CONTINUE button is clicked: the program moves
+        on to the next light curve.
+        '''
+        with self.output_plot:
+            clear_output(wait=True) # clear the previous output
+            try:
+                next(self.gen) # generate the next plot and update current_i
+            except StopIteration: # when the for loop is finished, disable the button
+                print("No more plots.")
+                self.button_continue.disabled = True
+
+    def on_keep_click(self, b):
+        '''
+        This function defines what happens when the KEEP button is clicked: the program
+        saves the specific row or light curve information into the save_data dataframe, for later use.
+        '''
+        row = pd.DataFrame(self.data_lc.iloc[[int(self.current_i)]]) # assign the current row we are analyzing
+        # concatenate that row with the save_data dataframe
+        self.save_data = pd.concat([self.save_data, row.reset_index(drop=True)], ignore_index=True, axis=0)
+
+    # Saving the save_data dataframe for outside the class
+    def get_save_data(self):
+        return self.save_data
+
