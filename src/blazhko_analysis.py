@@ -220,9 +220,11 @@ def sort3arr(a, b, c):
     '''
     This function sorts 3 arrays by their indexes.
     '''
+    if len(a) != len(b) or len(a) != len(c):
+        raise ValueError("Arrays must have the same length")
+
     ind = np.argsort(a)
     return a[ind], b[ind], c[ind]
-
 def sort4arr(a, b, c, d):
     '''
     This function sorts 4 arrays by their indexes.
@@ -490,7 +492,14 @@ def RR_lyrae_analysis(end, i, Lids, ztfdata, lc_analysis, ZTF_data_best, fits, p
 # LATER ANALYSIS
 # ---------------
 # L1 = results of period analysis
-def makeLCplot(L1, plotrootname='LCplot', plotSave=False):
+def makeLCplot_info(L1, L2,dataset, plotrootname='LCplot', plotSave=False):
+    '''
+    This function plots a single phase of a light curve with fit for both LINEAR and ZTF data, along with 
+    a separate box for text data.
+    
+    Arguments:
+        L1: fit data for light curve
+    '''
     fig, ax = plt.subplots(1,1, figsize=(7,5))  
 
     ax.set(xlabel='data phased with best-fit LINEAR period', ylabel='LINEAR normalized light curve')
