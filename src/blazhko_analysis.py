@@ -491,8 +491,7 @@ def RR_lyrae_analysis(end, i, Lids, ztfdata, lc_analysis, ZTF_data_best, fits, p
 
 # LATER ANALYSIS
 # ---------------
-# L1 = results of period analysis
-def makeLCplot_info(L1, L2,dataset, plotrootname='LCplot', plotSave=False):
+def makeLCplot_info(L1, L2, dataset, order, Lid, plotname='LCplot', plotSave=False):
     '''
     This function plots a single phase of a light curve with fit for both LINEAR and ZTF data, along with 
     a separate box for text data.
@@ -500,96 +499,78 @@ def makeLCplot_info(L1, L2,dataset, plotrootname='LCplot', plotSave=False):
     Arguments:
         L1: fit data for light curve
     '''
-    fig, ax = plt.subplots(1,1, figsize=(7,5))  
+    #print('Initializing plot')
+    fig, ax = plt.subplots(1,3, figsize=(32,8))   
+    #print('Currently plotting first thing,', order)
+    fig.suptitle('LINEAR ID:'+str(Lid), fontsize=30)
+    fig.set_facecolor('white')
 
-    ax.set(xlabel='data phased with best-fit LINEAR period', ylabel='LINEAR normalized light curve')
-    ax.set_xlim(-0.1, 1.1)
-    ax.set_ylim(1.3, -0.3)
+    ax[0].set(xlabel='data phased with best-fit LINEAR period', ylabel='LINEAR normalized light curve')
+    ax[0].set_xlim(-0.1, 1.1)
+    ax[0].set_ylim(1.3, -0.3)
     # data
     xx, yy, zz = sort3arr(L1['dataPhasedTime'], L1['dataTemplate'], L1['dataTemplateErr'])
-    ax.errorbar(xx, yy, zz, fmt='.k', ecolor='gray', lw=1, ms=4, capsize=1.5, alpha=0.3)
+    ax[0].errorbar(xx, yy, zz, fmt='.k', ecolor='gray', lw=1, ms=4, capsize=1.5, alpha=0.3)
     # fit for Plinear
-    ax.plot(L1['modelPhaseGrid'], L1['modTemplate'], 'red', markeredgecolor='red', lw=1, fillstyle='top', linestyle='dashed')
+    ax[0].plot(L1['modelPhaseGrid'], L1['modTemplate'], 'red', markeredgecolor='red', lw=1, fillstyle='top', linestyle='dashed')
+
+    ax[1].set(xlabel='data phased with best-fit ZTF period', ylabel='ZTF normalized light curve')
+    ax[1].set_xlim(-0.1, 1.1)
+    ax[1].set_ylim(1.3, -0.3)
+    # data
+    xx1, yy1, zz1 = sort3arr(L2['dataPhasedTime'], L2['dataTemplate'], L2['dataTemplateErr'])
+    ax[1].errorbar(xx1, yy1, zz1, fmt='.k', ecolor='gray', lw=1, ms=4, capsize=1.5, alpha=0.3)
+    # fit for Plinear
+    ax[1].plot(L2['modelPhaseGrid'], L2['modTemplate'], 'red', markeredgecolor='red', lw=1, fillstyle='top', linestyle='dashed')
+
+    ax[2].axis([0, 8, 0, 10])
+    ax[2].text(0, 8, 'LINEAR period chi robust: '+str(dataset['L_chi2dofR'][order])+', LINEAR mean period chi robust: '+str(dataset['Lmean_chi2dofR'][order]),fontsize=15)
+    ax[2].text(0, 7, 'ZTF period chi robust: '+str(dataset['Zchi2dofR'][order])+', ZTF mean period chi robust: '+str(dataset['Zmean_chi2dofR'][order]),fontsize=15)
+    ax[2].text(0, 6, 'LINEAR period chi: '+str(dataset['L_chi2dof'][order])+', LINEAR mean period chi: '+str(dataset['Lmean_chi2dof'][order]),fontsize=15)
+    ax[2].text(0, 5, 'ZTF period chi: '+str(dataset['Zchi2dof'][order])+', ZTF mean period chi: '+str(dataset['Zmean_chi2dof'][order]),fontsize=15)
+    ax[2].text(0, 4, 'LINEAR period: '+str(dataset['Plinear'][order])+', ZTF period: '+str(dataset['Pztf'][order])+', Period difference: '+str(dataset['dP'][order]),fontsize=15)
+    ax[2].text(0, 3, 'Average LINEAR magnitude: '+str(round(np.mean(data.get_light_curve(Lid).T[1]), 2)),fontsize=15)
+    ax[2].text(0, 2, 'LINEAR amplitude:'+str(dataset['Lampl'][order])+', ZTF amplitude:'+str(dataset['Zampl'][order]),fontsize=15)
+    ax[2].grid(False)
+    ax[2].axis('off')
+
+    #print('Finished plotting!')
     
     if plotSave:
-        plotName = plotrootname + '.png'
-        plt.savefig(plotName, dpi=600)
-        print('saved plot as:', plotName) 
-    plt.show()     
-    return
-# L1 = results of period analysis
-
-def makeLCplotBySeason(id0, L1, plotrootname='LCplotBySeason', plotSave=False):
-    
-    fig = plt.figure(figsize=(10, 12))
-    fig.subplots_adjust(hspace=0.2, bottom=0.06, top=0.94, left=0.12, right=0.94)
-    
-    def plotPanel(ax, L1, season):
-        ax.set(xlabel='phase', ylabel='normalized phased light curve')
-        ax.set_xlim(-0.1, 1.1)
-        ax.set_ylim(1.3, -0.4)
-        # fit for Plinear
-        ax.plot(L1['modelPhaseGrid'], L1['modTemplate'], 'red', markeredgecolor='red', lw=1, fillstyle='top', linestyle='dashed')
-    
-        # data
-        xx, yy, zz, ww = sort4arr(L1['dataPhasedTime'], L1['dataTemplate'], L1['dataTemplateErr'], L1['obsTimes'])
-        tSmin = 52520 + (season-1)*365
-        tSmax = 52520 + season*365
-        xxS = xx[(ww>tSmin)&(ww<tSmax)]
-        yyS = yy[(ww>tSmin)&(ww<tSmax)]
-        zzS = zz[(ww>tSmin)&(ww<tSmax)]
-        wwS = ww[(ww>tSmin)&(ww<tSmax)]
-        ax.errorbar(xxS, yyS, zzS, fmt='.b', ecolor='blue', lw=1, ms=4, capsize=1.5, alpha=0.3)
-        textString = "LINEAR season " + str(season)
-        ax.text(0.03, 0.96, textString, ha='left', va='top', transform=ax.transAxes)
-        textString = "MJD=" + str(tSmin) + ' to ' + str(tSmax)
-        ax.text(0.53, 0.96, textString, ha='left', va='top', transform=ax.transAxes)
-
-        
-    # plot each season separately 
-    for season in range(1,7):
-        # plot the power spectrum
-        ax = fig.add_subplot(321 + season-1)
-        plotPanel(ax, L1, season)
-        if (season==1):
-            ax.set(title='LINEAR object {0}'.format(id0))
-
-    if plotSave:
-        plotName = plotrootname + '.png'
-        plt.savefig(plotName, dpi=600)
-        print('saved plot as:', plotName) 
-    plt.show()     
+        plotName = plotname + '.png'
+        plt.savefig('../images_blazhko/'+plotName, dpi=600)
     return
 
-
-def plotBlazhkoPeaksLINEAR(id0, fL, pL, fac=1.008, plotSave=False, verbose=True):
-    
-    print('LINEAR ID=', id0)
+def plotBlazhkoPeaksLINEAR(Lid, order, fL, pL, fZ, pZ, fFoldedL, pFoldedL, fFoldedZ, pFoldedZ, dataset, fac=1.008, plotSave=False, verbose=False):
     flin = fL[np.argmax(pL)]
+    fztf = fZ[np.argmax(pZ)]
 
-    fFolded, pFolded, fMainPeak, fBlazhkoPeak, BlazhkoPeriod, BpowerRatio, Bsignificance = \
-    getBlazhkoPeak(fL, pL, verbose=verbose)
+    # DATA PREP
+    # ===========
+    fBlazhkoPeakL = dataset['BlazhkoPeakL'][order]
+    # ---
+    fBlazhkoPeakZ = dataset['BlazhkoPeakZ'][order]
 
     ## at some point, we will read periodograms back from files...
-    fig = plt.figure(figsize=(10, 12))
+    fig = plt.figure(figsize=(32, 8))
     fig.subplots_adjust(hspace=0.1, bottom=0.06, top=0.94, left=0.12, right=0.94)
 
     # plot the power spectrum
-    ax = fig.add_subplot(321)
+    ax = fig.add_subplot(141)
 
     ax.plot(fL, pL, c='b')
     ax.plot([flin, flin], [0,1], lw = 1, c='r', ls='--')
-    ax.plot([fBlazhkoPeak, fBlazhkoPeak], [0, 0.7*np.max(pFolded)], lw = 1, c='r', ls='--')
-    ax.plot([2*flin-fBlazhkoPeak, 2*flin-fBlazhkoPeak], [0, 0.7*np.max(pFolded)], lw = 1, c='r', ls='--')
+    ax.plot([fBlazhkoPeakL, fBlazhkoPeakL], [0, 0.7*np.max(pFoldedL)], lw = 1, c='r', ls='--')
+    ax.plot([2*flin-fBlazhkoPeakL, 2*flin-fBlazhkoPeakL], [0, 0.7*np.max(pFoldedL)], lw = 1, c='r', ls='--')
     # show 1 year alias
     f1yr = flin+1/365.0
-    ax.plot([f1yr, f1yr], [0,0.7*np.max(pFolded)], lw = 1, ls='-.', c='green')
+    ax.plot([f1yr, f1yr], [0,0.7*np.max(pFoldedL)], lw = 1, ls='-.', c='green')
     f1yr = flin-1/365.0
-    ax.plot([f1yr, f1yr], [0,0.7*np.max(pFolded)], lw = 1, ls='-.', c='green')
+    ax.plot([f1yr, f1yr], [0,0.7*np.max(pFoldedL)], lw = 1, ls='-.', c='green')
 
     ax.text(0.03, 0.96, "LINEAR", ha='left', va='top', transform=ax.transAxes)
-    if (fBlazhkoPeak > flin*fac):
-        ax.set_xlim(0.99*(2*flin-fBlazhkoPeak), 1.01*fBlazhkoPeak)
+    if (fBlazhkoPeakL > flin*fac):
+        ax.set_xlim(0.99*(2*flin-fBlazhkoPeakL), 1.01*fBlazhkoPeakL)
     else:
         ax.set_xlim(flin/fac, flin*fac)
     ax.yaxis.set_major_locator(plt.MaxNLocator(4))
@@ -602,25 +583,92 @@ def plotBlazhkoPeaksLINEAR(id0, fL, pL, fac=1.008, plotSave=False, verbose=True)
     ax.set_xlabel('frequency (d$^{-1}$)')
 
     # plot folder power spectrum
-    ax = fig.add_subplot(322)
+    ax = fig.add_subplot(142)
 
-    ax.plot(fFolded, pFolded, c='b')
-    ax.plot([fBlazhkoPeak, fBlazhkoPeak], [0,0.4*np.max(pFolded)], lw = 1, ls='--', c='r')
+    ax.plot(fFoldedL, pFoldedL, c='b')
+    ax.plot([fBlazhkoPeakL, fBlazhkoPeakL], [0,0.4*np.max(pFoldedL)], lw = 1, ls='--', c='r')
     # show 1 year alias
     f1yr = flin+1/365.0
-    ax.plot([f1yr, f1yr], [0,0.4*np.max(pFolded)], lw = 1, ls='-.', c='green')
+    ax.plot([f1yr, f1yr], [0,0.4*np.max(pFoldedL)], lw = 1, ls='-.', c='green')
     
-    powerFar = pFolded[fFolded>fBlazhkoPeak]  # frequencies beyond the second peak
+    powerFar = pFoldedL[fFoldedL>fBlazhkoPeakL]  # frequencies beyond the second peak
     powerFarMedian = np.median(powerFar)      # the median power
     powerFarRMS = np.std(powerFar)            # standard deviation, i.e. "sigma"
     noise5sig = powerFarMedian+5*powerFarRMS
     
-    if (fBlazhkoPeak > flin*fac):
-        ax.plot([flin+0.5*(fBlazhkoPeak-flin), 1.01*fBlazhkoPeak], [noise5sig, noise5sig], lw = 1, ls='--', c='cyan')
-        ax.set_xlim(flin, 1.01*fBlazhkoPeak)
+    if (fBlazhkoPeakL > flin*fac):
+        ax.plot([flin+0.5*(fBlazhkoPeakL-flin), 1.01*fBlazhkoPeakL], [noise5sig, noise5sig], lw = 1, ls='--', c='cyan')
+        ax.set_xlim(flin, 1.01*fBlazhkoPeakL)
     else:
-        ax.plot([flin+0.5*(fBlazhkoPeak-flin), flin*fac], [noise5sig, noise5sig], lw = 1, ls='--', c='cyan')
+        ax.plot([flin+0.5*(fBlazhkoPeakL-flin), flin*fac], [noise5sig, noise5sig], lw = 1, ls='--', c='cyan')
         ax.set_xlim(flin, flin*fac)
+
+    ax.yaxis.set_major_locator(plt.MaxNLocator(4))
+
+    ylim = ax.get_ylim()
+    ymax = ylim[0] + 1.1 * (ylim[1] - ylim[0])
+    if ymax>1.0: ymax=1.0
+    ax.set_ylim(0, ymax)
+    ax.set_ylabel('folded power')
+    ax.set_xlabel('frequency (d$^{-1}$)')
+
+    # ZTF
+    # ========
+    
+    # PLOTTING THE FULL PERIODOGRAM
+    # ---------------
+    ax = fig.add_subplot(143)
+
+    # plotting the periodogram
+    ax.plot(fL, pL, c='b') # plotting basic periodogram
+    # adding the structure lines
+    ax.plot([fztf, fztf], [0,1], lw = 1, c='r', ls='--')
+    ax.plot([fBlazhkoPeakZ, fBlazhkoPeakZ], [0, 0.7*np.max(pFoldedZ)], lw = 1, c='r', ls='--')
+    ax.plot([2*fztf-fBlazhkoPeakZ, 2*fztf-fBlazhkoPeakZ], [0, 0.7*np.max(pFoldedZ)], lw = 1, c='r', ls='--')
+
+    # show 1 year alias for ztf
+    f1yrZ = fztf+1/365.0
+    ax.plot([f1yrZ, f1yrZ], [0,0.7*np.max(pFoldedZ)], lw = 1, ls='-.', c='green')
+    f1yrZ = fztf-1/365.0
+    ax.plot([f1yrZ, f1yrZ], [0,0.7*np.max(pFoldedZ)], lw = 1, ls='-.', c='green')
+
+    # adding y-axis text
+    ax.text(0.03, 0.96, "ZTF", ha='left', va='top', transform=ax.transAxes)
+    if (fBlazhkoPeakZ > fztf*fac):
+        ax.set_xlim(0.99*(2*fztf-fBlazhkoPeakZ), 1.01*fBlazhkoPeakZ)
+    else:
+        ax.set_xlim(fztf/fac, fztf*fac)
+    ax.yaxis.set_major_locator(plt.MaxNLocator(4))
+
+    ylim = ax.get_ylim()
+    ymax = ylim[0] + 1.1 * (ylim[1] - ylim[0])
+    if ymax>1.0: ymax=1.0
+    ax.set_ylim(0, ymax)
+    ax.set_ylabel('Lomb-Scargle power')
+    ax.set_xlabel('frequency (d$^{-1}$)')
+
+    # PLOTING FOLDED POWER SEQUENCE
+    # ----------------
+    ax = fig.add_subplot(144)
+
+    ax.plot(fFoldedZ, pFoldedZ, c='b')
+    ax.plot([fBlazhkoPeakZ, fBlazhkoPeakZ], [0,0.4*np.max(pFoldedZ)], lw = 1, ls='--', c='r')
+
+    # show 1 year alias
+    f1yrZ = fztf+1/365.0
+    ax.plot([f1yrZ, f1yrZ], [0,0.4*np.max(pFoldedZ)], lw = 1, ls='-.', c='green')
+    
+    powerFarZ = pFoldedZ[fFoldedZ>fBlazhkoPeakZ]  # frequencies beyond the second peak
+    powerFarMedianZ = np.median(powerFarZ)      # the median power
+    powerFarRMSZ = np.std(powerFarZ)            # standard deviation, i.e. "sigma"
+    noise5sigZ = powerFarMedianZ+5*powerFarRMSZ
+    
+    if (fBlazhkoPeakZ > fztf*fac):
+        ax.plot([fztf+0.5*(fBlazhkoPeakZ-fztf), 1.01*fBlazhkoPeakZ], [noise5sigZ, noise5sigZ], lw = 1, ls='--', c='cyan')
+        ax.set_xlim(flin, 1.01*fBlazhkoPeakZ)
+    else:
+        ax.plot([flin+0.5*(fBlazhkoPeakZ-fztf), fztf*fac], [noise5sigZ, noise5sigZ], lw = 1, ls='--', c='cyan')
+        ax.set_xlim(fztf, fztf*fac)
 
     ax.yaxis.set_major_locator(plt.MaxNLocator(4))
 
@@ -636,32 +684,130 @@ def plotBlazhkoPeaksLINEAR(id0, fL, pL, fac=1.008, plotSave=False, verbose=True)
         plt.savefig(plotName, dpi=600)
         print('saved plot as:', plotName) 
     plt.show()     
-    return fBlazhkoPeak   
+    return   
 
-## plot LINEAR light curve and mark seasons
-def plotLINEARmarkSeasons(id0, LINEARlightcurves):
-    tL, mL, mLerr = LINEARlightcurves[id0].T
-    fig, ax = plt.subplots()
-    ax.errorbar(tL, mL, mLerr, fmt='.b', ecolor='blue')
-    ax.set(xlabel='Time (days)', ylabel='LINEAR magnitude', title='LINEAR object {0}'.format(id0))
-    ax.invert_yaxis()
-    plt.xlim(np.min(tL)-200, np.max(tL)+200)
+def plotLINEARmarkSeasons(Lid, ztf_data, order, LINEARlightcurves):
+    tL, mL, mLerr = LINEARlightcurves[Lid].T
+    fig, ax = plt.subplots(1,2, figsize=(32,8))   
+    ax[0].set_ylim(np.min(mL)-0.3, np.max(mL)+0.3)
+    ax[0].errorbar(tL, mL, mLerr, fmt='.b', ecolor='blue')
+    ax[0].set(xlabel='Time (days)', ylabel='LINEAR magnitude', title='LINEAR object {0}'.format(Lid))
+    ax[0].invert_yaxis()
+    ax[0].set_xlim(np.min(tL)-200, np.max(tL)+200)
+
+    redL = 0
 
     for s in range(1, 8):
         tS = 52550 + (s-1)*365
-        ax.plot([tS, tS], [np.min(mL)-0.1, np.max(mL)+0.1], c='r')
+        ax[0].plot([tS, tS], [np.min(mL)-0.1, np.max(mL)-1.3], c='r')
+        if tS>np.min(tL)-200 and tS<np.max(tL)+200:
+            redL += 1
+
+    tZ, mZ, meZ = ztf_data[order][1][0], ztf_data[order][1][1], ztf_data[order][1][2]
+    ax[1].set_ylim(np.min(mZ)-0.3, np.max(mZ)+0.3)
+    ax[1].errorbar(tZ, mZ, meZ, fmt='.b', ecolor='blue')
+    ax[1].set(xlabel='Time (days)', ylabel='ZTF magnitude', title='ZTF object {0}'.format(order))
+    ax[1].invert_yaxis()
+    ax[1].set_xlim(np.min(tZ)-200, np.max(tZ)+200)
+
+    redZ = 0
+
+    for r in range(1, 8):
+        tSZ = 59100 + (r-1)*365
+        ax[1].plot([tSZ, tSZ], [np.min(mZ)-0.1, np.max(mZ)+0.1], c='r')
+        if tSZ>np.min(tZ)-200 and tSZ<np.max(tZ)+200:
+            redZ += 1
+    plt.show()   
+      
+    return redL, redZ
+
+def makeLCplotBySeason(Lid, L1, tL, L2, tZ, redL, redZ, plotrootname='LCplotBySeason', plotSave=False):
+    
+    fig = plt.figure(figsize=(32, 30))
+    fig.subplots_adjust(hspace=0.2, bottom=0.06, top=0.94, left=0.12, right=0.94)
+    
+    fig.suptitle('Seasons for:'+str(Lid), fontsize=30)
+    
+    def plotPanelL(ax, L1, season):
+        ax.set(xlabel='phase', ylabel='normalized phased light curve')
+        ax.set_xlim(-0.1, 1.1)
+        ax.set_ylim(1.3, -0.4)
+        # fit for Plinear
+        ax.plot(L1['modelPhaseGrid'], L1['modTemplate'], 'red', markeredgecolor='red', lw=1, fillstyle='top', linestyle='dashed')
+    
+        # data
+        xx, yy, zz, ww = sort4arr(L1['dataPhasedTime'], L1['dataTemplate'], L1['dataTemplateErr'], tL)
+        tSmin = 52520 + (season-1)*365
+        tSmax = 52520 + season*365
+        xxS = xx[(ww>tSmin)&(ww<tSmax)]
+        yyS = yy[(ww>tSmin)&(ww<tSmax)]
+        zzS = zz[(ww>tSmin)&(ww<tSmax)]
+        wwS = ww[(ww>tSmin)&(ww<tSmax)]
+        ax.errorbar(xxS, yyS, zzS, fmt='.b', ecolor='blue', lw=1, ms=4, capsize=1.5, alpha=0.3)
+        textString = "LINEAR season " + str(season)
+        ax.text(0.03, 0.96, textString, ha='left', va='top', transform=ax.transAxes)
+        textString = "MJD=" + str(tSmin) + ' to ' + str(tSmax)
+        ax.text(0.53, 0.96, textString, ha='left', va='top', transform=ax.transAxes)
+
+        
+    # plot each season separately 
+    for season in range(1,redL):
+        # plot the power spectrum
+        ax = fig.add_subplot(5, 3, season)
+        plotPanelL(ax, L1, season)
+        if (season==1):
+            ax.set(title='LINEAR object {0}'.format(Lid))
+
+    # =======
+    # ZTF
+    # =======
+
+    def plotPanelZ(ax, L2, seasonZ):
+        ax.set(xlabel='phase', ylabel='normalized phased light curve')
+        ax.set_xlim(-0.1, 1.1)
+        ax.set_ylim(1.3, -0.4)
+        # fit for Plinear
+        ax.plot(L2['modelPhaseGrid'], L2['modTemplate'], 'red', markeredgecolor='red', lw=1, fillstyle='top', linestyle='dashed')
+    
+        # data
+        xx, yy, zz, ww = sort4arr(L2['dataPhasedTime'], L2['dataTemplate'], L2['dataTemplateErr'], tZ)
+        tSmin = 59100 + (seasonZ-1-6)*365
+        tSmax = 59100 + (seasonZ-6)*365
+        xxS = xx[(ww>tSmin)&(ww<tSmax)]
+        yyS = yy[(ww>tSmin)&(ww<tSmax)]
+        zzS = zz[(ww>tSmin)&(ww<tSmax)]
+        wwS = ww[(ww>tSmin)&(ww<tSmax)]
+        ax.errorbar(xxS, yyS, zzS, fmt='.b', ecolor='blue', lw=1, ms=4, capsize=1.5, alpha=0.3)
+        textString = "ZTF season " + str(seasonZ-6)
+        ax.text(0.03, 0.96, textString, ha='left', va='top', transform=ax.transAxes)
+        textString = "MJD=" + str(tSmin) + ' to ' + str(tSmax)
+        ax.text(0.53, 0.96, textString, ha='left', va='top', transform=ax.transAxes)
+
+        
+    # plot each season separately 
+    for seasonZ in range(redL,redL+redZ-1):
+        # plot the power spectrum
+        ax = fig.add_subplot(5, 3, seasonZ)
+        plotPanelZ(ax, L2, seasonZ)
+        if (seasonZ==1):
+            ax.set(title='ZTF object {0}'.format(Lid))
+
+    if plotSave:
+        plotName = plotrootname + '.png'
+        plt.savefig(plotName, dpi=600)
+        print('saved plot as:', plotName) 
     plt.show()     
     return
 
-# plot standard plots to support visual analysis
-def plotAll(idList, LINEARmetadata, LINEARlightcurves, verbose=True):
-
-    for id0 in idList:
-        Pcomparison, fL, pL, LINEAR_Plinear = LINEARLS(LINEARmetadata, LINEARlightcurves, id0) 
-        fBlazhkoPeak = plotBlazhkoPeaksLINEAR(id0, fL, pL, fac=1.008, plotSave=False, verbose=verbose)
-        plotLINEARmarkSeasons(id0, LINEARlightcurves)
-        makeLCplotBySeason(id0, LINEAR_Plinear)
-    return fL[np.argmax(pL)], fBlazhkoPeak
+def plotAll(Lid, orderlc, o, L1, L2, blazhko_can, fL, pL, fZ, pZ, fFoldedL, fFoldedZ, pFoldedL, pFoldedZ, data, tL, tZ,ztf_data):
+    #print('Lid:', Lid)
+    #print('Order of lc:', orderlc)
+    #print('Order (list):', o)
+    makeLCplot_info(L1, L2, blazhko_can, o, Lid)
+    plotBlazhkoPeaksLINEAR(Lid, o, fL, pL, fZ, pZ, fFoldedL, pFoldedL, fFoldedZ, pFoldedZ, blazhko_can, fac=1.008, plotSave=False, verbose=True)
+    redLin, redZtf = plotLINEARmarkSeasons(Lid, ztf_data, orderlc, data)
+    makeLCplotBySeason(Lid, L1, tL, L2, tZ, redLin, redZtf)
+    return
 
 # BLAZHKO EFFECT CANDIDATES
 # =============================
@@ -774,46 +920,71 @@ class BlazhkoAnalyzer:
     '''
 
     # initialization of the class
-    def __init__(self, length, data_lc, save_data, ids, period, fit):
+    def __init__(self, length, data_lc, save_data, ids, fit, ZTFd, periodogr, data):
         # initialize every variable in use for this class
         self.length = length
         self.data_lc = data_lc
         self.save_data = save_data
         self.ids = ids
-        self.period = period
         self.fit = fit
+        self.ZTFd = ZTFd
+        self.periodogr = periodogr
+        self.data = data
         # used for the for loop
         self.current_i = None
 
-        # initialize plotting 
+        # Initialize plotting 
         self.gen = self.plot_light_curves()
-        # initalize window for where to show plot
+        # Initialize window for where to show plot
         self.output_plot = widgets.Output()
         
-        # Buttons initialization
+        # Buttons initialization and assignment
         self.button_keeping = widgets.Button(description='Keep')
         self.button_continue = widgets.Button(description='Continue')
-        
-        # Assigning functions to the buttons
         self.button_keeping.on_click(self.on_keep_click)
         self.button_continue.on_click(self.on_continue_click)
         
-        # display buttons and plot
+        # Display buttons
         display(self.output_plot, self.button_keeping, self.button_continue)
-        
-        # starting the for loop
-        self.on_continue_click(None)
-    
+
+    #print('About to plot')
     # DEFINING NECESSARY FUNCTIONS
     # -------
     def plot_light_curves(self):
         '''
         This function plots the light curve data, periodograms and displays important information.
         '''
+        print('Engaging in function')
         for i in range(self.length):
             self.current_i = i # counter for the for loop
             LID = self.ids[i]
-            blazhko_analysis(self.data_lc, Lid=LID, order=i, PD=self.period, fits=self.fit, name=str(LID)) # plot
+
+            for n, j in enumerate(self.fit):
+                if j[0]==LID:
+                    break
+            for o, k in enumerate(self.periodogr):
+                if k[0]==LID:
+                    break
+
+            L1 = fits[n][1][0]
+            L2 = fits[n][1][2]
+            fL = periodogr[o][1][0]
+            pL = periodogr[o][1][1]
+            fZ = periodogr[o][2][0]
+            pZ = periodogr[o][2][1]
+
+            fFoldedL = periodogr[o][1][2]
+            pFoldedL = periodogr[o][1][3]
+            fFoldedZ = periodogr[o][2][2]
+            pFoldedZ = periodogr[o][2][3]
+
+            lc = self.data.get_light_curve(LID)
+            tL = lc.T[0]
+            tZ = self.ZTFd[n][1][0].to_numpy()
+                        
+            #with self.output_plot:
+                #clear_output(wait=True) # Clear the previous output inside the loop
+            plotAll(LID, n, i, L1, L2, self.data_lc, fL, pL, fZ, pZ, fFoldedL, fFoldedZ, pFoldedL, pFoldedZ, self.data, tL, tZ, self.ZTFd) # plot
             yield # don't continue until button is pressed
 
     def on_continue_click(self, b):
@@ -841,4 +1012,3 @@ class BlazhkoAnalyzer:
     # Saving the save_data dataframe for outside the class
     def get_save_data(self):
         return self.save_data
-
