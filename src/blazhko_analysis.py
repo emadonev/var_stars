@@ -2,24 +2,15 @@
 # --------------------
 
 # AstroML & Astropy
-from astroML.datasets import fetch_LINEAR_sample
 from astropy.timeseries import LombScargle
-from astroML.datasets import fetch_LINEAR_sample
-from astroML.datasets import fetch_LINEAR_geneva
-from astropy.timeseries import TimeSeries
-from astropy.table import Table
 from astroML.time_series import MultiTermFit
 
 # ZTF
-from ztfquery import lightcurve
+#from ztfquery import lightcurve
 
 # Basic libraries
-import random
-import pickle
-import os
 import sys
 from tqdm import tqdm
-from concurrent.futures import ProcessPoolExecutor
 
 # Plotting
 from matplotlib import pyplot as plt
@@ -28,27 +19,22 @@ import matplotlib.colors as mcolors
 from matplotlib.font_manager import FontProperties
 import ipywidgets as widgets
 from IPython.display import display, clear_output
-from ipywidgets import interact, interactive, fixed, interact_manual
 
 # DataFrame analysis
 import pandas as pd
-import dask.dataframe as dd 
+#import dask.dataframe as dd 
 
 # Math libraries
 import numpy as np
-import scipy as sc
-from scipy.stats import norm
-from scipy.signal import find_peaks
-from array import array
 # Importing custom libraries
 # ----------------------------
 sys.path.insert(0,'../src/')
-from ZTF_data import *
-from config import*
-from descriptive_stats import *
-from plots import *
-from selection import *
-from lc_analysis import *
+#from ZTF_data import *
+#from config import*
+#from descriptive_stats import *
+#from plots import *
+#rom selection import *
+#from lc_analysis import *
 
 '''
 This Python file contains all the functions and classes necessary to determine Blazhko effect candidates from 
@@ -225,6 +211,7 @@ def sort3arr(a, b, c):
 
     ind = np.argsort(a)
     return a[ind], b[ind], c[ind]
+
 def sort4arr(a, b, c, d):
     '''
     This function sorts 4 arrays by their indexes.
@@ -491,7 +478,7 @@ def RR_lyrae_analysis(end, i, Lids, ztfdata, lc_analysis, ZTF_data_best, fits, p
 
 # LATER ANALYSIS
 # ---------------
-def makeLCplot_info(L1, L2, dataset, order, Lid, plotname='LCplot', plotSave=False):
+def makeLCplot_info(L1, L2, dataset, order, Lid, dataL, plotname='LCplot', plotSave=False):
     '''
     This function plots a single phase of a light curve with fit for both LINEAR and ZTF data, along with 
     a separate box for text data.
@@ -529,17 +516,17 @@ def makeLCplot_info(L1, L2, dataset, order, Lid, plotname='LCplot', plotSave=Fal
     ax[2].text(0, 6, 'LINEAR period chi: '+str(dataset['L_chi2dof'][order])+', LINEAR mean period chi: '+str(dataset['Lmean_chi2dof'][order]),fontsize=15)
     ax[2].text(0, 5, 'ZTF period chi: '+str(dataset['Zchi2dof'][order])+', ZTF mean period chi: '+str(dataset['Zmean_chi2dof'][order]),fontsize=15)
     ax[2].text(0, 4, 'LINEAR period: '+str(dataset['Plinear'][order])+', ZTF period: '+str(dataset['Pztf'][order])+', Period difference: '+str(dataset['dP'][order]),fontsize=15)
-    ax[2].text(0, 3, 'Average LINEAR magnitude: '+str(round(np.mean(data.get_light_curve(Lid).T[1]), 2)),fontsize=15)
+    ax[2].text(0, 3, 'Average LINEAR magnitude: '+str(round(np.mean(dataL.get_light_curve(Lid).T[1]), 2)),fontsize=15)
     ax[2].text(0, 2, 'LINEAR amplitude:'+str(dataset['Lampl'][order])+', ZTF amplitude:'+str(dataset['Zampl'][order]),fontsize=15)
     ax[2].grid(False)
     ax[2].axis('off')
-
+    plt.show()
     #print('Finished plotting!')
     
     if plotSave:
         plotName = plotname + '.png'
         plt.savefig('../images_blazhko/'+plotName, dpi=600)
-    return
+    #return
 
 def plotBlazhkoPeaksLINEAR(Lid, order, fL, pL, fZ, pZ, fFoldedL, pFoldedL, fFoldedZ, pFoldedZ, dataset, fac=1.008, plotSave=False, verbose=False):
     flin = fL[np.argmax(pL)]
@@ -699,7 +686,8 @@ def plotLINEARmarkSeasons(Lid, ztf_data, order, LINEARlightcurves):
 
     for s in range(1, 8):
         tS = 52550 + (s-1)*365
-        ax[0].plot([tS, tS], [np.min(mL)-0.1, np.max(mL)-1.3], c='r')
+        per = np.median(mL)
+        ax[0].plot([tS, tS], [per-per*0.05, per+per*0.05], c='r')
         if tS>np.min(tL)-200 and tS<np.max(tL)+200:
             redL += 1
 
@@ -713,7 +701,7 @@ def plotLINEARmarkSeasons(Lid, ztf_data, order, LINEARlightcurves):
     redZ = 0
 
     for r in range(1, 8):
-        tSZ = 59100 + (r-1)*365
+        tSZ = (np.min(tZ)-50) + (r-1)*365
         ax[1].plot([tSZ, tSZ], [np.min(mZ)-0.1, np.max(mZ)+0.1], c='r')
         if tSZ>np.min(tZ)-200 and tSZ<np.max(tZ)+200:
             redZ += 1
@@ -771,8 +759,8 @@ def makeLCplotBySeason(Lid, L1, tL, L2, tZ, redL, redZ, plotrootname='LCplotBySe
     
         # data
         xx, yy, zz, ww = sort4arr(L2['dataPhasedTime'], L2['dataTemplate'], L2['dataTemplateErr'], tZ)
-        tSmin = 59100 + (seasonZ-1-6)*365
-        tSmax = 59100 + (seasonZ-6)*365
+        tSmin = (np.min(tZ)-50) + (seasonZ-1-6)*365
+        tSmax = (np.min(tZ)-50) + (seasonZ-6)*365
         xxS = xx[(ww>tSmin)&(ww<tSmax)]
         yyS = yy[(ww>tSmin)&(ww<tSmax)]
         zzS = zz[(ww>tSmin)&(ww<tSmax)]
@@ -803,7 +791,7 @@ def plotAll(Lid, orderlc, o, L1, L2, blazhko_can, fL, pL, fZ, pZ, fFoldedL, fFol
     #print('Lid:', Lid)
     #print('Order of lc:', orderlc)
     #print('Order (list):', o)
-    makeLCplot_info(L1, L2, blazhko_can, o, Lid)
+    makeLCplot_info(L1, L2, blazhko_can, o, Lid, data)
     plotBlazhkoPeaksLINEAR(Lid, o, fL, pL, fZ, pZ, fFoldedL, pFoldedL, fFoldedZ, pFoldedZ, blazhko_can, fac=1.008, plotSave=False, verbose=True)
     redLin, redZtf = plotLINEARmarkSeasons(Lid, ztf_data, orderlc, data)
     makeLCplotBySeason(Lid, L1, tL, L2, tZ, redLin, redZtf)
@@ -906,109 +894,86 @@ def blazhko_determine(df, dfnew):
 # BUILDING THE VISUAL INTERFACE
 # ================================
 # Building a class for the visual interface
-class BlazhkoAnalyzer:
-    '''
-    This class builds a customizable interface for visual inspection of BE candidates.
+class BE_analyzer:
+    def __init__(self, linear_ids, database_lightc, be_cand, lightc_fits, lightc_per, Zdata, Ldata):
+        self.linear_ids = linear_ids
+        self.database_lightc = database_lightc
+        self.be_cand = be_cand
+        self.lightc_fits = lightc_fits
+        self.lightc_per = lightc_per
+        self.Zdata = Zdata
+        self.Ldata = Ldata
 
-    INPUTS:
-        length(int) = how large is your dataset in length
-        data_lc(dataframe) = the dataset we are inspecting
-        save_data(dataframe) = where to send BE visual candidates
-        ids(list) = list of LINEAR ids
-        period(array) = array of periodograms
-        fit(array) = array of fits for light curves
-    '''
-
-    # initialization of the class
-    def __init__(self, length, data_lc, save_data, ids, fit, ZTFd, periodogr, data):
-        # initialize every variable in use for this class
-        self.length = length
-        self.data_lc = data_lc
-        self.save_data = save_data
-        self.ids = ids
-        self.fit = fit
-        self.ZTFd = ZTFd
-        self.periodogr = periodogr
-        self.data = data
-        # used for the for loop
         self.current_i = None
-
-        # Initialize plotting 
-        self.gen = self.plot_light_curves()
-        # Initialize window for where to show plot
-        self.output_plot = widgets.Output()
+        self.generate = self.plot_BE_data()
         
-        # Buttons initialization and assignment
-        self.button_keeping = widgets.Button(description='Keep')
-        self.button_continue = widgets.Button(description='Continue')
-        self.button_keeping.on_click(self.on_keep_click)
-        self.button_continue.on_click(self.on_continue_click)
+        self.keep_button = widgets.Button(description='KEEP')
+        self.con_button = widgets.Button(description='CONTINUE')
+        self.keep_button.on_click(self.click_keep)
+        self.con_button.on_click(self.click_con)
         
-        # Display buttons
-        display(self.output_plot, self.button_keeping, self.button_continue)
+        self.output = widgets.Output()
+        #display(self.output, self.keep_button, self.con_button)
 
-    #print('About to plot')
-    # DEFINING NECESSARY FUNCTIONS
-    # -------
-    def plot_light_curves(self):
-        '''
-        This function plots the light curve data, periodograms and displays important information.
-        '''
-        print('Engaging in function')
-        for i in range(self.length):
-            self.current_i = i # counter for the for loop
-            LID = self.ids[i]
 
-            for n, j in enumerate(self.fit):
-                if j[0]==LID:
-                    break
-            for o, k in enumerate(self.periodogr):
-                if k[0]==LID:
-                    break
+    def plot_BE_data(self):
+        #print('Engaging in plotting!')
+        for i in range(len(self.linear_ids)):
+            self.current_i = i
+            #print('My current i:', self.current_i)
+            LID = self.linear_ids[self.current_i]
+            for n, j in enumerate(self.lightc_fits):
+                    if j[0]==LID:
+                        break
+            L1 = self.lightc_fits[n][1][0]
+            L2 = self.lightc_fits[n][1][2]
 
-            L1 = fits[n][1][0]
-            L2 = fits[n][1][2]
-            fL = periodogr[o][1][0]
-            pL = periodogr[o][1][1]
-            fZ = periodogr[o][2][0]
-            pZ = periodogr[o][2][1]
+            for o, k in enumerate(self.lightc_per):
+                    if k[0]==LID:
+                        break
 
-            fFoldedL = periodogr[o][1][2]
-            pFoldedL = periodogr[o][1][3]
-            fFoldedZ = periodogr[o][2][2]
-            pFoldedZ = periodogr[o][2][3]
+            fL = self.lightc_per[o][1][0]
+            pL = self.lightc_per[o][1][1]
+            fZ = self.lightc_per[o][2][0]
+            pZ = self.lightc_per[o][2][1]
 
-            lc = self.data.get_light_curve(LID)
+            fFoldedL = self.lightc_per[o][1][2]
+            pFoldedL = self.lightc_per[o][1][3]
+            fFoldedZ = self.lightc_per[o][2][2]
+            pFoldedZ = self.lightc_per[o][2][3]
+
+            lc = self.Ldata.get_light_curve(LID)
             tL = lc.T[0]
-            tZ = self.ZTFd[n][1][0].to_numpy()
-                        
-            #with self.output_plot:
-                #clear_output(wait=True) # Clear the previous output inside the loop
-            plotAll(LID, n, i, L1, L2, self.data_lc, fL, pL, fZ, pZ, fFoldedL, fFoldedZ, pFoldedL, pFoldedZ, self.data, tL, tZ, self.ZTFd) # plot
-            yield # don't continue until button is pressed
+            tZ = self.Zdata[n][1][0].to_numpy()
 
-    def on_continue_click(self, b):
-        '''
-        This button defines what happens when the CONTINUE button is clicked: the program moves
-        on to the next light curve.
-        '''
-        with self.output_plot:
-            clear_output(wait=True) # clear the previous output
-            try:
-                next(self.gen) # generate the next plot and update current_i
-            except StopIteration: # when the for loop is finished, disable the button
-                print("No more plots.")
-                self.button_continue.disabled = True
+            #print('Starting to plot!')
+            #makeLCplot_info(L1, L2, self.database_lightc, i, LID, self.Ldata)
+            plotAll(LID, n, i, L1, L2, self.database_lightc, fL, pL, fZ, pZ, fFoldedL, fFoldedZ, pFoldedL, pFoldedZ, self.Ldata, tL, tZ, self.Zdata)
+            
+            yield
 
-    def on_keep_click(self, b):
-        '''
-        This function defines what happens when the KEEP button is clicked: the program
-        saves the specific row or light curve information into the save_data dataframe, for later use.
-        '''
-        row = pd.DataFrame(self.data_lc.iloc[[int(self.current_i)]]) # assign the current row we are analyzing
+    def click_keep(self, b):
+        row = pd.DataFrame(self.database_lightc.iloc[[int(self.current_i)]]) # assign the current row we are analyzing
         # concatenate that row with the save_data dataframe
-        self.save_data = pd.concat([self.save_data, row.reset_index(drop=True)], ignore_index=True, axis=0)
+        self.be_cand = pd.concat([self.be_cand, row.reset_index(drop=True)], ignore_index=True, axis=0)
 
-    # Saving the save_data dataframe for outside the class
+    def click_con(self, b):
+       #print('Button clicked!')
+       with self.output:
+        clear_output(wait=True)  # clear the previous output
+        #print('Clearing output!')
+        try:
+            #print('Next image generated!')
+            next(self.generate)  # generate the next plot and update current_i
+        except StopIteration:  # when the for loop is finished, disable the button
+            print("No more plots.")
+            self.con_button.disabled = True
+    
     def get_save_data(self):
-        return self.save_data
+        return self.be_cand
+    
+    def display_interface(self):
+        # Create a layout for the widgets
+        self.layout = widgets.VBox([self.output, self.keep_button, self.con_button])
+        # Display the layout
+        display(self.layout)
