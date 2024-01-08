@@ -478,7 +478,7 @@ def RR_lyrae_analysis(end, i, Lids, ztfdata, lc_analysis, ZTF_data_best, fits, p
 
 # LATER ANALYSIS
 # ---------------
-def makeLCplot_info(L1, L2, dataset, order, Lid, dataL, plotname='LCplot', plotSave=False):
+def makeLCplot_info(L1, L2, dataset, order, Lid, dataL, total_num, plotname='LCplot', plotSave=False):
     '''
     This function plots a single phase of a light curve with fit for both LINEAR and ZTF data, along with 
     a separate box for text data.
@@ -489,7 +489,7 @@ def makeLCplot_info(L1, L2, dataset, order, Lid, dataL, plotname='LCplot', plotS
     #print('Initializing plot')
     fig, ax = plt.subplots(1,3, figsize=(32,8))   
     #print('Currently plotting first thing,', order)
-    fig.suptitle('LINEAR ID:'+str(Lid), fontsize=30)
+    fig.suptitle('STAR '+str(order+1)+' from '+str(total_num), fontsize=30)
     fig.set_facecolor('white')
 
     ax[0].set(xlabel='data phased with best-fit LINEAR period', ylabel='LINEAR normalized light curve')
@@ -787,11 +787,11 @@ def makeLCplotBySeason(Lid, L1, tL, L2, tZ, redL, redZ, plotrootname='LCplotBySe
     plt.show()     
     return
 
-def plotAll(Lid, orderlc, o, L1, L2, blazhko_can, fL, pL, fZ, pZ, fFoldedL, fFoldedZ, pFoldedL, pFoldedZ, data, tL, tZ,ztf_data):
+def plotAll(Lid, orderlc, o, tot, L1, L2, blazhko_can, fL, pL, fZ, pZ, fFoldedL, fFoldedZ, pFoldedL, pFoldedZ, data, tL, tZ,ztf_data):
     #print('Lid:', Lid)
     #print('Order of lc:', orderlc)
     #print('Order (list):', o)
-    makeLCplot_info(L1, L2, blazhko_can, o, Lid, data)
+    makeLCplot_info(L1, L2, blazhko_can, o, Lid, data, tot)
     plotBlazhkoPeaksLINEAR(Lid, o, fL, pL, fZ, pZ, fFoldedL, pFoldedL, fFoldedZ, pFoldedZ, blazhko_can, fac=1.008, plotSave=False, verbose=True)
     redLin, redZtf = plotLINEARmarkSeasons(Lid, ztf_data, orderlc, data)
     makeLCplotBySeason(Lid, L1, tL, L2, tZ, redLin, redZtf)
@@ -857,7 +857,7 @@ def blazhko_determine(df, dfnew):
 
                         # ---
 
-                        # PERIOD
+                        # PERIOD 
                         if period > 4e-5 and period < 0.001: p_score += 2
                         if period > 0.001: p_score += 4
                         
@@ -879,6 +879,11 @@ def blazhko_determine(df, dfnew):
                         if ampl>0.05 and ampl<0.15: amp_score += 1
                         if ampl>0.15 and ampl<2: amp_score += 2
 
+                        if amp_score > p_score:
+                            df.loc[i, 'period_vs_amp'] = 'amp'
+                        else:
+                            df.loc[i, 'period_vs_amp'] = 'period'
+
                         # TOTAL SCORE
                         score = p_score + chi_score + amp_score
                         df.loc[i, 'BE_score'] = score
@@ -895,7 +900,7 @@ def blazhko_determine(df, dfnew):
 # ================================
 # Building a class for the visual interface
 class BE_analyzer:
-    def __init__(self, linear_ids, database_lightc, be_cand, lightc_fits, lightc_per, Zdata, Ldata):
+    def __init__(self, linear_ids, tot, database_lightc, be_cand, lightc_fits, lightc_per, Zdata, Ldata):
         self.linear_ids = linear_ids
         self.database_lightc = database_lightc
         self.be_cand = be_cand
@@ -903,6 +908,7 @@ class BE_analyzer:
         self.lightc_per = lightc_per
         self.Zdata = Zdata
         self.Ldata = Ldata
+        self.total_num = tot
 
         self.current_i = None
         self.generate = self.plot_BE_data()
@@ -948,7 +954,7 @@ class BE_analyzer:
 
             #print('Starting to plot!')
             #makeLCplot_info(L1, L2, self.database_lightc, i, LID, self.Ldata)
-            plotAll(LID, n, i, L1, L2, self.database_lightc, fL, pL, fZ, pZ, fFoldedL, fFoldedZ, pFoldedL, pFoldedZ, self.Ldata, tL, tZ, self.Zdata)
+            plotAll(LID, n, i, self.total_num, L1, L2, self.database_lightc, fL, pL, fZ, pZ, fFoldedL, fFoldedZ, pFoldedL, pFoldedZ, self.Ldata, tL, tZ, self.Zdata)
             
             yield
 
@@ -956,6 +962,16 @@ class BE_analyzer:
         row = pd.DataFrame(self.database_lightc.iloc[[int(self.current_i)]]) # assign the current row we are analyzing
         # concatenate that row with the save_data dataframe
         self.be_cand = pd.concat([self.be_cand, row.reset_index(drop=True)], ignore_index=True, axis=0)
+
+        with self.output:
+            clear_output(wait=True)  # clear the previous output
+            #print('Clearing output!')
+            try:
+                #print('Next image generated!')
+                next(self.generate)  # generate the next plot and update current_i
+            except StopIteration:  # when the for loop is finished, disable the button
+                print("No more plots.")
+                self.con_button.disabled = True
 
     def click_con(self, b):
        #print('Button clicked!')
