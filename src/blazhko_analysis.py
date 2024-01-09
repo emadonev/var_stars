@@ -518,8 +518,8 @@ def makeLCplot_info(L1, L2, dataset, order, Lid, dataL, total_num, plotname='LCp
     ax[2].text(0, 4, 'LINEAR period: '+str(dataset['Plinear'][order])+', ZTF period: '+str(dataset['Pztf'][order])+', Period difference: '+str(dataset['dP'][order]),fontsize=15)
     ax[2].text(0, 3, 'Average LINEAR magnitude: '+str(round(np.mean(dataL.get_light_curve(Lid).T[1]), 2)),fontsize=15)
     ax[2].text(0, 2, 'LINEAR amplitude:'+str(dataset['Lampl'][order])+', ZTF amplitude:'+str(dataset['Zampl'][order]),fontsize=15)
-    #if np.isnan(dataset['period_vs_amp'][order]) != True:
-      #  ax[2].text(0, 1, 'This star has a stronger '+str(dataset['period_vs_amp'][order])+' score',fontsize=15)
+    if dataset['period_vs_amp'][order] != np.nan:
+        ax[2].text(0, 1, '- this star has a stronger '+str(dataset['period_vs_amp'][order])+' score',fontsize=15)
 
     ax[2].grid(False)
     ax[2].axis('off')
