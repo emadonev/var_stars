@@ -835,6 +835,9 @@ def blazhko_determine(df, dfnew):
                     ZTF_pd_sig = (df['BpowerRatioZ'][i]>0.05)&(df['BsignificanceZ'][i]>5)
                     #---
                     BE = 0
+                    if ((LINEAR_pd_period&LINEAR_pd_pB&LINEAR_pd_sig)&(ZTF_pd_period&ZTF_pd_pB&ZTF_pd_sig)):
+                        BE += 1
+                        df.loc[i, 'IndicatorType'] = 'LZ'
                     if (LINEAR_pd_period&LINEAR_pd_pB&LINEAR_pd_sig):
                         BE += 1
                         df.loc[i, 'IndicatorType'] = 'L'
@@ -865,6 +868,12 @@ def blazhko_determine(df, dfnew):
                         if period > 0.001: p_score += 4
                         
                         # CHI
+                        if (chiZ>2.5 and chiZ<4.5)and(chiL > 2.5 and chiL < 4.5): 
+                            chi_score += 4
+                            df.loc[i, 'ChiType'] = 'LZ'
+                        if (chiL>5)and(chiZ>5):
+                            chi_score += 6
+                            df.loc[i, 'ChiType'] = 'LZ'
                         if (chiL > 2.5 and chiL < 4.5):
                             chi_score += 2
                             df.loc[i, 'ChiType'] = 'L'
