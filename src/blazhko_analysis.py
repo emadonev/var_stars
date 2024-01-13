@@ -131,25 +131,7 @@ def getCoordinatesFromLINEARid(tbl, id0):
     return tbl[tbl['id'].astype(str)==id0]['ra'][0], tbl[tbl['id'].astype(str)==id0]['dec'][0]
 
 # retrieve ZTF data for a single object specified by (RA, Dec)
-def getZTFlightcurve(ra, dec, radius=3.0):
-    '''
-    This function uses the right ascension and declination coordinates to find LINEAR counterparts in ZTF data.
 
-    Arguments:
-        ra(float): right ascension values
-        da(float): declination values
-        radius(float): radius to search the sky with
-    '''
-    # matching radius is given in arcsec
-    try:
-       lcq = lightcurve.LCQuery()
-       res = lcq.from_position(ra, dec, radius)
-       ZTFdata = res.data[['mjd', 'mag', 'magerr', 'catflags', 'filtercode']]
-       # M. Graham recommends to get rid of obvious spurious points
-       ZTFdata = ZTFdata.loc[ZTFdata['catflags'] < 32768]
-    except:
-        ZTFdata = pd.DataFrame(())
-    return ZTFdata
 
 def ZTFs(ZTFdata, Lid, lsPS=True, verbose=False):
     """
