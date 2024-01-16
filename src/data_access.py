@@ -152,7 +152,6 @@ def txt_to_pandas(NAME, colnames):
 
 # ZTF DATA ACCESS
 # ==============
-
 def getZTFlightcurve(ra, dec, radius=3.0):
     '''
     This function uses the right ascension and declination coordinates to find LINEAR counterparts in ZTF data.
@@ -169,7 +168,6 @@ def getZTFlightcurve(ra, dec, radius=3.0):
        ZTFdata = res.data[['mjd', 'mag', 'magerr', 'catflags', 'filtercode']]
        # M. Graham recommends to get rid of obvious spurious points
        ZTFdata = ZTFdata.loc[ZTFdata['catflags'] < 32768]
-       ZTFdata = ZTFdata.drop(['catflags'])
     except:
         ZTFdata = pd.DataFrame(())
     return ZTFdata
