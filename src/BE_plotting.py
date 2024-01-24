@@ -46,7 +46,8 @@ def makeLCplot_info(L1, L2, dataset, order, Lid, dataL, total_num, plotname='LCp
     fig.suptitle('STAR '+str(order+1)+' from '+str(total_num), fontsize=30, fontproperties=font)
     fig.set_facecolor('white')
 
-    ax[0].set(xlabel='data phased with best-fit LINEAR period', ylabel='LINEAR normalized light curve',fontproperties=font, fontsize=14)
+    ax[0].set_xlabel('data phased with best-fit LINEAR period', fontproperties=font, fontsize=14)
+    ax[0].set_ylabel('LINEAR normalized light curve', fontproperties=font, fontsize=14)
     ax[0].set_xlim(-0.1, 1.1)
     ax[0].set_ylim(1.3, -0.3)
     # data
@@ -55,7 +56,8 @@ def makeLCplot_info(L1, L2, dataset, order, Lid, dataL, total_num, plotname='LCp
     # fit for Plinear
     ax[0].plot(L1['modelPhaseGrid'], L1['modTemplate'], pink, markeredgecolor=pink, lw=1, fillstyle='top', linestyle='dashed')
 
-    ax[1].set(xlabel='data phased with best-fit ZTF period', ylabel='ZTF normalized light curve',fontproperties=font, fontsize=14)
+    ax[1].set_xlabel('data phased with best-fit ZTF period', fontproperties=font, fontsize=14)
+    ax[1].set_ylabel('ZTF normalized light curve', fontproperties=font, fontsize=14)
     ax[1].set_xlim(-0.1, 1.1)
     ax[1].set_ylim(1.3, -0.3)
     # data
@@ -234,8 +236,10 @@ def plotLINEARmarkSeasons(Lid, ztf_data, order, LINEARlightcurves):
     tL, mL, mLerr = LINEARlightcurves[Lid].T
     fig, ax = plt.subplots(1,2, figsize=(32,8))   
     ax[0].set_ylim(np.min(mL)-0.3, np.max(mL)+0.3)
+    ax[0].set_title('LINEAR object {0}'.format(Lid),fontproperties=font,fontsize=14)
     ax[0].errorbar(tL, mL, mLerr, fmt='.b', ecolor=blue)
-    ax[0].set(xlabel='Time (days)', ylabel='LINEAR magnitude', title='LINEAR object {0}'.format(Lid),fontproperties=font,fontsize=14)
+    ax[0].set_xlabel('Time (days)', fontproperties=font, fontsize=14)
+    ax[0].set_ylabel('LINEAR magnitude', fontproperties=font, fontsize=14)
     ax[0].invert_yaxis()
     ax[0].set_xlim(np.min(tL)-200, np.max(tL)+200)
 
@@ -251,7 +255,9 @@ def plotLINEARmarkSeasons(Lid, ztf_data, order, LINEARlightcurves):
     tZ, mZ, meZ = ztf_data[order][1][0], ztf_data[order][1][1], ztf_data[order][1][2]
     ax[1].set_ylim(np.min(mZ)-0.3, np.max(mZ)+0.3)
     ax[1].errorbar(tZ, mZ, meZ, fmt='.b', ecolor=blue)
-    ax[1].set(xlabel='Time (days)', ylabel='ZTF magnitude', title='ZTF object {0}'.format(order),fontproperties=font,fontsize=14)
+    ax[0].set_title('ZTF object {0}'.format(order),fontproperties=font,fontsize=14)
+    ax[1].set_xlabel('Time (days)', fontproperties=font, fontsize=14)
+    ax[1].set_ylabel('ZTF magnitude', fontproperties=font, fontsize=14)
     ax[1].invert_yaxis()
     ax[1].set_xlim(np.min(tZ)-200, np.max(tZ)+200)
 
@@ -274,7 +280,8 @@ def makeLCplotBySeason(Lid, L1, tL, L2, tZ, redL, redZ, plotrootname='LCplotBySe
     fig.suptitle('Seasons for:'+str(Lid), fontsize=30, fontproperties=font)
     
     def plotPanelL(ax, L1, season):
-        ax.set(xlabel='phase', ylabel='normalized phased light curve',fontproperties=font,fontsize=14)
+        ax.set_xlabel('phase', fontproperties=font, fontsize=14)
+        ax.set_ylabel('normalized phased light curve', fontproperties=font, fontsize=14)
         ax.set_xlim(-0.1, 1.1)
         ax.set_ylim(1.3, -0.4)
         # fit for Plinear
@@ -284,10 +291,11 @@ def makeLCplotBySeason(Lid, L1, tL, L2, tZ, redL, redZ, plotrootname='LCplotBySe
         xx, yy, zz, ww = sort4arr(L1['dataPhasedTime'], L1['dataTemplate'], L1['dataTemplateErr'], tL)
         tSmin = 52520 + (season-1)*365
         tSmax = 52520 + season*365
-        xxS = xx[(ww>tSmin)&(ww<tSmax)]
-        yyS = yy[(ww>tSmin)&(ww<tSmax)]
-        zzS = zz[(ww>tSmin)&(ww<tSmax)]
-        wwS = ww[(ww>tSmin)&(ww<tSmax)]
+        condition = (ww > tSmin) & (ww < tSmax)
+        xxS = xx[condition]
+        yyS = yy[condition]
+        zzS = zz[condition]
+        wwS = ww[condition]
         ax.errorbar(xxS, yyS, zzS, fmt='.b', ecolor=blue, lw=1, ms=4, capsize=1.5, alpha=0.3)
         textString = "LINEAR season " + str(season)
         ax.text(0.03, 0.96, textString, ha='left', va='top', transform=ax.transAxes, fontproperties=font,fontsize=14)
@@ -301,14 +309,15 @@ def makeLCplotBySeason(Lid, L1, tL, L2, tZ, redL, redZ, plotrootname='LCplotBySe
         ax = fig.add_subplot(5, 3, season)
         plotPanelL(ax, L1, season)
         if (season==1):
-            ax.set(title='LINEAR object {0}'.format(Lid), fontproperties=font,fontsize=18)
+            ax.set_title('LINEAR object {0}'.format(Lid), fontproperties=font,fontsize=18)
 
     # =======
     # ZTF
     # =======
 
     def plotPanelZ(ax, L2, seasonZ):
-        ax.set(xlabel='phase', ylabel='normalized phased light curve', fontproperties=font,fontsize=14)
+        ax.set_xlabel('phase', fontproperties=font, fontsize=14)
+        ax.set_ylabel('normalized phased light curve', fontproperties=font, fontsize=14)
         ax.set_xlim(-0.1, 1.1)
         ax.set_ylim(1.3, -0.4)
         # fit for Plinear
@@ -335,7 +344,7 @@ def makeLCplotBySeason(Lid, L1, tL, L2, tZ, redL, redZ, plotrootname='LCplotBySe
         ax = fig.add_subplot(5, 3, seasonZ)
         plotPanelZ(ax, L2, seasonZ)
         if (seasonZ==1):
-            ax.set(title='ZTF object {0}'.format(Lid), fontproperties=font,fontsize=18)
+            ax.set_title('ZTF object {0}'.format(Lid), fontproperties=font,fontsize=18)
 
     if plotSave:
         plotName = plotrootname + '.png'

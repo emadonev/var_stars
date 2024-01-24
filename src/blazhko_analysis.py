@@ -168,22 +168,22 @@ def blazhko_determine(df, dfnew):
                         if period > 0.001: p_score += 4
                         
                         # CHI
-                        if (chiZ>2.5 and chiZ<4.5)and(chiL > 2.5 and chiL < 4.5): 
+                        if (chiZ>=2.5 and chiZ<=4.5)and(chiL >= 2.5 and chiL <= 4.5): 
                             chi_score += 4
                             df.loc[i, 'ChiType'] = 'LZ'
-                        if (chiL>5)and(chiZ>5):
+                        if (chiL>4.5)and(chiZ>4.5):
                             chi_score += 6
                             df.loc[i, 'ChiType'] = 'LZ'
-                        if (chiL > 2.5 and chiL < 4.5):
+                        if (chiL >=2.5 and chiL <= 4.5):
                             chi_score += 2
                             df.loc[i, 'ChiType'] = 'L'
-                        if (chiZ>2.5 and chiZ<4.5): 
+                        if (chiZ>=2.5 and chiZ<=4.5): 
                             chi_score += 2
                             df.loc[i, 'ChiType'] = 'Z'
-                        if chiL>5:
+                        if chiL>4.5:
                             chi_score += 3
                             df.loc[i, 'ChiType'] = 'L'
-                        if chiZ>5:
+                        if chiZ>4.5:
                             chi_score += 3
                             df.loc[i, 'ChiType'] = 'Z'
 
@@ -304,3 +304,55 @@ class BE_analyzer:
         self.layout = widgets.VBox([self.output, self.keep_button, self.con_button])
         # Display the layout
         display(self.layout)
+
+
+def category_analysis(begin_data, parameter, value,fits, periodogr, ztf_data, dataLINEAR,end, id_list=None):
+    '''
+    This function takes in a certain parameter and then generates a seperate dataset and interface
+    in order to analyze it for Blazhko stars.
+
+    Arguments:
+        begin_data(DataFrame) = starting dataframe from which we take data
+        parameter(string) = the parameter of interest
+        value(string) = the value equal to which we select candidates
+        fits = the fits dataset
+        periodogr = the periodogram dataset
+        ztf_data = the ZTF dataset
+        dataLINEAR = the LINEAR dataset
+        end(string) = with which we save the data
+    '''
+
+    if parameter:
+        new_dataset = begin_data.loc[(begin_data[parameter] == value)]
+        new_dataset = new_dataset.reset_index(drop=True)
+        print(f'This dataset has {new_dataset.shape[0]} stars.')
+
+        # ----
+
+        length = new_dataset.shape[0]
+        Lids = new_dataset['LINEAR id'].to_numpy()
+
+        blazhko_analyzer = pd.DataFrame(())
+        analysis = BE_analyzer(Lids, length, new_dataset, blazhko_analyzer, fits, periodogr, ztf_data, dataLINEAR)
+        analysis.display_interface()
+
+        blazhko_analyzer = analysis.get_save_data()
+        blazhko_analyzer.to_csv("../outputs/blazhko_list"+end+".csv", index=False)
+    else:
+        new_dataset = new_dataset[new_dataset['LINEAR ID'].isin(id_list)]
+        new_dataset = new_dataset.reset_index(drop=True)
+        print(f'This dataset has {new_dataset.shape[0]} stars.')
+
+        # ----
+
+        length = new_dataset.shape[0]
+        Lids = new_dataset['LINEAR id'].to_numpy()
+
+        blazhko_analyzer = pd.DataFrame(())
+        analysis = BE_analyzer(Lids, length, new_dataset, blazhko_analyzer, fits, periodogr, ztf_data, dataLINEAR)
+        analysis.display_interface()
+
+        blazhko_analyzer = analysis.get_save_data()
+        blazhko_analyzer.to_csv("../outputs/blazhko_list"+end+".csv", index=False)
+
+    return blazhko_analyzer

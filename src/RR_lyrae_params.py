@@ -12,6 +12,7 @@ import pandas as pd
 import numpy as np
 sys.path.insert(0,'../src/')
 from helper import*
+from blazhko_analysis import*
 
 '''
 This Python file contains functions used to calculate the parameters of RR Lyrae stars.
@@ -54,7 +55,7 @@ def doPeriods(time, mag, magErr, nterms, Lid, lsPS=True, nyquist=100, freqFac=1.
         power = np.array(())
         return best_period, frequency, power
 
-def LINEARLS(LINEARids, LINEARlightcurves, order, Lid, verbose=False):
+def LINEARLS(LINEARlightcurves, Lid, verbose=False):
     '''
     This function accesses the LINEAR data and calculates the period.
 
@@ -65,12 +66,9 @@ def LINEARLS(LINEARids, LINEARlightcurves, order, Lid, verbose=False):
         verbose(bool): printing statements  
     '''
     
-    # array index for this LINEARid
-    LINEARid = LINEARids[order]
-    
     if verbose:
         print('------------------------------------------------------------')
-        print('Period and light curve analysis for LINEAR ID =', LINEARid)
+        print('Period and light curve analysis for LINEAR ID =', Lid)
     ### first prepare light curve data
     # LINEAR light curve for this star (specified by provided LINEARid)
     tL, mL, mLerr = LINEARlightcurves.T
@@ -172,7 +170,7 @@ def LCanalysisFromP(time, mag, magErr, P, ntermsModels):
     LCanalysisResults['chi2dofR'] = sigG(LCanalysisResults['chi'])
     return LCanalysisResults 
 
-def RR_lyrae_analysis(end, i, Lids, ztfdata, lc_analysis, ZTF_data_best, fits, periodograms):
+def RR_lyrae_analysis(end, i, Lid, dataL, dataZ, lc_analysis, ZTF_data_best, fits, periodograms, verbose=False):
     '''
     This function analyzes RR Lyrae light curve data by calculating periods, fitting light curves and conducting BE
     candidate analysis of local peaks. 
@@ -189,13 +187,18 @@ def RR_lyrae_analysis(end, i, Lids, ztfdata, lc_analysis, ZTF_data_best, fits, p
     '''
     
             # accessing data
-    Lid = Lids[i]
-    dataL = data.get_light_curve(Lid)
-    dataZ = ztfdata[Lid]
+    
+    if verbose:
+        print('Current i:',i)
+        print('Current LINEAR ID:', Lid)
+        print(f'Shape of linear:{dataL.shape}, shape of ztf:{dataZ.shape}')
 
     # calculating the periods
-    Plinear, fL, pL, tL, mL, meL = LINEARLS(Lids, dataL, i, Lid)
+    Plinear, fL, pL, tL, mL, meL = LINEARLS(dataL, Lid)
     Pztf, Zbestf, Zbestp, fZ, pZ, tZ, mZ, meZ = ZTFs(dataZ, Lid)
+
+    if verbose:
+        print(f'Plinear: {Plinear}, ZTFperiod: {Pztf}')
 
     # saving the ZTF data
     ZTF_data_best.append((Lid, (tZ, mZ, meZ)))
@@ -219,7 +222,10 @@ def RR_lyrae_analysis(end, i, Lids, ztfdata, lc_analysis, ZTF_data_best, fits, p
     # fitting the light curves
     ntermsModels = 6
 
-    if tZ.size==0 or mZ.size == 0 or meZ.size == 0 or Plinear == 0.0 or Pztf == 0.0 or tZ.size<40 or tL.size<40:
+    if verbose: print('Starting to fit light curves!')
+
+    if tZ.size==0 or mZ.size == 0 or meZ.size == 0 or Plinear == 0.0 or Pztf == 0.0:
+        if verbose: print(f'We engaged with these parameters: tZ={tZ.size}, mZ={mZ.size}, meZ={meZ.size}, plinear={Plinear}, pztf={Pztf}')
         LINEAR_Plinear = {
             'modelPhaseGrid': np.array(()), 
             'modelFit': np.array(()), 
