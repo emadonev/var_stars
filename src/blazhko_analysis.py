@@ -117,7 +117,7 @@ def blazhko_determine(df, dfnew):
         # STEP 1: getting rid of trash
         # ---------
         if df['Ampl_diff'][i]<2:
-            if df['L_chi2dofR'][i]<9 or df['Zchi2dofR'][i]<12 or df['Plinear'][i]<4 or df['Pztf'][i]<4:
+            if df['L_chi2dofR'][i]<9 or df['Zchi2dofR'][i]<9 or df['Plinear'][i]<4 or df['Pztf'][i]<4:
                 if df['NdataLINEAR'][i]>250 or df['NdataZTF'][i]>250:
                     # STEP 2: determine periodogram likelihood of BE
                     # ---------
@@ -253,6 +253,8 @@ class BE_analyzer:
             pL = self.lightc_per[o][1][1]
             fZ = self.lightc_per[o][2][0]
             pZ = self.lightc_per[o][2][1]
+
+            
 
             fFoldedL = self.lightc_per[o][1][2]
             pFoldedL = self.lightc_per[o][1][3]

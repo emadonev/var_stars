@@ -97,140 +97,143 @@ def plotBlazhkoPeaksLINEAR(Lid, order, fL, pL, fZ, pZ, fFoldedL, pFoldedL, fFold
     # ---
     fBlazhkoPeakZ = dataset['BlazhkoPeakZ'][order]
 
-    ## at some point, we will read periodograms back from files...
-    fig = plt.figure(figsize=(32, 8))
-    fig.subplots_adjust(hspace=0.1, bottom=0.06, top=0.94, left=0.12, right=0.94)
-
-    # plot the power spectrum
-    ax = fig.add_subplot(141)
-
-    ax.plot(fL, pL, c='b')
-    ax.plot([flin, flin], [0,1], lw = 1, c=pink, ls='--')
-    ax.plot([fBlazhkoPeakL, fBlazhkoPeakL], [0, 0.7*np.max(pFoldedL)], lw = 1, c=pink, ls='--')
-    ax.plot([2*flin-fBlazhkoPeakL, 2*flin-fBlazhkoPeakL], [0, 0.7*np.max(pFoldedL)], lw = 1, c=pink, ls='--')
-    # show 1 year alias
-    f1yr = flin+1/365.0
-    ax.plot([f1yr, f1yr], [0,0.7*np.max(pFoldedL)], lw = 1, ls='-.', c=green)
-    f1yr = flin-1/365.0
-    ax.plot([f1yr, f1yr], [0,0.7*np.max(pFoldedL)], lw = 1, ls='-.', c=green)
-
-    ax.text(0.03, 0.96, "LINEAR", ha='left', va='top', transform=ax.transAxes,fontproperties=font, fontsize=10)
-    if (fBlazhkoPeakL > flin*fac):
-        ax.set_xlim(0.99*(2*flin-fBlazhkoPeakL), 1.01*fBlazhkoPeakL)
+    if fL.size==0 or pL.size==0 or fZ.size==0 or pZ.size==0 or fFoldedL.size==0 or pFoldedL.size==0 or fFoldedZ.size==0 or pFoldedZ.size==0:
+        print("No available periodogram data.")
     else:
-        ax.set_xlim(flin/fac, flin*fac)
-    ax.yaxis.set_major_locator(plt.MaxNLocator(4))
+        ## at some point, we will read periodograms back from files...
+        fig = plt.figure(figsize=(32, 8))
+        fig.subplots_adjust(hspace=0.1, bottom=0.06, top=0.94, left=0.12, right=0.94)
 
-    ylim = ax.get_ylim()
-    ymax = ylim[0] + 1.1 * (ylim[1] - ylim[0])
-    if ymax>1.0: ymax=1.0
-    ax.set_ylim(0, ymax)
-    ax.set_ylabel('Lomb-Scargle power',fontproperties=font, fontsize=14)
-    ax.set_xlabel('frequency (d$^{-1}$)',fontproperties=font, fontsize=14)
+        # plot the power spectrum
+        ax = fig.add_subplot(141)
 
-    # plot folder power spectrum
-    ax = fig.add_subplot(142)
+        ax.plot(fL, pL, c='b')
+        ax.plot([flin, flin], [0,1], lw = 1, c=pink, ls='--')
+        ax.plot([fBlazhkoPeakL, fBlazhkoPeakL], [0, 0.7*np.max(pFoldedL)], lw = 1, c=pink, ls='--')
+        ax.plot([2*flin-fBlazhkoPeakL, 2*flin-fBlazhkoPeakL], [0, 0.7*np.max(pFoldedL)], lw = 1, c=pink, ls='--')
+        # show 1 year alias
+        f1yr = flin+1/365.0
+        ax.plot([f1yr, f1yr], [0,0.7*np.max(pFoldedL)], lw = 1, ls='-.', c=green)
+        f1yr = flin-1/365.0
+        ax.plot([f1yr, f1yr], [0,0.7*np.max(pFoldedL)], lw = 1, ls='-.', c=green)
 
-    ax.plot(fFoldedL, pFoldedL, c=blue)
-    ax.plot([fBlazhkoPeakL, fBlazhkoPeakL], [0,0.4*np.max(pFoldedL)], lw = 1, ls='--', c=pink)
-    # show 1 year alias
-    f1yr = flin+1/365.0
-    ax.plot([f1yr, f1yr], [0,0.4*np.max(pFoldedL)], lw = 1, ls='-.', c=green)
-    
-    powerFar = pFoldedL[fFoldedL>fBlazhkoPeakL]  # frequencies beyond the second peak
-    powerFarMedian = np.median(powerFar)      # the median power
-    powerFarRMS = np.std(powerFar)            # standard deviation, i.e. "sigma"
-    noise5sig = powerFarMedian+5*powerFarRMS
-    
-    if (fBlazhkoPeakL > flin*fac):
-        ax.plot([flin+0.5*(fBlazhkoPeakL-flin), 1.01*fBlazhkoPeakL], [noise5sig, noise5sig], lw = 1, ls='--', c=turqoise)
-        ax.set_xlim(flin, 1.01*fBlazhkoPeakL)
-    else:
-        ax.plot([flin+0.5*(fBlazhkoPeakL-flin), flin*fac], [noise5sig, noise5sig], lw = 1, ls='--', c=turqoise)
-        ax.set_xlim(flin, flin*fac)
+        ax.text(0.03, 0.96, "LINEAR", ha='left', va='top', transform=ax.transAxes,fontproperties=font, fontsize=10)
+        if (fBlazhkoPeakL > flin*fac):
+            ax.set_xlim(0.99*(2*flin-fBlazhkoPeakL), 1.01*fBlazhkoPeakL)
+        else:
+            ax.set_xlim(flin/fac, flin*fac)
+        ax.yaxis.set_major_locator(plt.MaxNLocator(4))
 
-    ax.yaxis.set_major_locator(plt.MaxNLocator(4))
+        ylim = ax.get_ylim()
+        ymax = ylim[0] + 1.1 * (ylim[1] - ylim[0])
+        if ymax>1.0: ymax=1.0
+        ax.set_ylim(0, ymax)
+        ax.set_ylabel('Lomb-Scargle power',fontproperties=font, fontsize=14)
+        ax.set_xlabel('frequency (d$^{-1}$)',fontproperties=font, fontsize=14)
 
-    ylim = ax.get_ylim()
-    ymax = ylim[0] + 1.1 * (ylim[1] - ylim[0])
-    if ymax>1.0: ymax=1.0
-    ax.set_ylim(0, ymax)
-    ax.set_ylabel('folded power',fontproperties=font, fontsize=14)
-    ax.set_xlabel('frequency (d$^{-1}$)',fontproperties=font, fontsize=14)
+        # plot folder power spectrum
+        ax = fig.add_subplot(142)
 
-    # ZTF
-    # ========
-    
-    # PLOTTING THE FULL PERIODOGRAM
-    # ---------------
-    ax = fig.add_subplot(143)
+        ax.plot(fFoldedL, pFoldedL, c=blue)
+        ax.plot([fBlazhkoPeakL, fBlazhkoPeakL], [0,0.4*np.max(pFoldedL)], lw = 1, ls='--', c=pink)
+        # show 1 year alias
+        f1yr = flin+1/365.0
+        ax.plot([f1yr, f1yr], [0,0.4*np.max(pFoldedL)], lw = 1, ls='-.', c=green)
+        
+        powerFar = pFoldedL[fFoldedL>fBlazhkoPeakL]  # frequencies beyond the second peak
+        powerFarMedian = np.median(powerFar)      # the median power
+        powerFarRMS = np.std(powerFar)            # standard deviation, i.e. "sigma"
+        noise5sig = powerFarMedian+5*powerFarRMS
+        
+        if (fBlazhkoPeakL > flin*fac):
+            ax.plot([flin+0.5*(fBlazhkoPeakL-flin), 1.01*fBlazhkoPeakL], [noise5sig, noise5sig], lw = 1, ls='--', c=turqoise)
+            ax.set_xlim(flin, 1.01*fBlazhkoPeakL)
+        else:
+            ax.plot([flin+0.5*(fBlazhkoPeakL-flin), flin*fac], [noise5sig, noise5sig], lw = 1, ls='--', c=turqoise)
+            ax.set_xlim(flin, flin*fac)
 
-    # plotting the periodogram
-    ax.plot(fL, pL, c=blue) # plotting basic periodogram
-    # adding the structure lines
-    ax.plot([fztf, fztf], [0,1], lw = 1, c=pink, ls='--')
-    ax.plot([fBlazhkoPeakZ, fBlazhkoPeakZ], [0, 0.7*np.max(pFoldedZ)], lw = 1, c=pink, ls='--')
-    ax.plot([2*fztf-fBlazhkoPeakZ, 2*fztf-fBlazhkoPeakZ], [0, 0.7*np.max(pFoldedZ)], lw = 1, c=pink, ls='--')
+        ax.yaxis.set_major_locator(plt.MaxNLocator(4))
 
-    # show 1 year alias for ztf
-    f1yrZ = fztf+1/365.0
-    ax.plot([f1yrZ, f1yrZ], [0,0.7*np.max(pFoldedZ)], lw = 1, ls='-.', c=green)
-    f1yrZ = fztf-1/365.0
-    ax.plot([f1yrZ, f1yrZ], [0,0.7*np.max(pFoldedZ)], lw = 1, ls='-.', c=green)
+        ylim = ax.get_ylim()
+        ymax = ylim[0] + 1.1 * (ylim[1] - ylim[0])
+        if ymax>1.0: ymax=1.0
+        ax.set_ylim(0, ymax)
+        ax.set_ylabel('folded power',fontproperties=font, fontsize=14)
+        ax.set_xlabel('frequency (d$^{-1}$)',fontproperties=font, fontsize=14)
 
-    # adding y-axis text
-    ax.text(0.03, 0.96, "ZTF", ha='left', va='top', transform=ax.transAxes,fontproperties=font, fontsize=10)
-    if (fBlazhkoPeakZ > fztf*fac):
-        ax.set_xlim(0.99*(2*fztf-fBlazhkoPeakZ), 1.01*fBlazhkoPeakZ)
-    else:
-        ax.set_xlim(fztf/fac, fztf*fac)
-    ax.yaxis.set_major_locator(plt.MaxNLocator(4))
+        # ZTF
+        # ========
+        
+        # PLOTTING THE FULL PERIODOGRAM
+        # ---------------
+        ax = fig.add_subplot(143)
 
-    ylim = ax.get_ylim()
-    ymax = ylim[0] + 1.1 * (ylim[1] - ylim[0])
-    if ymax>1.0: ymax=1.0
-    ax.set_ylim(0, ymax)
-    ax.set_ylabel('Lomb-Scargle power',fontproperties=font, fontsize=14)
-    ax.set_xlabel('frequency (d$^{-1}$)',fontproperties=font, fontsize=14)
+        # plotting the periodogram
+        ax.plot(fL, pL, c=blue) # plotting basic periodogram
+        # adding the structure lines
+        ax.plot([fztf, fztf], [0,1], lw = 1, c=pink, ls='--')
+        ax.plot([fBlazhkoPeakZ, fBlazhkoPeakZ], [0, 0.7*np.max(pFoldedZ)], lw = 1, c=pink, ls='--')
+        ax.plot([2*fztf-fBlazhkoPeakZ, 2*fztf-fBlazhkoPeakZ], [0, 0.7*np.max(pFoldedZ)], lw = 1, c=pink, ls='--')
 
-    # PLOTING FOLDED POWER SEQUENCE
-    # ----------------
-    ax = fig.add_subplot(144)
+        # show 1 year alias for ztf
+        f1yrZ = fztf+1/365.0
+        ax.plot([f1yrZ, f1yrZ], [0,0.7*np.max(pFoldedZ)], lw = 1, ls='-.', c=green)
+        f1yrZ = fztf-1/365.0
+        ax.plot([f1yrZ, f1yrZ], [0,0.7*np.max(pFoldedZ)], lw = 1, ls='-.', c=green)
 
-    ax.plot(fFoldedZ, pFoldedZ, c=blue)
-    ax.plot([fBlazhkoPeakZ, fBlazhkoPeakZ], [0,0.4*np.max(pFoldedZ)], lw = 1, ls='--', c=pink)
+        # adding y-axis text
+        ax.text(0.03, 0.96, "ZTF", ha='left', va='top', transform=ax.transAxes,fontproperties=font, fontsize=10)
+        if (fBlazhkoPeakZ > fztf*fac):
+            ax.set_xlim(0.99*(2*fztf-fBlazhkoPeakZ), 1.01*fBlazhkoPeakZ)
+        else:
+            ax.set_xlim(fztf/fac, fztf*fac)
+        ax.yaxis.set_major_locator(plt.MaxNLocator(4))
 
-    # show 1 year alias
-    f1yrZ = fztf+1/365.0
-    ax.plot([f1yrZ, f1yrZ], [0,0.4*np.max(pFoldedZ)], lw = 1, ls='-.', c=green)
-    
-    powerFarZ = pFoldedZ[fFoldedZ>fBlazhkoPeakZ]  # frequencies beyond the second peak
-    powerFarMedianZ = np.median(powerFarZ)      # the median power
-    powerFarRMSZ = np.std(powerFarZ)            # standard deviation, i.e. "sigma"
-    noise5sigZ = powerFarMedianZ+5*powerFarRMSZ
-    
-    if (fBlazhkoPeakZ > fztf*fac):
-        ax.plot([fztf+0.5*(fBlazhkoPeakZ-fztf), 1.01*fBlazhkoPeakZ], [noise5sigZ, noise5sigZ], lw = 1, ls='--', c=turqoise)
-        ax.set_xlim(flin, 1.01*fBlazhkoPeakZ)
-    else:
-        ax.plot([flin+0.5*(fBlazhkoPeakZ-fztf), fztf*fac], [noise5sigZ, noise5sigZ], lw = 1, ls='--', c=turqoise)
-        ax.set_xlim(fztf, fztf*fac)
+        ylim = ax.get_ylim()
+        ymax = ylim[0] + 1.1 * (ylim[1] - ylim[0])
+        if ymax>1.0: ymax=1.0
+        ax.set_ylim(0, ymax)
+        ax.set_ylabel('Lomb-Scargle power',fontproperties=font, fontsize=14)
+        ax.set_xlabel('frequency (d$^{-1}$)',fontproperties=font, fontsize=14)
 
-    ax.yaxis.set_major_locator(plt.MaxNLocator(4))
+        # PLOTING FOLDED POWER SEQUENCE
+        # ----------------
+        ax = fig.add_subplot(144)
 
-    ylim = ax.get_ylim()
-    ymax = ylim[0] + 1.1 * (ylim[1] - ylim[0])
-    if ymax>1.0: ymax=1.0
-    ax.set_ylim(0, ymax)
-    ax.set_ylabel('folded power',fontproperties=font, fontsize=14)
-    ax.set_xlabel('frequency (d$^{-1}$)',fontproperties=font,fontsize=14)
+        ax.plot(fFoldedZ, pFoldedZ, c=blue)
+        ax.plot([fBlazhkoPeakZ, fBlazhkoPeakZ], [0,0.4*np.max(pFoldedZ)], lw = 1, ls='--', c=pink)
 
-    if plotSave:
-        plotName = '../plots/Blazhko.png'
-        plt.savefig(plotName, dpi=600)
-        print('saved plot as:', plotName) 
-    plt.show()     
-    return   
+        # show 1 year alias
+        f1yrZ = fztf+1/365.0
+        ax.plot([f1yrZ, f1yrZ], [0,0.4*np.max(pFoldedZ)], lw = 1, ls='-.', c=green)
+        
+        powerFarZ = pFoldedZ[fFoldedZ>fBlazhkoPeakZ]  # frequencies beyond the second peak
+        powerFarMedianZ = np.median(powerFarZ)      # the median power
+        powerFarRMSZ = np.std(powerFarZ)            # standard deviation, i.e. "sigma"
+        noise5sigZ = powerFarMedianZ+5*powerFarRMSZ
+        
+        if (fBlazhkoPeakZ > fztf*fac):
+            ax.plot([fztf+0.5*(fBlazhkoPeakZ-fztf), 1.01*fBlazhkoPeakZ], [noise5sigZ, noise5sigZ], lw = 1, ls='--', c=turqoise)
+            ax.set_xlim(flin, 1.01*fBlazhkoPeakZ)
+        else:
+            ax.plot([flin+0.5*(fBlazhkoPeakZ-fztf), fztf*fac], [noise5sigZ, noise5sigZ], lw = 1, ls='--', c=turqoise)
+            ax.set_xlim(fztf, fztf*fac)
+
+        ax.yaxis.set_major_locator(plt.MaxNLocator(4))
+
+        ylim = ax.get_ylim()
+        ymax = ylim[0] + 1.1 * (ylim[1] - ylim[0])
+        if ymax>1.0: ymax=1.0
+        ax.set_ylim(0, ymax)
+        ax.set_ylabel('folded power',fontproperties=font, fontsize=14)
+        ax.set_xlabel('frequency (d$^{-1}$)',fontproperties=font,fontsize=14)
+
+        if plotSave:
+            plotName = '../plots/Blazhko.png'
+            plt.savefig(plotName, dpi=600)
+            print('saved plot as:', plotName) 
+        plt.show()     
+        return   
 
 def plotLINEARmarkSeasons(Lid, ztf_data, order, LINEARlightcurves):
     tL, mL, mLerr = LINEARlightcurves[Lid].T
@@ -269,7 +272,7 @@ def plotLINEARmarkSeasons(Lid, ztf_data, order, LINEARlightcurves):
         if tSZ>np.min(tZ)-200 and tSZ<np.max(tZ)+200:
             redZ += 1
     plt.show()   
-      
+    
     return redL, redZ
 
 def makeLCplotBySeason(Lid, L1, tL, L2, tZ, redL, redZ, plotrootname='LCplotBySeason', plotSave=False):

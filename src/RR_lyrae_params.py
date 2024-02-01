@@ -213,8 +213,8 @@ def RR_lyrae_analysis(end, i, Lid, dataL, dataZ, lc_analysis, ZTF_data_best, fit
     # period analysis
     Plinear = round(Plinear, 6)
     Pztf = round(Pztf, 6)
-    Pmean = round((Plinear+Pztf)/2, 4)
-    Pratio = round((Pztf/Plinear), 4)
+    Pmean = round((Plinear+Pztf)/2, 6)
+    Pratio = round((Pztf/Plinear), 6)
 
     # saving the periodograms
     periodograms.append((Lid, (fL, pL, fFoldedL, pFoldedL), (fZ, pZ, fFoldedZ, pFoldedZ)))
