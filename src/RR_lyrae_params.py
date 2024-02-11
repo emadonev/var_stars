@@ -18,7 +18,7 @@ from blazhko_analysis import*
 This Python file contains functions used to calculate the parameters of RR Lyrae stars.
 '''
 
-def doPeriods(time, mag, magErr, nterms, Lid, lsPS=True, nyquist=100, freqFac=1.05):
+def doPeriods(time, mag, magErr, nterms, lsPS=True, nyquist=100, freqFac=1.05, verbose=False):
     '''
     This function calculates the best period for RR Lyrae stars using the Lomb-Scargle periodogram. It first tries with the auto
     frequency grid, then it zooms in around the highest Lomb-Scargle power peak and searches for the best period. 
@@ -37,19 +37,23 @@ def doPeriods(time, mag, magErr, nterms, Lid, lsPS=True, nyquist=100, freqFac=1.
         freqFac(float): frequency for searching (defining the grid)
     '''
     try:
+        if verbose:print('Engaging in calculation, please wait...')
         ls = LombScargle(time, mag, magErr, nterms=nterms) # set up a LombScargle object to model the frequency and power
         frequencyAuto, powerAuto = ls.autopower(nyquist_factor=nyquist) # calculate the frequency and power
+        if verbose:print('Frequency and power have been calculated.')
         best_freq = frequencyAuto[np.argmax(powerAuto)]
         frequency = np.arange(best_freq/freqFac, best_freq*freqFac, 5e-6)
         power = ls.power(frequency)  # compute LS periodogram again
         period = 1. / frequency
         best_period = period[np.argmax(power)] # choosing the period with the highest power
+        if verbose:print('The best period is, ',best_period)
         if lsPS: 
             return best_period, frequency, power
         else:
             return best_period
     except:
         # if there is no data, assign everything to 0 or empty
+        if verbose: print('Period calculation unsuccesful.')
         best_period = 0.0
         frequency = np.array(())
         power = np.array(())

@@ -308,7 +308,7 @@ class BE_analyzer:
         display(self.layout)
 
 
-def category_analysis(begin_data, parameter, value,fits, periodogr, ztf_data, dataLINEAR,end, id_list=None):
+def category_analysis(begin_data, fits, periodogr, ztf_data, dataLINEAR,end, id_list=None,parameter=None, value=None):
     '''
     This function takes in a certain parameter and then generates a seperate dataset and interface
     in order to analyze it for Blazhko stars.
@@ -338,23 +338,28 @@ def category_analysis(begin_data, parameter, value,fits, periodogr, ztf_data, da
         analysis = BE_analyzer(Lids, length, new_dataset, blazhko_analyzer, fits, periodogr, ztf_data, dataLINEAR)
         analysis.display_interface()
 
-        blazhko_analyzer = analysis.get_save_data()
-        blazhko_analyzer.to_csv("../outputs/blazhko_list"+end+".csv", index=False)
+        
     else:
-        new_dataset = new_dataset[new_dataset['LINEAR ID'].isin(id_list)]
-        new_dataset = new_dataset.reset_index(drop=True)
-        print(f'This dataset has {new_dataset.shape[0]} stars.')
+        if id_list:
+            new_dataset = new_dataset[new_dataset['LINEAR ID'].isin(id_list)]
+            new_dataset = new_dataset.reset_index(drop=True)
+            print(f'This dataset has {new_dataset.shape[0]} stars.')
 
-        # ----
+            # ----
 
-        length = new_dataset.shape[0]
-        Lids = new_dataset['LINEAR id'].to_numpy()
+            length = new_dataset.shape[0]
+            Lids = new_dataset['LINEAR id'].to_numpy()
 
+            blazhko_analyzer = pd.DataFrame(())
+            analysis = BE_analyzer(Lids, length, new_dataset, blazhko_analyzer, fits, periodogr, ztf_data, dataLINEAR)
+            analysis.display_interface()
+        
+        print(f'This dataset has {begin_data.shape[0]} stars.')
+        length = begin_data.shape[0]
+        Lids = begin_data['LINEAR id'].to_numpy()
         blazhko_analyzer = pd.DataFrame(())
-        analysis = BE_analyzer(Lids, length, new_dataset, blazhko_analyzer, fits, periodogr, ztf_data, dataLINEAR)
+        analysis = BE_analyzer(Lids, length, begin_data, blazhko_analyzer, fits, periodogr, ztf_data, dataLINEAR)
         analysis.display_interface()
 
-        blazhko_analyzer = analysis.get_save_data()
-        blazhko_analyzer.to_csv("../outputs/blazhko_list"+end+".csv", index=False)
-
-    return blazhko_analyzer
+        
+    return analysis
