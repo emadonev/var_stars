@@ -341,7 +341,7 @@ def category_analysis(begin_data, fits, periodogr, ztf_data, dataLINEAR,end, id_
         
     else:
         if id_list:
-            new_dataset = new_dataset[new_dataset['LINEAR ID'].isin(id_list)]
+            new_dataset = begin_data[begin_data['LINEAR id'].isin(id_list)]
             new_dataset = new_dataset.reset_index(drop=True)
             print(f'This dataset has {new_dataset.shape[0]} stars.')
 
@@ -353,13 +353,4 @@ def category_analysis(begin_data, fits, periodogr, ztf_data, dataLINEAR,end, id_
             blazhko_analyzer = pd.DataFrame(())
             analysis = BE_analyzer(Lids, length, new_dataset, blazhko_analyzer, fits, periodogr, ztf_data, dataLINEAR)
             analysis.display_interface()
-        
-        print(f'This dataset has {begin_data.shape[0]} stars.')
-        length = begin_data.shape[0]
-        Lids = begin_data['LINEAR id'].to_numpy()
-        blazhko_analyzer = pd.DataFrame(())
-        analysis = BE_analyzer(Lids, length, begin_data, blazhko_analyzer, fits, periodogr, ztf_data, dataLINEAR)
-        analysis.display_interface()
-
-        
     return analysis
