@@ -353,4 +353,11 @@ def category_analysis(begin_data, fits, periodogr, ztf_data, dataLINEAR,end, id_
             blazhko_analyzer = pd.DataFrame(())
             analysis = BE_analyzer(Lids, length, new_dataset, blazhko_analyzer, fits, periodogr, ztf_data, dataLINEAR)
             analysis.display_interface()
+        else:
+            length = begin_data.shape[0]
+            Lids = begin_data['LINEAR id'].to_numpy()
+
+            blazhko_analyzer = pd.DataFrame(())
+            analysis = BE_analyzer(Lids, length, begin_data, blazhko_analyzer, fits, periodogr, ztf_data, dataLINEAR)
+            analysis.display_interface()
     return analysis
