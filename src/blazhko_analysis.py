@@ -211,7 +211,7 @@ def blazhko_determine(df, dfnew):
 # ================================
 # Building a class for the visual interface
 class BE_analyzer:
-    def __init__(self, linear_ids, tot, database_lightc, be_cand, lightc_fits, lightc_per, Zdata, Ldata):
+    def __init__(self, linear_ids, tot, database_lightc, be_cand, lightc_fits, lightc_per, Zdata, Ldata,plotSave=False):
         self.linear_ids = linear_ids
         self.database_lightc = database_lightc
         self.be_cand = be_cand
@@ -220,6 +220,7 @@ class BE_analyzer:
         self.Zdata = Zdata
         self.Ldata = Ldata
         self.total_num = tot
+        self.plotSave = plotSave
 
         self.current_i = None
         self.generate = self.plot_BE_data()
@@ -267,7 +268,10 @@ class BE_analyzer:
 
             #print('Starting to plot!')
             #makeLCplot_info(L1, L2, self.database_lightc, i, LID, self.Ldata)
-            BE_plotting.plotAll(LID, n, i, self.total_num, L1, L2, self.database_lightc, fL, pL, fZ, pZ, fFoldedL, fFoldedZ, pFoldedL, pFoldedZ, self.Ldata, tL, tZ, self.Zdata)
+            if self.plotSave:
+                BE_plotting.plotAll(LID, n, i, self.total_num, L1, L2, self.database_lightc, fL, pL, fZ, pZ, fFoldedL, fFoldedZ, pFoldedL, pFoldedZ, self.Ldata, tL, tZ, self.Zdata, plotSave=True)
+            else:
+                BE_plotting.plotAll(LID, n, i, self.total_num, L1, L2, self.database_lightc, fL, pL, fZ, pZ, fFoldedL, fFoldedZ, pFoldedL, pFoldedZ, self.Ldata, tL, tZ, self.Zdata)
             
             yield
 
@@ -308,7 +312,7 @@ class BE_analyzer:
         display(self.layout)
 
 
-def category_analysis(begin_data, fits, periodogr, ztf_data, dataLINEAR,end, id_list=None,parameter=None, value=None):
+def category_analysis(begin_data, fits, periodogr, ztf_data, dataLINEAR,end, id_list=None,parameter=None, value=None, plotSave=False):
     '''
     This function takes in a certain parameter and then generates a seperate dataset and interface
     in order to analyze it for Blazhko stars.
@@ -335,10 +339,12 @@ def category_analysis(begin_data, fits, periodogr, ztf_data, dataLINEAR,end, id_
         Lids = new_dataset['LINEAR id'].to_numpy()
 
         blazhko_analyzer = pd.DataFrame(())
-        analysis = BE_analyzer(Lids, length, new_dataset, blazhko_analyzer, fits, periodogr, ztf_data, dataLINEAR)
-        analysis.display_interface()
-
-        
+        if plotSave:
+            analysis = BE_analyzer(Lids, length, new_dataset, blazhko_analyzer, fits, periodogr, ztf_data, dataLINEAR, plotSave=True)
+            analysis.display_interface()
+        else:
+            analysis = BE_analyzer(Lids, length, new_dataset, blazhko_analyzer, fits, periodogr, ztf_data, dataLINEAR)
+            analysis.display_interface()
     else:
         if id_list:
             new_dataset = begin_data[begin_data['LINEAR id'].isin(id_list)]
@@ -351,13 +357,22 @@ def category_analysis(begin_data, fits, periodogr, ztf_data, dataLINEAR,end, id_
             Lids = new_dataset['LINEAR id'].to_numpy()
 
             blazhko_analyzer = pd.DataFrame(())
-            analysis = BE_analyzer(Lids, length, new_dataset, blazhko_analyzer, fits, periodogr, ztf_data, dataLINEAR)
-            analysis.display_interface()
+            if plotSave:
+                analysis = BE_analyzer(Lids, length, new_dataset, blazhko_analyzer, fits, periodogr, ztf_data, dataLINEAR, plotSave=True)
+                analysis.display_interface()
+            else:
+                analysis = BE_analyzer(Lids, length, new_dataset, blazhko_analyzer, fits, periodogr, ztf_data, dataLINEAR)
+                analysis.display_interface()
         else:
+            print(f'This dataset has {begin_data.shape[0]} stars.')
             length = begin_data.shape[0]
             Lids = begin_data['LINEAR id'].to_numpy()
 
             blazhko_analyzer = pd.DataFrame(())
-            analysis = BE_analyzer(Lids, length, begin_data, blazhko_analyzer, fits, periodogr, ztf_data, dataLINEAR)
-            analysis.display_interface()
+            if plotSave:
+                analysis = BE_analyzer(Lids, length, begin_data, blazhko_analyzer, fits, periodogr, ztf_data, dataLINEAR, plotSave=True)
+                analysis.display_interface()
+            else:
+                analysis = BE_analyzer(Lids, length, begin_data, blazhko_analyzer, fits, periodogr, ztf_data, dataLINEAR)
+                analysis.display_interface()
     return analysis

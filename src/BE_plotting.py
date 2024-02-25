@@ -79,13 +79,14 @@ def makeLCplot_info(L1, L2, dataset, order, Lid, dataL, total_num, plotname='LCp
 
     ax[2].grid(False)
     ax[2].axis('off')
-    plt.show()
-    #print('Finished plotting!')
-    
+
     if plotSave:
         plotName = plotname + '.png'
-        plt.savefig('../images_blazhko/'+plotName, dpi=600)
-    #return
+        plt.savefig('../images/'+plotName, dpi=750,bbox_inches = 'tight')
+    plt.show()
+    #print('Finished plotting!')
+ 
+    return
 
 def plotBlazhkoPeaksLINEAR(Lid, order, fL, pL, fZ, pZ, fFoldedL, pFoldedL, fFoldedZ, pFoldedZ, dataset, fac=1.008, plotSave=False, verbose=False):
     flin = fL[np.argmax(pL)]
@@ -229,13 +230,13 @@ def plotBlazhkoPeaksLINEAR(Lid, order, fL, pL, fZ, pZ, fFoldedL, pFoldedL, fFold
         ax.set_xlabel('frequency (d$^{-1}$)',fontproperties=font,fontsize=14)
 
         if plotSave:
-            plotName = '../plots/Blazhko.png'
-            plt.savefig(plotName, dpi=600)
-            print('saved plot as:', plotName) 
+            plotName = '../images/Blazhko.png'
+            plt.savefig(plotName, dpi=750,bbox_inches = 'tight')
+            #print('saved plot as:', plotName) 
         plt.show()     
         return   
 
-def plotLINEARmarkSeasons(Lid, ztf_data, order, LINEARlightcurves):
+def plotLINEARmarkSeasons(Lid, ztf_data, order, LINEARlightcurves, plotName='season_plot', plotSave=False):
     tL, mL, mLerr = LINEARlightcurves[Lid].T
     fig, ax = plt.subplots(1,2, figsize=(32,8))   
     ax[0].set_ylim(np.min(mL)-0.3, np.max(mL)+0.3)
@@ -271,6 +272,9 @@ def plotLINEARmarkSeasons(Lid, ztf_data, order, LINEARlightcurves):
         ax[1].plot([tSZ, tSZ], [np.min(mZ)-0.1, np.max(mZ)+0.1], c=pink)
         if tSZ>np.min(tZ)-200 and tSZ<np.max(tZ)+200:
             redZ += 1
+
+    if plotSave:
+        plt.savefig('../images/'+plotName+'.png', dpi=750)
     plt.show()   
     
     return redL, redZ
@@ -351,14 +355,20 @@ def makeLCplotBySeason(Lid, L1, tL, L2, tZ, redL, redZ, plotrootname='LCplotBySe
 
     if plotSave:
         plotName = plotrootname + '.png'
-        plt.savefig(plotName, dpi=600)
-        print('saved plot as:', plotName) 
+        plt.savefig('../images/'+plotName, dpi=600,bbox_inches = 'tight')
+        #print('saved plot as:', plotName) 
     plt.show()     
     return
 
-def plotAll(Lid, orderlc, o, tot, L1, L2, blazhko_can, fL, pL, fZ, pZ, fFoldedL, fFoldedZ, pFoldedL, pFoldedZ, data, tL, tZ,ztf_data):
-    makeLCplot_info(L1, L2, blazhko_can, o, Lid, data, tot)
-    plotBlazhkoPeaksLINEAR(Lid, o, fL, pL, fZ, pZ, fFoldedL, pFoldedL, fFoldedZ, pFoldedZ, blazhko_can, fac=1.008, plotSave=False, verbose=True)
-    redLin, redZtf = plotLINEARmarkSeasons(Lid, ztf_data, orderlc, data)
-    makeLCplotBySeason(Lid, L1, tL, L2, tZ, redLin, redZtf)
+def plotAll(Lid, orderlc, o, tot, L1, L2, blazhko_can, fL, pL, fZ, pZ, fFoldedL, fFoldedZ, pFoldedL, pFoldedZ, data, tL, tZ,ztf_data,plotSave=False):
+    if plotSave:
+        makeLCplot_info(L1, L2, blazhko_can, o, Lid, data, tot,plotSave=True)
+        plotBlazhkoPeaksLINEAR(Lid, o, fL, pL, fZ, pZ, fFoldedL, pFoldedL, fFoldedZ, pFoldedZ, blazhko_can, fac=1.008, plotSave=True, verbose=True)
+        redLin, redZtf = plotLINEARmarkSeasons(Lid, ztf_data, orderlc, data, plotSave=True)
+        makeLCplotBySeason(Lid, L1, tL, L2, tZ, redLin, redZtf,plotSave=True)
+    else:
+        makeLCplot_info(L1, L2, blazhko_can, o, Lid, data, tot)
+        plotBlazhkoPeaksLINEAR(Lid, o, fL, pL, fZ, pZ, fFoldedL, pFoldedL, fFoldedZ, pFoldedZ, blazhko_can, fac=1.008, plotSave=False, verbose=True)
+        redLin, redZtf = plotLINEARmarkSeasons(Lid, ztf_data, orderlc, data)
+        makeLCplotBySeason(Lid, L1, tL, L2, tZ, redLin, redZtf)
     return
