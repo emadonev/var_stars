@@ -117,6 +117,7 @@ def blazhko_determine(df, dfnew):
         # STEP 1: getting rid of trash
         # ---------
         if df['Ampl_diff'][i]<2:
+            #if df["dP"][i]<1:
             if df['L_chi2dofR'][i]<9 or df['Zchi2dofR'][i]<9 or df['Plinear'][i]<4 or df['Pztf'][i]<4:
                 if df['NdataLINEAR'][i]>250 or df['NdataZTF'][i]>250:
                     # STEP 2: determine periodogram likelihood of BE
@@ -203,6 +204,8 @@ def blazhko_determine(df, dfnew):
                         if score>5:
                             row = pd.DataFrame(df.iloc[[int(i)]])
                             dfnew = pd.concat([dfnew, row.reset_index(drop=True)], ignore_index=True, axis=0)
+            #else:
+                #pass 
         else:
             pass
     return dfnew
