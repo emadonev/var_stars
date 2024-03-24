@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.335">
+<meta name="generator" content="quarto-1.4.551">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -17,11 +17,12 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -46,43 +47,13 @@ pre.numberSource code > span > a:first-child::before
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
     padding: 0 4px; width: 4em;
-    color: #aaaaaa;
   }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
 div.sourceCode
   {   }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { color: #008000; } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { color: #008000; font-weight: bold; } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
@@ -97,6 +68,35 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <link href="01_Introduction_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="01_Introduction_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -121,29 +121,76 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </div>
   
 
+
 </header>
 
-<p><em>By Ema Donev and dr. Iveić, 2023.</em></p>
+
+<div id="cell-1" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib <span class="im">import</span> pyplot <span class="im">as</span> plt</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib <span class="im">import</span> ticker</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.colors <span class="im">as</span> mcolors</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib.font_manager <span class="im">import</span> FontProperties</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> norm</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>matplotlib inline  </span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> astroML.utils.decorators <span class="im">import</span> pickle_results</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> astroML.datasets <span class="im">import</span> fetch_LINEAR_sample</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> astropy.table <span class="im">import</span> Table</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> astropy.timeseries <span class="im">import</span> LombScargle</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> astroML.time_series <span class="im">import</span> MultiTermFit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="cell-2" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>sns.set_theme() <span class="co"># setting the theme for plotting</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>sys.path.insert(<span class="dv">0</span>,<span class="st">'../src/'</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># configuring plotting colors</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> [<span class="st">'#5F6372'</span>, <span class="st">'#79A8A4'</span>, <span class="st">'#B2AD8F'</span>, <span class="st">'#92A186'</span>, <span class="st">'#AD8082'</span>]</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>blue <span class="op">=</span> <span class="st">'#5F6372'</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>turqoise <span class="op">=</span> <span class="st">'#79A8A4'</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>light_green <span class="op">=</span> <span class="st">'#B2AD8F'</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>green <span class="op">=</span> <span class="st">'#92A186'</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>pink <span class="op">=</span> <span class="st">'#AD8082'</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>cmap <span class="op">=</span> mcolors.ListedColormap(colors)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># configuring fonts for plotting</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>font <span class="op">=</span> FontProperties()</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>font.set_family(<span class="st">'avenir'</span>)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>font.set_name(<span class="st">'Big Caslon'</span>)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>font.set_style(<span class="st">'normal'</span>)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>font.set_size(<span class="st">'xx-large'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p><em>Authors: Ema Donev and dr. Iveić, 2024.</em></p>
 <section id="goals" class="level2">
 <h2 class="anchored" data-anchor-id="goals">Goals</h2>
-<p>In this project, we will analyze the light curves from the LINEAR database and determine their periods and types. Afterward, we will compare them to the ZTF database of light curves by matching the LINEAR dataset’s IDs to the ZTF dataset’s ID. Plotting the two light curves, which are ten years apart, should yield new insights into variable star behavior over more extended periods. We will further analyze the stars that have changed their behavior over ten years.</p>
+<p>In this project, we will analyze the light curves from the LINEAR database and determine their periods and types. Afterward, we will compare them to the ZTF database of light curves by matching the LINEAR dataset’s IDs to the ZTF dataset’s ID. Plotting the two light curves, which are ten years apart, should yield new insights into variable star behavior over more extended periods. Our main goal is to search for the <strong>Blazhko effect</strong> in RR Lyrae stars.</p>
 </section>
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
 <section id="variable-stars" class="level2">
 <h2 class="anchored" data-anchor-id="variable-stars">Variable stars</h2>
 <p><strong>Variable stars</strong> are stars that change in brightness or magnitude periodically or semi-periodically. Every periodic variable star has its <strong>period</strong>, a measure between 2 sequential minima and maxima in brightness. The change in the magnitude of a variable star over time is recorded as <code>time series</code> data or in a <strong>light curve</strong> format.</p>
-<div class="cell" data-execution_count="2">
-<details>
+<div id="cell-fig_light_curve" class="cell" data-execution_count="1">
+<details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> Image</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>Image(filename<span class="op">=</span><span class="st">"../images/light_curve_eg.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> Image</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>Image(filename<span class="op">=</span><span class="st">"../images/light_curve_eg.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="2">
-<div id="fig_light_curve" class="quarto-figure quarto-figure-center anchored">
+<div class="cell-output cell-output-display" data-execution_count="1">
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="01_Introduction_files/figure-html/fig_light_curve-output-1.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">An example of a long period variable star. Reference https://www.aavso.org/overview-long-term-visual-light-curves</figcaption><p></p>
+<figcaption>An example of a long period variable star. Reference https://www.aavso.org/overview-long-term-visual-light-curves</figcaption>
 </figure>
 </div>
 </div>
@@ -163,16 +210,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="cepheid-variables-and-rr-lyrae-stars" class="level3">
 <h3 class="anchored" data-anchor-id="cepheid-variables-and-rr-lyrae-stars">Cepheid variables and RR Lyrae stars</h3>
 <p><strong>Cepheid variables</strong> pulsate in a steady, periodic cycle, and these stars are typically yellow supergiants. Their period ranges from 1 to 100 days, with an amplitude from 0.1 to 2.0 magnitudes. Cepheid variables are famous for exhibiting the period-luminosity relationship, which states that the longer the period of a cepheid, the larger its luminosity or intrinsic brightness is. There are two types of Cepheids: 1. <strong>Classical cepheids or Delta Cepheids</strong>: these stars are O-B type stars. 2. <strong>Type II Cepheids</strong>: These stars are less massive and older than the first type, which means they are population II-type stars. These types of cepheids also follow a different period-luminosity relationship.</p>
-<div class="cell" data-execution_count="5">
-<details>
+<div id="cell-fig_cepheid" class="cell" data-execution_count="5">
+<details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Image(filename<span class="op">=</span><span class="st">"../images/cepheid.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Image(filename<span class="op">=</span><span class="st">"../images/cepheid.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display" data-execution_count="5">
-<div id="fig_cepheid" class="quarto-figure quarto-figure-center anchored">
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="01_Introduction_files/figure-html/fig_cepheid-output-1.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">light curve of cepheid variables. Reference https://astrolab.awh.durham.ac.uk/cepheid.html</figcaption><p></p>
+<figcaption>light curve of cepheid variables. Reference https://astrolab.awh.durham.ac.uk/cepheid.html</figcaption>
 </figure>
 </div>
 </div>
@@ -185,16 +232,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><p><strong>RRC type:</strong> These stars have nearly symmetrical light curves with periods from 0.2 to 0.5 days and small amplitude changes. These types generally pulsate in the first overtone.</p></li>
 <li><p><strong>RRD types:</strong> These stars pulsate both in the fundamental and first overtone, with potentially non-radial modes interveening. On average, the more extended period (radial) is 0.74 days, while the shorter period (non-radial) is, on average, 0.5 days.</p></li>
 </ol>
-<div class="cell" data-execution_count="6">
-<details>
+<div id="cell-fig_rrlyrae" class="cell" data-execution_count="6">
+<details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Image(filename<span class="op">=</span><span class="st">"../images/rr lyare.jpeg"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Image(filename<span class="op">=</span><span class="st">"../images/rr lyare.jpeg"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display" data-execution_count="6">
-<div id="fig_rrlyrae" class="quarto-figure quarto-figure-center anchored">
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="01_Introduction_files/figure-html/fig_rrlyrae-output-1.jpeg" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">light curve of an RR Lyrae variable star, REFERENCE https://www.researchgate.net/figure/Example-of-light-curve-of-RR-Lyrae-a_fig7_343309076</figcaption><p></p>
+<figcaption>light curve of an RR Lyrae variable star, REFERENCE https://www.researchgate.net/figure/Example-of-light-curve-of-RR-Lyrae-a_fig7_343309076</figcaption>
 </figure>
 </div>
 </div>
@@ -204,16 +251,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="the-blazhko-effect" class="level2">
 <h2 class="anchored" data-anchor-id="the-blazhko-effect">The Blazhko effect</h2>
 <p>The <em>Blazhko effect</em> is one of the mysteries left unsolved regarding variable stars. The effect is when light curves <em>modulate their phase, shape or amplitude</em> over a long period of time.</p>
-<div class="cell" data-execution_count="8">
-<details>
+<div id="cell-fig_blazhko" class="cell" data-execution_count="8">
+<details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Image(filename<span class="op">=</span><span class="st">"../images/blazhko_effect_lc.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>Image(filename<span class="op">=</span><span class="st">"../images/blazhko_effect_lc.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display" data-execution_count="8">
-<div id="fig_blazhko" class="quarto-figure quarto-figure-center anchored">
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="01_Introduction_files/figure-html/fig_blazhko-output-1.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">light curve of a Blazhko star</figcaption><p></p>
+<figcaption>light curve of a Blazhko star</figcaption>
 </figure>
 </div>
 </div>
@@ -229,37 +276,233 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><p>Finally, the non-radial modes, resonances and period doubling altogether might be the solution to the problem, as they spark low-dimensional chaos in the Blazhko star system, enabling dynamic structures.</p></li>
 </ol>
 <p>Using the evidence we have so far, we cannot discern which theory is correct, or even think of a new one. We hope that with this project we can bring some insight into this century-old problem.</p>
+<p>However, using a well known effect in physics called <em>interference beats</em> we can model the effect. When adding 2 sinusoidal waves together with slightly different frequencies, we get the following formula: <span class="math display">\[
+     y(t) = sin(2\pi f_1) + sin(2\pi f_2),
+\]</span> we can rewrite it using trigonometric equality <span class="math display">\[
+       sin(a) + sin(b) = 2 \, cos({a-b\over 2}) \, sin({a+b\over 2})
+\]</span> as <span class="math display">\[
+         y(t) = 2 \, cos(2\pi{f_1-f_2\over 2}) \, sin(2\pi {f_1+f_2\over 2}).
+\]</span> When <span class="math inline">\(f_1\)</span> and <span class="math inline">\(f_2\)</span> are similar (<span class="math inline">\(f_1 \approx f_2\)</span>), we can define <span class="math display">\[
+         f_o = {f_1+f_2\over 2},
+\]</span><br>
+and <span class="math display">\[
+         \Delta f = |{f_1-f_2\over 2}|,
+\]</span> with <span class="math inline">\(\Delta f &lt;&lt; f_o\)</span>.</p>
+<p>Using the formula above, we can see that the cosine component will cause <strong>amplitudal modulation</strong>, which is visible in the graphs below, depicting interference beats.</p>
+<div id="cell-26" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># SIMULATED DATA</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>Ngrid <span class="op">=</span> <span class="dv">5000</span>  </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>Tmax <span class="op">=</span> <span class="dv">100</span>     <span class="co"># we generate light curve for times going from 0 to 100 days</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>maxmagerr <span class="op">=</span> <span class="fl">0.3</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ----</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>time <span class="op">=</span> np.linspace(<span class="dv">0</span>, Tmax, Ngrid)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>fn <span class="op">=</span> <span class="fl">1.54</span> <span class="co"># normal frequency</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>fblazhko <span class="op">=</span> <span class="fl">1.57</span> <span class="co"># blazhko frequency</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>Ablazhko <span class="op">=</span> <span class="fl">0.3</span> <span class="co"># blazhko amplitude</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>lcn <span class="op">=</span> np.sin(<span class="dv">2</span><span class="op">*</span>time<span class="op">*</span>fn<span class="op">*</span><span class="fl">3.1415926</span>) <span class="co"># standard light curve data - no modulation </span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>lc_blazhko <span class="op">=</span> np.sin(<span class="dv">2</span><span class="op">*</span><span class="fl">3.1415926</span><span class="op">*</span>fblazhko<span class="op">*</span>time)<span class="op">*</span>Ablazhko <span class="op">+</span> lcn <span class="co"># inference beats with the blazhko frequency</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>lc_blazhko <span class="op">=</span> lc_blazhko<span class="op">/</span>np.<span class="bu">max</span>(lc_blazhko) <span class="co"># normalizing to 1 magnitude so scale stays the same</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">5</span>))</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>fig.suptitle(<span class="st">"Interference beats"</span>, fontproperties<span class="op">=</span>font,fontsize<span class="op">=</span><span class="dv">16</span>)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>plt.plot(time, lcn,c<span class="op">=</span><span class="st">"blue"</span>, lw<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>plt.plot(time,lc_blazhko,c<span class="op">=</span><span class="st">"pink"</span>, lw<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Time"</span>, fontproperties<span class="op">=</span>font,fontsize<span class="op">=</span><span class="dv">16</span>)</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Wave value"</span>, fontproperties<span class="op">=</span>font,fontsize<span class="op">=</span><span class="dv">16</span>)</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>plt.xlim(<span class="dv">5</span>,<span class="dv">10</span>)</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">"../images/interpolation.png"</span>, dpi<span class="op">=</span><span class="dv">650</span>)</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01_Introduction_files/figure-html/cell-8-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-27" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">5</span>))</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>fig.suptitle(<span class="st">"Interference beats - long period"</span>, fontproperties<span class="op">=</span>font,fontsize<span class="op">=</span><span class="dv">16</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>plt.plot(time, lcn,c<span class="op">=</span><span class="st">"blue"</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>plt.plot(time,lc_blazhko,c<span class="op">=</span><span class="st">"pink"</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Time"</span>, fontproperties<span class="op">=</span>font,fontsize<span class="op">=</span><span class="dv">16</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Wave value"</span>, fontproperties<span class="op">=</span>font,fontsize<span class="op">=</span><span class="dv">16</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>plt.xlim(<span class="dv">0</span>,<span class="dv">50</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">"../images/interpolation2.png"</span>, dpi<span class="op">=</span><span class="dv">650</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01_Introduction_files/figure-html/cell-9-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-28" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">5</span>))</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>fig.suptitle(<span class="st">"Interference beats - full time period of observation"</span>, fontproperties<span class="op">=</span>font,fontsize<span class="op">=</span><span class="dv">16</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>plt.plot(time, lcn,c<span class="op">=</span><span class="st">"blue"</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>plt.plot(time,lc_blazhko,c<span class="op">=</span><span class="st">"pink"</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Time"</span>, fontproperties<span class="op">=</span>font,fontsize<span class="op">=</span><span class="dv">16</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Wave value"</span>, fontproperties<span class="op">=</span>font,fontsize<span class="op">=</span><span class="dv">16</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>plt.xlim(<span class="dv">0</span>,<span class="dv">100</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">"../images/interpolation3.png"</span>, dpi<span class="op">=</span><span class="dv">650</span>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01_Introduction_files/figure-html/cell-10-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>How could we apply interference beats to the Blazhko effect? (bla bla bla)</p>
+<div id="cell-30" class="cell" data-execution_count="8">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># SIMULATING LIGHT CURVE</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>Ngrid <span class="op">=</span> <span class="dv">10000</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>Tmax <span class="op">=</span> <span class="dv">100</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>fmain <span class="op">=</span> <span class="fl">1.54</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>fbl <span class="op">=</span> <span class="fl">1.57</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>Time <span class="op">=</span> np.linspace(<span class="dv">0</span>, Tmax, Ngrid)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>lcmain <span class="op">=</span> np.sin(<span class="dv">2</span><span class="op">*</span><span class="fl">3.1415926</span><span class="op">*</span>Time<span class="op">*</span>fmain)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>lc <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>np.cos(<span class="dv">2</span><span class="op">*</span><span class="fl">3.1415926</span><span class="op">*</span>Time<span class="op">*</span>(fbl <span class="op">-</span> fmain))<span class="op">*</span>lcmain</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>lc <span class="op">=</span> lc<span class="op">/</span>np.<span class="bu">max</span>(lc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="cell-31" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># SIMULATING OBSERVATION DATA</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>Ndata <span class="op">=</span> <span class="dv">400</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>magErr <span class="op">=</span> <span class="fl">0.1</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>Ablazhko <span class="op">=</span> <span class="fl">0.5</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>time_data <span class="op">=</span> Tmax <span class="op">*</span> np.random.random(Ndata)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co">#lcdata = 2*np.cos(2*3.1415926*time_data*(fblazhko-fmain))*np.sin(2*3.1415926*time_data*((fmain+fblazhko)/2))</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>lcdata <span class="op">=</span> np.sin(<span class="dv">2</span><span class="op">*</span><span class="fl">3.1415926</span><span class="op">*</span>time_data<span class="op">*</span>fmain) <span class="op">+</span> Ablazhko<span class="op">*</span>np.sin(<span class="dv">2</span><span class="op">*</span><span class="fl">3.1415926</span><span class="op">*</span>time_data<span class="op">*</span>fblazhko) <span class="op">+</span> Ablazhko<span class="op">*</span>np.sin(<span class="dv">2</span><span class="op">*</span><span class="fl">3.1415926</span><span class="op">*</span>time_data<span class="op">*</span>(<span class="dv">2</span><span class="op">*</span>fmain<span class="op">-</span>fblazhko))</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>lcdata <span class="op">=</span> lcdata<span class="op">/</span>np.<span class="bu">max</span>(lcdata)</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>magErrObs <span class="op">=</span> magErr <span class="op">+</span> <span class="dv">0</span><span class="op">*</span>time_data</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>LCbObsErr <span class="op">=</span> lcdata <span class="op">+</span> np.random.normal(<span class="dv">0</span>, magErrObs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-32" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">5</span>))</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>fig.suptitle(<span class="st">"Light curve simulation"</span>, fontproperties<span class="op">=</span>font,fontsize<span class="op">=</span><span class="dv">16</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>plt.plot(Time, lcmain, c<span class="op">=</span><span class="st">'pink'</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>plt.scatter(time_data, LCbObsErr, c<span class="op">=</span><span class="st">'blue'</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Time (days)'</span>,fontproperties<span class="op">=</span>font,fontsize<span class="op">=</span><span class="dv">14</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Magnitude'</span>, fontproperties<span class="op">=</span>font,fontsize<span class="op">=</span><span class="dv">14</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>plt.xlim(<span class="dv">0</span>,<span class="dv">4</span>)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">'../images/lc_dataeg.png'</span>, dpi<span class="op">=</span><span class="dv">650</span>)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01_Introduction_files/figure-html/cell-13-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>What if we try to calculate the period? What would we get? (bla bla bla)</p>
+<div id="cell-34" class="cell" data-execution_count="11">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> doPeriods(time, mag, magErr, nterms, lsPS<span class="op">=</span><span class="va">True</span>, nyquist<span class="op">=</span><span class="dv">100</span>, freqFac<span class="op">=</span><span class="fl">1.05</span>, verbose<span class="op">=</span><span class="va">True</span>):</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> verbose:<span class="bu">print</span>(<span class="st">'Starting calculations...'</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>        ls <span class="op">=</span> LombScargle(time, mag, magErr, nterms<span class="op">=</span>nterms) <span class="co"># set up a LombScargle object to model the frequency and power</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>        <span class="co">#frequencyAuto, powerAuto = ls.autopower(nyquist_factor=nyquist) # calculate the frequency and power</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        <span class="co">#best_freq = frequencyAuto[np.argmax(powerAuto)]</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>        <span class="co"># frequency = np.arange(best_freq/freqFac, best_freq*freqFac, 5e-6)</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>        frequency <span class="op">=</span> np.arange(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">5e-5</span>)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> verbose: <span class="bu">print</span>(<span class="st">'Arranging frequencies to calculate...'</span>)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>        power <span class="op">=</span> ls.power(frequency)  <span class="co"># compute LS periodogram again</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>        period <span class="op">=</span> <span class="fl">1.</span> <span class="op">/</span> frequency</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> verbose: <span class="bu">print</span>(<span class="st">'Possible periods determined'</span>)</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>        <span class="co"># hack: limit around known frequency to avoid aliases</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>        powerRestricted <span class="op">=</span> power[(frequency<span class="op">&gt;</span><span class="fl">1.3</span>)<span class="op">&amp;</span>(frequency<span class="op">&gt;</span><span class="fl">1.7</span>)]</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>        <span class="co">#freqRestricted = frequency[(frequency&gt;1.3)&amp;(frequency&gt;1.7)]</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>        <span class="co">#periodRestricted = 1. / freqRestricted</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>        best_period <span class="op">=</span> period[np.argmax(powerRestricted)] <span class="co"># choosing the period with the highest power</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> verbose: <span class="bu">print</span>(<span class="st">"Best period is "</span>, best_period)</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> lsPS: </span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> best_period, frequency, power</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> best_period</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span>:</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">'Error in doPeriods'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="cell-35" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>period, freq, power <span class="op">=</span> doPeriods(time_data, LCbObsErr, magErrObs, nterms<span class="op">=</span><span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Starting calculations...
+Arranging frequencies to calculate...
+Possible periods determined
+Best period is  0.9218289085544202</code></pre>
+</div>
+</div>
+<div id="cell-36" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># PLOTTING PERIODOGRAM:</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">9</span>))</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> fig.add_subplot(<span class="dv">211</span>)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>ax.plot(freq, power, c<span class="op">=</span><span class="st">'blue'</span>)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co">#ax.set_xlim(1.9,2.0)</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Lomb-Scargle moć frekvencije'</span>, fontproperties<span class="op">=</span>font,fontsize<span class="op">=</span><span class="dv">14</span>)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Frekvencija (1/dana)'</span>, fontproperties<span class="op">=</span>font,fontsize<span class="op">=</span><span class="dv">14</span>)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> fig.add_subplot(<span class="dv">212</span>)</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>ax.plot(<span class="dv">1</span><span class="op">/</span>freq, power, c<span class="op">=</span><span class="st">'blue'</span>)</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="co">#ax.set_xlim(0.5,1.0)</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Lomb-Scargle moć frekvencije'</span>, fontproperties<span class="op">=</span>font,fontsize<span class="op">=</span><span class="dv">14</span>)</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Period (dani)'</span>, fontproperties<span class="op">=</span>font,fontsize<span class="op">=</span><span class="dv">14</span>)</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">"../images/periodogrameg.png"</span>,dpi<span class="op">=</span><span class="dv">650</span>)</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01_Introduction_files/figure-html/cell-16-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
 <section id="long-period-variables" class="level3">
 <h3 class="anchored" data-anchor-id="long-period-variables">Long period variables</h3>
 <p>These variable stars are red giants or supergiants with very long periods, ranging from 30 to 1000 days. The two subclasses are <strong>Mira and Semiregular stars</strong>.</p>
 <p><strong>Mira stars</strong> are variables with periods from 80 to 1000 days and significant amplitude changes. Mira stars pulsate radially, and while doing so, they eject lots of material from their surfaces. A unique aspect of Mira variables is that during their cooling process, they form TiO molecules, which absorb all of the incoming light from the star, making it appear even dimmer, thus adding to the meaningful amplitude changes.</p>
-<div class="cell" data-execution_count="7">
-<details>
+<div id="cell-fig_mira" class="cell" data-execution_count="7">
+<details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Image(filename<span class="op">=</span><span class="st">"../images/mira.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>Image(filename<span class="op">=</span><span class="st">"../images/mira.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display" data-execution_count="7">
-<div id="fig_mira" class="quarto-figure quarto-figure-center anchored">
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="01_Introduction_files/figure-html/fig_mira-output-1.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">light curve of a Mira variable star, reference https://www.researchgate.net/figure/left-Mira-variable-star-light-curve-Omicron-Ceti-Image-courtesy-of-AAVSO-Cambridge_fig6_260163531</figcaption><p></p>
+<figcaption>light curve of a Mira variable star, reference https://www.researchgate.net/figure/left-Mira-variable-star-light-curve-Omicron-Ceti-Image-courtesy-of-AAVSO-Cambridge_fig6_260163531</figcaption>
 </figure>
 </div>
 </div>
 </div>
 <p><strong>Semiregular variables</strong>, as the name suggests, do not have completely regular periods. They are typically supergiants, with a regular period for some amount of time before irregularity occurs—their “periods” last from 20 to 2000 days, with amplitude changes lower than 2.5.</p>
 <p>There are four types of semiregular variables. 1. <strong>SRA types:</strong> These stars have minimal amplitude changes and periods typically from 35-1200 days, which are relatively regular. 2. <strong>SRB types:</strong> These stars do not have a specific period (usually 20 to 2300 days). The period exhibits slow and irregular changes. 3. <strong>SRC types:</strong> These stars have small amplitudes of around one magnitude and have variations in the periods (from 30 to thousands of days). 4. <strong>SRD types:</strong> These giants and supergiants of types F, G, or K have small amplitudes ranging from 0.1 to 4. Their periods range from 30 to 1100 days.</p>
-<div class="cell" data-execution_count="10">
-<details>
+<div id="cell-fig_semi" class="cell" data-execution_count="10">
+<details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>Image(filename<span class="op">=</span><span class="st">"../images/semiregular.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>Image(filename<span class="op">=</span><span class="st">"../images/semiregular.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display" data-execution_count="10">
-<div id="fig_semi" class="quarto-figure quarto-figure-center anchored">
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="01_Introduction_files/figure-html/fig_semi-output-1.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">light curve of a semiregular variable star, reference https://en.wikipedia.org/wiki/Semiregular_variable_star</figcaption><p></p>
+<figcaption>light curve of a semiregular variable star, reference https://en.wikipedia.org/wiki/Semiregular_variable_star</figcaption>
 </figure>
 </div>
 </div>
@@ -297,16 +540,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="eclipsing-binaries" class="level3">
 <h3 class="anchored" data-anchor-id="eclipsing-binaries">Eclipsing binaries</h3>
 <p>These are one of the most interesting variable types. These variables are a binary system, where one star passes before the other, light is blocked, and the magnitude decreases. The change in luminosity depends on the two stars’ sizes, distance, and geometry. Even for slightly different star systems, the light curves can look completely different. There are many types of eclipsing binaries, but three distinct types are Algol variables, Beta Lyrae variables, and W Ursae Majoris variables.</p>
-<div class="cell" data-execution_count="11">
-<details>
+<div id="cell-fig_eclipsing" class="cell" data-execution_count="11">
+<details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>Image(filename<span class="op">=</span><span class="st">"../images/eclipsing-b.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>Image(filename<span class="op">=</span><span class="st">"../images/eclipsing-b.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display" data-execution_count="11">
-<div id="fig_eclipsing" class="quarto-figure quarto-figure-center anchored">
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="01_Introduction_files/figure-html/fig_eclipsing-output-1.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">a light curve of an eclipsing binary, reference https://vs-compas.belastro.net/bulletin/issue/2/p6</figcaption><p></p>
+<figcaption>a light curve of an eclipsing binary, reference https://vs-compas.belastro.net/bulletin/issue/2/p6</figcaption>
 </figure>
 </div>
 </div>
@@ -323,11 +566,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3 class="anchored" data-anchor-id="microlensing-variables">Microlensing variables</h3>
 <p>Furthermore, we have microlensing variables. These variables brighten and dim when some object, which acts as a gravitational lens, passes in front of the star from our point of view, which magnifies the star’s light. As it passes, the star’s brightness dims.</p>
 <hr>
+<p>In the following notebooks we present our methodology, research process and results of our search for new Blazhko stars and possible new trends in their data.</p>
 </section>
-</section>
-<section id="conclusion" class="level2">
-<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
-<p>In the following notebook we will discuss the data we are using in this project and its descriptive statistics.</p>
 </section>
 </section>
 
@@ -360,9 +600,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -398,10 +652,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -411,8 +682,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -424,9 +704,245 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
     });
   }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
   const findCites = (el) => {
     const parentEl = el.parentElement;
     if (parentEl) {
@@ -467,6 +983,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
+
 
 
 

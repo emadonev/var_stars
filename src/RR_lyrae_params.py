@@ -18,7 +18,7 @@ from blazhko_analysis import*
 This Python file contains functions used to calculate the parameters of RR Lyrae stars.
 '''
 
-def doPeriods(time, mag, magErr, nterms, lsPS=True, nyquist=100, freqFac=1.05, verbose=False):
+def doPeriods(time, mag, magErr, nterms, nyquist=100, freqFac=1.05, verbose=False):
     '''
     This function calculates the best period for RR Lyrae stars using the Lomb-Scargle periodogram. It first tries with the auto
     frequency grid, then it zooms in around the highest Lomb-Scargle power peak and searches for the best period. 
@@ -37,29 +37,29 @@ def doPeriods(time, mag, magErr, nterms, lsPS=True, nyquist=100, freqFac=1.05, v
         freqFac(float): frequency for searching (defining the grid)
     '''
     try:
-        if verbose:print('Engaging in calculation, please wait...')
+        if verbose: print('Engaging in period calculation')
         ls = LombScargle(time, mag, magErr, nterms=nterms) # set up a LombScargle object to model the frequency and power
+        if verbose: print('Autopower mode')
         frequencyAuto, powerAuto = ls.autopower(nyquist_factor=nyquist) # calculate the frequency and power
-        if verbose:print('Frequency and power have been calculated.')
         best_freq = frequencyAuto[np.argmax(powerAuto)]
+        if verbose: print('new frequency grid...')
         frequency = np.arange(best_freq/freqFac, best_freq*freqFac, 5e-6)
+        if verbose: print('LS periodogram 2.0')
         power = ls.power(frequency)  # compute LS periodogram again
         period = 1. / frequency
         best_period = period[np.argmax(power)] # choosing the period with the highest power
-        if verbose:print('The best period is, ',best_period)
-        if lsPS: 
-            return best_period, frequency, power
-        else:
-            return best_period
+        if verbose: print('Period calculated: ', best_period)
+        return best_period, frequency, power
+    
     except:
+        if verbose: print('There is no data!')
         # if there is no data, assign everything to 0 or empty
-        if verbose: print('Period calculation unsuccesful.')
         best_period = 0.0
         frequency = np.array(())
         power = np.array(())
         return best_period, frequency, power
 
-def LINEARLS(LINEARlightcurves, Lid, verbose=False):
+def LINEARLS(dataL, Lid, nterms, verbose=False):
     '''
     This function accesses the LINEAR data and calculates the period.
 
@@ -75,19 +75,20 @@ def LINEARLS(LINEARlightcurves, Lid, verbose=False):
         print('Period and light curve analysis for LINEAR ID =', Lid)
     ### first prepare light curve data
     # LINEAR light curve for this star (specified by provided LINEARid)
-    tL, mL, mLerr = LINEARlightcurves.T
+    tL, mL, mLerr = dataL[Lid].T
 
     ### now compute periods (using LombScargle from astropy.timeseries)
-    nterms = 3
     # LINEAR-only period
     if verbose:
-        print('  computing LINEAR period...')
-    Plinear, fL, pL = doPeriods(tL, mL, mLerr, nterms, Lid, lsPS=True)    
+        print('computing LINEAR period...')
+    Plinear, fL, pL = doPeriods(tL, mL, mLerr, nterms, Lid, verbose=True)    
+    
     if verbose:
-        print('            LINEAR period = ', Plinear)
+        print('LINEAR period = ', Plinear)
+
     return Plinear, fL, pL, tL, mL, mLerr
 
-def ZTFs(ZTFdata, Lid, lsPS=True, verbose=False):
+def ZTFs(ZTFdata, Lid, nterms, verbose=False):
     """
     This function calculates the period of a ZTF light curve by taking the median of the periods of the 3 filters.
 
@@ -102,32 +103,29 @@ def ZTFs(ZTFdata, Lid, lsPS=True, verbose=False):
     # variables
     ZTFperiod_ograms = []
     ZTFbands=['zg', 'zr', 'zi']
-    nterms = 3
 
     if verbose:
         print('And now for the ZTF counterpart -------------')
+        print('  computing ZTF period...')
 
-    if ZTFdata.empty == True:
-        ZTFbestPeriod, ZTFbestfreq, Zbestpow = 0, 0, 0
-        Zfreq, Zpow = np.array(()), np.array(())
-        ZTFperiod_ograms.append((ZTFbestPeriod, Zfreq, Zpow))
-        timeZ,magZ,magErrZ = np.array(()), np.array(()), np.array(())
+    BandData, timeZ, magZ, magErrZ = None, None, None, None
+    for b in ZTFbands:
+
+        BandData = ZTFdata.loc[ZTFdata['filtercode'] == b]
+        timeZ = BandData['mjd'].to_numpy()
+        magZ = BandData['mag'].to_numpy()
+        magErrZ = BandData['magerr'].to_numpy()     
+
+        ZTFperiod, Zfreq, Zpow = doPeriods(timeZ, magZ, magErrZ, nterms, Lid)
+        ZTFperiod_ograms.append((ZTFperiod, Zfreq, Zpow))
+        
+    ZTFperiod_ograms.sort(key=lambda x: x[0], reverse=True)
+    if len(ZTFperiod_ograms) < 3:
+        ZTFbestPeriod, ZTFbestfreq, Zbestpow = ZTFperiod_ograms[0]
     else:
-        if verbose:
-            print('  computing ZTF period...')
-        for b in ZTFbands:
-            BandData = ZTFdata.loc[ZTFdata['filtercode'] == b]
-            timeZ = BandData['mjd']
-            magZ = BandData['mag']
-            magErrZ = BandData['magerr']                
-            ZTFperiod, Zfreq, Zpow = doPeriods(timeZ, magZ, magErrZ, nterms, Lid, lsPS=lsPS)
-            ZTFperiod_ograms.append((ZTFperiod, Zfreq, Zpow))
-            
-        ZTFperiod_ograms.sort(key=lambda x: x[0], reverse=True)
-        if len(ZTFperiod_ograms) < 3:
-            ZTFbestPeriod, ZTFbestfreq, Zbestpow = ZTFperiod_ograms[0]
-        else:
-            ZTFbestPeriod, ZTFbestfreq, Zbestpow = ZTFperiod_ograms[1]
+        ZTFbestPeriod, ZTFbestfreq, Zbestpow = ZTFperiod_ograms[1]
+
+
     if verbose:
         print('            ZTF period = ', ZTFbestPeriod)
 
@@ -168,14 +166,14 @@ def LCanalysisFromP(time, mag, magErr, P, ntermsModels):
     modelFit2data = np.interp(c, a, LCanalysisResults['modTemplate'])
     LCanalysisResults['modelFit2data'] = modelFit2data 
     delmag = LCanalysisResults['dataTemplate'] - modelFit2data
-    LCanalysisResults['rms'] = sigG(delmag)
     LCanalysisResults['chi'] = delmag/LCanalysisResults['dataTemplateErr']
     LCanalysisResults['chi2dof'] = np.sum(LCanalysisResults['chi']**2)/np.size(LCanalysisResults['chi'])
     LCanalysisResults['chi2dofR'] = sigG(LCanalysisResults['chi'])
     return LCanalysisResults 
 
+'''
 def RR_lyrae_analysis(end, i, Lid, dataL, dataZ, lc_analysis, ZTF_data_best, fits, periodograms, verbose=False):
-    '''
+    
     This function analyzes RR Lyrae light curve data by calculating periods, fitting light curves and conducting BE
     candidate analysis of local peaks. 
 
@@ -188,7 +186,7 @@ def RR_lyrae_analysis(end, i, Lid, dataL, dataZ, lc_analysis, ZTF_data_best, fit
         ZTF_data_lc(list) = place to save best ztf data
         fits(list) = list to save light curve fits
         periodograms(list) = list to save periodograms
-    '''
+    
     
             # accessing data
     
@@ -308,4 +306,4 @@ def RR_lyrae_analysis(end, i, Lid, dataL, dataZ, lc_analysis, ZTF_data_best, fit
     fits.append((Lid, (LINEAR_Plinear, LINEAR_Pmean, ZTF_Pztf, ZTF_Pmean)))
 
     return lc_analysis, periodograms, fits, ZTF_data_best
-
+'''
