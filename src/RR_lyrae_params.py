@@ -37,18 +37,14 @@ def doPeriods(time, mag, magErr, nterms, nyquist=100, freqFac=1.05, verbose=Fals
         freqFac(float): frequency for searching (defining the grid)
     '''
     try:
-        if verbose: print('Engaging in period calculation')
+        if verbose: print('Engaging in period calculation...')
         ls = LombScargle(time, mag, magErr, nterms=nterms) # set up a LombScargle object to model the frequency and power
-        if verbose: print('Autopower mode')
         frequencyAuto, powerAuto = ls.autopower(nyquist_factor=nyquist) # calculate the frequency and power
         best_freq = frequencyAuto[np.argmax(powerAuto)]
-        if verbose: print('new frequency grid...')
         frequency = np.arange(best_freq/freqFac, best_freq*freqFac, 5e-6)
-        if verbose: print('LS periodogram 2.0')
         power = ls.power(frequency)  # compute LS periodogram again
         period = 1. / frequency
         best_period = period[np.argmax(power)] # choosing the period with the highest power
-        if verbose: print('Period calculated: ', best_period)
         return best_period, frequency, power
     
     except:
@@ -81,7 +77,7 @@ def LINEARLS(dataL, Lid, nterms, verbose=False):
     # LINEAR-only period
     if verbose:
         print('computing LINEAR period...')
-    Plinear, fL, pL = doPeriods(tL, mL, mLerr, nterms, Lid, verbose=True)    
+    Plinear, fL, pL = doPeriods(tL, mL, mLerr, nterms)    
     
     if verbose:
         print('LINEAR period = ', Plinear)
@@ -110,26 +106,28 @@ def ZTFs(ZTFdata, Lid, nterms, verbose=False):
 
     BandData, timeZ, magZ, magErrZ = None, None, None, None
     for b in ZTFbands:
+        if verbose: print('Period calculation for ',b, 'filter.')
 
         BandData = ZTFdata.loc[ZTFdata['filtercode'] == b]
         timeZ = BandData['mjd'].to_numpy()
         magZ = BandData['mag'].to_numpy()
         magErrZ = BandData['magerr'].to_numpy()     
 
-        ZTFperiod, Zfreq, Zpow = doPeriods(timeZ, magZ, magErrZ, nterms, Lid)
-        ZTFperiod_ograms.append((ZTFperiod, Zfreq, Zpow))
+        ZTFperiod, Zfreq, Zpow = doPeriods(timeZ, magZ, magErrZ, nterms)
+        if ZTFperiod > 0:
+            ZTFperiod_ograms.append((ZTFperiod, Zfreq, Zpow, timeZ, magZ, magErrZ))
         
     ZTFperiod_ograms.sort(key=lambda x: x[0], reverse=True)
     if len(ZTFperiod_ograms) < 3:
-        ZTFbestPeriod, ZTFbestfreq, Zbestpow = ZTFperiod_ograms[0]
+        ZTFbestPeriod, ZTFbestfreq, Zbestpow,timeZ, magZ, magErrZ = ZTFperiod_ograms[0]
     else:
-        ZTFbestPeriod, ZTFbestfreq, Zbestpow = ZTFperiod_ograms[1]
+        ZTFbestPeriod, ZTFbestfreq, Zbestpow,timeZ, magZ, magErrZ = ZTFperiod_ograms[1]
 
 
     if verbose:
         print('            ZTF period = ', ZTFbestPeriod)
 
-    return ZTFbestPeriod, ZTFbestfreq, Zbestpow, Zfreq, Zpow, timeZ, magZ, magErrZ
+    return ZTFbestPeriod, ZTFbestfreq, Zbestpow, timeZ, magZ, magErrZ
 
 def LCanalysisFromP(time, mag, magErr, P, ntermsModels):
     '''
@@ -170,140 +168,3 @@ def LCanalysisFromP(time, mag, magErr, P, ntermsModels):
     LCanalysisResults['chi2dof'] = np.sum(LCanalysisResults['chi']**2)/np.size(LCanalysisResults['chi'])
     LCanalysisResults['chi2dofR'] = sigG(LCanalysisResults['chi'])
     return LCanalysisResults 
-
-'''
-def RR_lyrae_analysis(end, i, Lid, dataL, dataZ, lc_analysis, ZTF_data_best, fits, periodograms, verbose=False):
-    
-    This function analyzes RR Lyrae light curve data by calculating periods, fitting light curves and conducting BE
-    candidate analysis of local peaks. 
-
-    Arguments:
-        end(str) = how to save this iteration of the dataset
-        i(int) = iterable
-        Lids(list) = list of LINEAR ids
-        ztfdata(dict) = dictionary of ZTF data
-        lc_analysis(dict) = dictionary to save light curve analysis
-        ZTF_data_lc(list) = place to save best ztf data
-        fits(list) = list to save light curve fits
-        periodograms(list) = list to save periodograms
-    
-    
-            # accessing data
-    
-    if verbose:
-        print('Current i:',i)
-        print('Current LINEAR ID:', Lid)
-        print(f'Shape of linear:{dataL.shape}, shape of ztf:{dataZ.shape}')
-
-    # calculating the periods
-    Plinear, fL, pL, tL, mL, meL = LINEARLS(dataL, Lid)
-    Pztf, Zbestf, Zbestp, fZ, pZ, tZ, mZ, meZ = ZTFs(dataZ, Lid)
-
-    if verbose:
-        print(f'Plinear: {Plinear}, ZTFperiod: {Pztf}')
-
-    # saving the ZTF data
-    ZTF_data_best.append((Lid, (tZ, mZ, meZ)))
-
-    # blazhko periodogram analysis
-    fFoldedL, pFoldedL, fMainPeakL, fBlazhkoPeakL, BlazhkoPeriodL, BpowerRatioL, BsignificanceL = getBlazhkoPeak(fL, pL)
-    if fZ.size==0 or pZ.size==0 or Plinear==0 or Pztf==0 or dataZ.shape[0]==0:
-        fFoldedZ, pFoldedZ, fMainPeakZ, fBlazhkoPeakZ, BlazhkoPeriodZ, BpowerRatioZ, BsignificanceZ = np.array(()), np.array(()), 0, 0, 0, 0, 0
-    else:
-        fFoldedZ, pFoldedZ, fMainPeakZ, fBlazhkoPeakZ, BlazhkoPeriodZ, BpowerRatioZ, BsignificanceZ = getBlazhkoPeak(fZ, pZ)
-
-    # period analysis
-    Plinear = round(Plinear, 6)
-    Pztf = round(Pztf, 6)
-    Pmean = round((Plinear+Pztf)/2, 6)
-    Pratio = round((Pztf/Plinear), 6)
-
-    # saving the periodograms
-    periodograms.append((Lid, (fL, pL, fFoldedL, pFoldedL), (fZ, pZ, fFoldedZ, pFoldedZ)))
-
-    # fitting the light curves
-    ntermsModels = 6
-
-    if verbose: print('Starting to fit light curves!')
-
-    if tZ.size==0 or mZ.size == 0 or meZ.size == 0 or Plinear == 0.0 or Pztf == 0.0:
-        if verbose: print(f'We engaged with these parameters: tZ={tZ.size}, mZ={mZ.size}, meZ={meZ.size}, plinear={Plinear}, pztf={Pztf}')
-        LINEAR_Plinear = {
-            'modelPhaseGrid': np.array(()), 
-            'modelFit': np.array(()), 
-            'dataPhasedTime': np.array(()), 
-            'A': 0.0, 
-            'mmax': 0.0, 
-            'modTemplate': np.array(()), 
-            'dataTemplate': np.array(()), 
-            'dataTemplateErr': np.array(()), 
-            'modelFit2data': np.array(()), 
-            'rms': 0.0, 
-            'chi': 0.0, 
-            'chi2dof': 0.0, 
-            'chi2dofR': 0.0
-        }
-        LINEAR_Pmean = {
-            'modelPhaseGrid': np.array(()), 
-            'modelFit': np.array(()), 
-            'dataPhasedTime': np.array(()), 
-            'A': 0.0, 
-            'mmax': 0.0, 
-            'modTemplate': np.array(()), 
-            'dataTemplate': np.array(()), 
-            'dataTemplateErr': np.array(()), 
-            'modelFit2data': np.array(()), 
-            'rms': 0.0, 
-            'chi': 0.0, 
-            'chi2dof': 0.0, 
-            'chi2dofR': 0.0
-        }
-        ZTF_Pztf = {
-            'modelPhaseGrid': np.array(()), 
-            'modelFit': np.array(()), 
-            'dataPhasedTime': np.array(()), 
-            'A': 0.0, 
-            'mmax': 0.0, 
-            'modTemplate': np.array(()), 
-            'dataTemplate': np.array(()), 
-            'dataTemplateErr': np.array(()), 
-            'modelFit2data': np.array(()), 
-            'rms': 0.0, 
-            'chi': 0.0, 
-            'chi2dof': 0.0, 
-            'chi2dofR': 0.0
-        }
-        ZTF_Pmean = {
-            'modelPhaseGrid': np.array(()), 
-            'modelFit': np.array(()), 
-            'dataPhasedTime': np.array(()), 
-            'A': 0.0, 
-            'mmax': 0.0, 
-            'modTemplate': np.array(()), 
-            'dataTemplate': np.array(()), 
-            'dataTemplateErr': np.array(()), 
-            'modelFit2data': np.array(()), 
-            'rms': 0.0, 
-            'chi': 0.0, 
-            'chi2dof': 0.0, 
-            'chi2dofR': 0.0
-        }
-    else:
-        LINEAR_Plinear = LCanalysisFromP(tL, mL, meL, Plinear, ntermsModels)
-        LINEAR_Pmean = LCanalysisFromP(tL, mL, meL, Pmean, ntermsModels)
-
-
-        ZTF_Pztf = LCanalysisFromP(tZ, mZ, meZ, Pztf, ntermsModels)
-        ZTF_Pmean = LCanalysisFromP(tZ, mZ, meZ, Pmean, ntermsModels)
-
-    STAR = [Plinear, Pztf, Pmean, Pratio, np.size(tL), LINEAR_Plinear['rms'], round(LINEAR_Plinear['chi2dof'], 1), round(LINEAR_Plinear['chi2dofR'], 1),LINEAR_Pmean['rms'],
-        round(LINEAR_Pmean['chi2dof'],1), round(LINEAR_Pmean['chi2dofR'],1), round(LINEAR_Plinear['mmax'],2), round(LINEAR_Plinear['A'],2),
-        np.size(tZ), ZTF_Pztf['rms'], round(ZTF_Pztf['chi2dof'],1), round(ZTF_Pztf['chi2dofR'],1), ZTF_Pmean['rms'], round(ZTF_Pmean['chi2dof'],1), round(ZTF_Pmean['chi2dofR'],1), round(ZTF_Pztf['mmax'],2), round(ZTF_Pztf['A'],2),
-        fMainPeakL, fBlazhkoPeakL, BlazhkoPeriodL, BpowerRatioL, BsignificanceL, fMainPeakZ, 
-        fBlazhkoPeakZ, BlazhkoPeriodZ, BpowerRatioZ, BsignificanceZ]
-        
-    lc_analysis[Lid] = STAR
-    fits.append((Lid, (LINEAR_Plinear, LINEAR_Pmean, ZTF_Pztf, ZTF_Pmean)))
-
-    return lc_analysis, periodograms, fits, ZTF_data_best
-'''

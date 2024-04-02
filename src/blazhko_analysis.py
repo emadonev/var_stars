@@ -98,7 +98,7 @@ def getBlazhkoPeak(freq, LSpow, verbose=False):
         print('power rms beyond Blazhko peak:', powerFarRMS)
         print('Blazhko peak significance:', Bsignificance)
         print('Blazhko period (day):', BlazhkoPeriod)
-    return fFolded, pFolded, fMainPeak, fBlazhkoPeak, BlazhkoPeriod, BpowerRatio, Bsignificance
+    return fFolded, pFolded, round(fMainPeak, 4), round(fBlazhkoPeak, 4), round(BlazhkoPeriod, 4), round(BpowerRatio, 4), round(Bsignificance, 4)
 
 # BLAZHKO EFFECT CANDIDATES
 # =============================
@@ -117,95 +117,92 @@ def blazhko_determine(df, dfnew):
         # STEP 1: getting rid of trash
         # ---------
         if df['Ampl_diff'][i]<2:
-            #if df["dP"][i]<1:
             if df['L_chi2dofR'][i]<9 or df['Zchi2dofR'][i]<9 or df['Plinear'][i]<4 or df['Pztf'][i]<4:
-                if df['NdataLINEAR'][i]>250 or df['NdataZTF'][i]>250:
-                    # STEP 2: determine periodogram likelihood of BE
-                    # ---------
-                    dPmin = 0.01
-                    #--- determining if LINEAR part has periodogram indication of BE ---
-                    # no daily alias of main period
-                    LINEAR_pd_period = (np.abs(df['Plinear'][i]-0.5)>dPmin)&(np.abs(df['Plinear'][i]-1.0)>dPmin)&(np.abs(df['Plinear'][i]-2.0)>dPmin)
-                    # blazhko period must be within RR Lyrae range
-                    LINEAR_pd_pB = (df['BlazhkoPeriodL'][i]>35)&(df['BlazhkoPeriodL'][i]<325) 
-                    # relative strength and significance must be above certain value for it to be noticeable
-                    LINEAR_pd_sig = (df['BpowerRatioL'][i]>0.05)&(df['BsignificanceL'][i]>5)
-                    #--- determining if ZTF part has periodogram indication of BE ---
-                    ZTF_pd_period = (np.abs(df['Pztf'][i]-0.5)>dPmin)&(np.abs(df['Pztf'][i]-1.0)>dPmin)&(np.abs(df['Pztf'][i]-2.0)>dPmin)
-                    ZTF_pd_pB = (df['BlazhkoPeriodZ'][i]>35)&(df['BlazhkoPeriodZ'][i]<325) 
-                    ZTF_pd_sig = (df['BpowerRatioZ'][i]>0.05)&(df['BsignificanceZ'][i]>5)
-                    #---
-                    BE = 0
-                    if ((LINEAR_pd_period&LINEAR_pd_pB&LINEAR_pd_sig)&(ZTF_pd_period&ZTF_pd_pB&ZTF_pd_sig)):
-                        BE += 1
-                        df.loc[i, 'IndicatorType'] = 'LZ'
-                    if (LINEAR_pd_period&LINEAR_pd_pB&LINEAR_pd_sig):
-                        BE += 1
-                        df.loc[i, 'IndicatorType'] = 'L'
-                    if (ZTF_pd_period&ZTF_pd_pB&ZTF_pd_sig):
-                        BE += 1
-                        df.loc[i, 'IndicatorType'] = 'Z'
-                    # ---
-                    if BE>0:
-                        row = pd.DataFrame(df.iloc[[int(i)]])
-                        dfnew = pd.concat([dfnew, row.reset_index(drop=True)], ignore_index=True, axis=0)
-                    else:
-                        # STEP 3: determine scorechart for other parameters
-                        period = df['dP'][i]
-                        chiL = df['L_chi2dofR'][i]
-                        chiZ = df['Zchi2dofR'][i]
-                        ampl = df['Ampl_diff'][i]
-
+                if df['NdataLINEAR'][i]>250 and df['NdataZTF'][i]>40:
+                    if df['Pratio'][i]>0.8 and df['Pratio'][i]<1.2:
+                        # STEP 2: determine periodogram likelihood of BE
+                        # ---------
+                        dPmin = 0.01
+                        #--- determining if LINEAR part has periodogram indication of BE ---
+                        # no daily alias of main period
+                        LINEAR_pd_period = (np.abs(df['Plinear'][i]-0.5)>dPmin)&(np.abs(df['Plinear'][i]-1.0)>dPmin)&(np.abs(df['Plinear'][i]-2.0)>dPmin)
+                        # blazhko period must be within RR Lyrae range
+                        LINEAR_pd_pB = (df['BlazhkoPeriodL'][i]>35)&(df['BlazhkoPeriodL'][i]<325) 
+                        # relative strength and significance must be above certain value for it to be noticeable
+                        LINEAR_pd_sig = (df['BpowerRatioL'][i]>0.05)&(df['BsignificanceL'][i]>5)
+                        #--- determining if ZTF part has periodogram indication of BE ---
+                        ZTF_pd_period = (np.abs(df['Pztf'][i]-0.5)>dPmin)&(np.abs(df['Pztf'][i]-1.0)>dPmin)&(np.abs(df['Pztf'][i]-2.0)>dPmin)
+                        ZTF_pd_pB = (df['BlazhkoPeriodZ'][i]>35)&(df['BlazhkoPeriodZ'][i]<325) 
+                        ZTF_pd_sig = (df['BpowerRatioZ'][i]>0.05)&(df['BsignificanceZ'][i]>5)
+                        #---
+                        BE = 0
+                        if ((LINEAR_pd_period&LINEAR_pd_pB&LINEAR_pd_sig)&(ZTF_pd_period&ZTF_pd_pB&ZTF_pd_sig)):
+                            BE += 1
+                            df.loc[i, 'IndicatorType'] = 'LZ'
+                        if (LINEAR_pd_period&LINEAR_pd_pB&LINEAR_pd_sig):
+                            BE += 1
+                            df.loc[i, 'IndicatorType'] = 'L'
+                        if (ZTF_pd_period&ZTF_pd_pB&ZTF_pd_sig):
+                            BE += 1
+                            df.loc[i, 'IndicatorType'] = 'Z'
                         # ---
-
-                        p_score = 0
-                        chi_score = 0
-                        amp_score = 0
-
-                        # ---
-
-                        # PERIOD 
-                        if period > 4e-5 and period < 0.001: p_score += 2
-                        if period > 0.001: p_score += 4
-                        
-                        # CHI
-                        if (chiZ>=2.5 and chiZ<=4.5)and(chiL >= 2.5 and chiL <= 4.5): 
-                            chi_score += 4
-                            df.loc[i, 'ChiType'] = 'LZ'
-                        if (chiL>4.5)and(chiZ>4.5):
-                            chi_score += 6
-                            df.loc[i, 'ChiType'] = 'LZ'
-                        if (chiL >=2.5 and chiL <= 4.5):
-                            chi_score += 2
-                            df.loc[i, 'ChiType'] = 'L'
-                        if (chiZ>=2.5 and chiZ<=4.5): 
-                            chi_score += 2
-                            df.loc[i, 'ChiType'] = 'Z'
-                        if chiL>4.5:
-                            chi_score += 3
-                            df.loc[i, 'ChiType'] = 'L'
-                        if chiZ>4.5:
-                            chi_score += 3
-                            df.loc[i, 'ChiType'] = 'Z'
-
-                        # AMPL
-                        if ampl>0.05 and ampl<0.15: amp_score += 1
-                        if ampl>0.15 and ampl<2: amp_score += 2
-
-                        if amp_score > p_score:
-                            df.loc[i, 'period_vs_amp'] = 'amp'
-                        else:
-                            df.loc[i, 'period_vs_amp'] = 'period'
-
-                        # TOTAL SCORE
-                        score = p_score + chi_score + amp_score
-                        df.loc[i, 'BE_score'] = score
-
-                        if score>5:
+                        if BE>0:
                             row = pd.DataFrame(df.iloc[[int(i)]])
                             dfnew = pd.concat([dfnew, row.reset_index(drop=True)], ignore_index=True, axis=0)
-            #else:
-                #pass 
+                        else:
+                            period = df['dP'][i]
+                            chiL = df['L_chi2dofR'][i]
+                            chiZ = df['Zchi2dofR'][i]
+                            ampl = df['Ampl_diff'][i]
+
+                            # ---
+
+                            p_score = 0
+                            chi_score = 0
+                            amp_score = 0
+
+                            # ---
+
+                            # PERIOD 
+                            if period > 0.00002 and period < 0.00005: p_score += 2
+                            if period >= 0.00005: p_score += 4
+                            
+                            # CHI
+                            if (chiZ>=2.0 and chiZ<=4.0)and(chiL >= 1.8 and chiL <= 3.0): 
+                                chi_score += 4
+                                df.loc[i, 'ChiType'] = 'LZ'
+                            if (chiL>3.0)and(chiZ>4.0):
+                                chi_score += 6
+                                df.loc[i, 'ChiType'] = 'LZ'
+                            if (chiL >=1.8 and chiL <= 3.0):
+                                chi_score += 2
+                                df.loc[i, 'ChiType'] = 'L'
+                            if (chiZ>=2.0 and chiZ<=4.0): 
+                                chi_score += 2
+                                df.loc[i, 'ChiType'] = 'Z'
+                            if chiL>3.0:
+                                chi_score += 3
+                                df.loc[i, 'ChiType'] = 'L'
+                            if chiZ>4.0:
+                                chi_score += 3
+                                df.loc[i, 'ChiType'] = 'Z'
+
+                            # AMPL
+                            if ampl>0.05 and ampl<0.15: amp_score += 1
+                            if ampl>0.15 and ampl<2: amp_score += 2
+
+                            if amp_score > p_score:
+                                df.loc[i, 'period_vs_amp'] = 'amp'
+                            else:
+                                df.loc[i, 'period_vs_amp'] = 'period'
+
+                            # TOTAL SCORE
+                            score = p_score + chi_score + amp_score
+                            df.loc[i, 'BE_score'] = score
+
+                            if (score>4):
+                                row = pd.DataFrame(df.iloc[[int(i)]])
+                                dfnew = pd.concat([dfnew, row.reset_index(drop=True)], ignore_index=True, axis=0)
         else:
             pass
     return dfnew
@@ -267,7 +264,10 @@ class BE_analyzer:
 
             lc = self.Ldata.get_light_curve(LID)
             tL = lc.T[0]
-            tZ = self.Zdata[n][1][0].to_numpy()
+            for f, g in enumerate(self.Zdata):
+                if g[0] == LID:
+                    break
+            tZ = self.Zdata[f][1]
 
             #print('Starting to plot!')
             #makeLCplot_info(L1, L2, self.database_lightc, i, LID, self.Ldata)

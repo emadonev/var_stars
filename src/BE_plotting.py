@@ -256,7 +256,7 @@ def plotLINEARmarkSeasons(Lid, ztf_data, order, LINEARlightcurves, plotName='sea
         if tS>np.min(tL)-200 and tS<np.max(tL)+200:
             redL += 1
 
-    tZ, mZ, meZ = ztf_data[order][1][0], ztf_data[order][1][1], ztf_data[order][1][2]
+    tZ, mZ, meZ = ztf_data[order][1], ztf_data[order][2], ztf_data[order][3]
     ax[1].set_ylim(np.min(mZ)-0.3, np.max(mZ)+0.3)
     ax[1].errorbar(tZ, mZ, meZ, fmt='.b', ecolor=blue)
     ax[0].set_title('ZTF object {0}'.format(order),fontproperties=font,fontsize=14)
