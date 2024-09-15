@@ -90,7 +90,7 @@ def makeLCplot_info(L1, L2, dataset, order, Lid, dataL, total_num, plotname='LCp
 
     if plotSave:
         plotName = plotname + '.png'
-        plt.savefig('../img_rsc/'+plotName, dpi=750,bbox_inches = 'tight')
+        plt.savefig('../img_rsc/'+plotName, dpi=125,bbox_inches = 'tight')
     plt.show()
     #print('Finished plotting!')
  
@@ -239,7 +239,7 @@ def plotBlazhkoPeaksLINEAR(Lid, order, fL, pL, fZ, pZ, fFoldedL, pFoldedL, fFold
 
         if plotSave:
             plotName = '../img_rsc/periodogram.png'
-            plt.savefig(plotName, dpi=750,bbox_inches = 'tight')
+            plt.savefig(plotName, dpi=125,bbox_inches = 'tight')
             #print('saved plot as:', plotName) 
         plt.show()     
         return   
@@ -282,7 +282,7 @@ def plotLINEARmarkSeasons(Lid, ztf_data, order, LINEARlightcurves, plotName='sea
             redZ += 1
 
     if plotSave:
-        plt.savefig('../img_rsc/'+plotName+'.png', dpi=750)
+        plt.savefig('../img_rsc/'+plotName+'.png', dpi=125)
     plt.show()   
     
     return redL, redZ
@@ -363,7 +363,7 @@ def makeLCplotBySeason(Lid, L1, tL, L2, tZ, redL, redZ, plotrootname='LCplotBySe
 
     if plotSave:
         plotName = plotrootname + '.png'
-        plt.savefig('../img_rsc/'+plotName, dpi=600,bbox_inches = 'tight')
+        plt.savefig('../img_rsc/'+plotName, dpi=125,bbox_inches = 'tight')
         #print('saved plot as:', plotName) 
     plt.show()     
     return
