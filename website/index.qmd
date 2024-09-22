@@ -1,0 +1,21 @@
+---
+title: "Project Overview"
+format:
+  html:
+    toc: true
+    css: styles.css  # Reference to your custom CSS file
+---
+
+# Project Overview
+
+## Notebook 1
+```{embed}
+../nbs/01_Introduction.ipynb
+../nbs/02_Data_preparation.ipynb
+../nbs/03_Elementary_data_analysis.ipynb
+../nbs/04_Methodology_analysis.ipynb
+../nbs/05_Blazhko_analysis.ipynb
+../nbs/06_Blazhko_star_analysis.ipynb
+```
+
+
