@@ -51,15 +51,15 @@ def makeLCplot_info(L1, L2, dataset, order, Lid, dataL, total_num, plotname='LCp
     a separate box for text data.
     
     Arguments:
-        L1: phased LINEAR light curve
-        L2: phased ZTF light curve
-        dataset: dataset of light curve statistics
-        order: iteration of light curve
-        Lid: LINEAR ID
-        dataL: LINEAR metadata table
-        total_num: total number of light curves
-        plotname: name of saved plot, default: 'LCplot'
-        plotSave: default: False, if True, plot will be saved
+        L1(array): phased LINEAR light curve
+        L2(array): phased ZTF light curve
+        dataset(dataframe): dataset of light curve statistics
+        order(int): iteration of light curve
+        Lid(int): LINEAR ID
+        dataL(array): LINEAR metadata table
+        total_num(int): total number of light curves
+        plotname(str): name of saved plot, default: 'LCplot'
+        plotSave(bool): default: False, if True, plot will be saved
     '''
     # plot setup
     fig, ax = plt.subplots(1,3, figsize=(32,8))   # dimensions of plot
@@ -362,27 +362,41 @@ def plotLINEARmarkSeasons(Lid, ztf_data, order, LINEARlightcurves, plotName='sea
 
 def makeLCplotBySeason(Lid, L1, tL, L2, tZ, redL, redZ, plotrootname='LCplotBySeason', plotSave=False):
     '''
-    
+    This function is used for plotting the phased light curve fit for every season of observation compared to the
+    light curve data for that season. 
+
+    Arguments:
+        Lid(int): LINEAR id
+        L1(array): phased light curve fit for LINEAR data
+        tL(array): time data for LINEAR
+        L2(array): phased light curve fit for ZTF data
+        tZ(array): time data for ZTF
+        redL(int): number of seasons for LINEAR data
+        redZ(int): number of seasons for ZTF data
+        plotrootname(str): the default name of the saved plot, 'LCplotBySeason'
+        plotSave(bool): default False, saving the plot
     '''
-    
+    # setting up the plot
     fig = plt.figure(figsize=(32, 30))
     fig.subplots_adjust(hspace=0.2, bottom=0.06, top=0.94, left=0.12, right=0.94)
     
     fig.suptitle('Seasons for:'+str(Lid), fontsize=30, fontproperties=font)
     
+    # new function for plotting LINEAR seasons
     def plotPanelL(ax, L1, season):
         ax.set_xlabel('phase', fontproperties=font, fontsize=14)
         ax.set_ylabel('normalized phased light curve', fontproperties=font, fontsize=14)
         ax.set_xlim(-0.1, 1.1)
         ax.set_ylim(1.3, -0.4)
-        # fit for Plinear
+        # fit for LINEAR period
         ax.plot(L1['modelPhaseGrid'], L1['modTemplate'], or3, markeredgecolor=or3, lw=2, fillstyle='top', linestyle='dashed')
     
-        # data
+        # plotting the phased light curve data for that particular season
         xx, yy, zz, ww = sort4arr(L1['dataPhasedTime'], L1['dataTemplate'], L1['dataTemplateErr'], tL)
         tSmin = 52520 + (season-1)*365
         tSmax = 52520 + season*365
         condition = (ww > tSmin) & (ww < tSmax)
+        # selecting the data based on the season (condition)
         xxS = xx[condition]
         yyS = yy[condition]
         zzS = zz[condition]
@@ -406,18 +420,21 @@ def makeLCplotBySeason(Lid, L1, tL, L2, tZ, redL, redZ, plotrootname='LCplotBySe
     # ZTF
     # =======
 
+    # creating a new function for plotting the ZTF seasons
     def plotPanelZ(ax, L2, seasonZ):
+        # plot setup
         ax.set_xlabel('phase', fontproperties=font, fontsize=14)
         ax.set_ylabel('normalized phased light curve', fontproperties=font, fontsize=14)
         ax.set_xlim(-0.1, 1.1)
         ax.set_ylim(1.3, -0.4)
-        # fit for Plinear
+        # fit for ZTF period
         ax.plot(L2['modelPhaseGrid'], L2['modTemplate'], or3, markeredgecolor=or3, lw=2, fillstyle='top', linestyle='dashed')
     
-        # data
+        # accessing the phased ZTF data
         xx, yy, zz, ww = sort4arr(L2['dataPhasedTime'], L2['dataTemplate'], L2['dataTemplateErr'], tZ)
         tSmin = (np.min(tZ)-50) + (seasonZ-1-6)*365
         tSmax = (np.min(tZ)-50) + (seasonZ-6)*365
+        # selecting ZTF data based on condition (time season)
         xxS = xx[(ww>tSmin)&(ww<tSmax)]
         yyS = yy[(ww>tSmin)&(ww<tSmax)]
         zzS = zz[(ww>tSmin)&(ww<tSmax)]
@@ -445,6 +462,31 @@ def makeLCplotBySeason(Lid, L1, tL, L2, tZ, redL, redZ, plotrootname='LCplotBySe
     return
 
 def plotAll(Lid, orderlc, o, tot, L1, L2, blazhko_can, fL, pL, fZ, pZ, fFoldedL, fFoldedZ, pFoldedL, pFoldedZ, data, tL, tZ,ztf_data,plotSave=False):
+    '''
+    This function plots all of the graphs necessary for visual analysis of Blazhko stars
+
+    Arguments:
+        Lid(int): LINEAR id
+        orderlc(int): order of light curve (in the data)
+        o(int): order of light curve in overall analysis
+        tot(int): total number of light curves
+        L1(array): phased light curve data LINEAR
+        L2(array): phased light curve data ZTF
+        balzhko_can(DataFrame): dataframe with the parameters of Blazhko candidates
+        fL(array): frequency values from periodogram for LINEAR
+        pL(array): power values from periodogram for LINEAR
+        fZ(array): frequency values from periodogram for ZTF
+        pZ(array): power values from periodogram for ZTF
+        fFoldedL(array): folded frequency values for LINEAR
+        pFoldedL(array): folded power values for LINEAR
+        fFoldedZ(array): folded frequency values for ZTF
+        pFoldedZ(array): folded power values for LINEAR
+        data(array): collection of LINEAR light curves
+        tL(array): time data for LINEAR
+        tZ(array): time data for ZTF
+        ztf_data(array): collection of light curves for ZTF
+        plotSave(bool): default False, saving the plot on computer
+    '''
     if plotSave:
         makeLCplot_info(L1, L2, blazhko_can, o, Lid, data, tot,plotSave=True)
         plotBlazhkoPeaks(Lid, o, fL, pL, fZ, pZ, fFoldedL, pFoldedL, fFoldedZ, pFoldedZ, blazhko_can, fac=1.008, plotSave=True, verbose=True)
