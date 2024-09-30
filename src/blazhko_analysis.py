@@ -1,3 +1,5 @@
+# IMPORTING LIBRARIES
+# ======================
 from astroML.datasets import fetch_LINEAR_sample
 from astropy.timeseries import LombScargle
 from astroML.time_series import MultiTermFit
@@ -56,7 +58,7 @@ def getBlazhkoPeak(freq, LSpow, verbose=False):
     foundMin = 0
     foldedMax = 0 
     ifoldedMax = 0
-    # NB: the first point is the highest by construction (the main peak)
+    # the first point is the highest by construction (the main peak)
     for i in range(1, iDelta):
         if ((foundMin==0)&(pFolded[i] > pFolded[i-1])):
             # the first time we passed through a local minimum
@@ -104,9 +106,9 @@ def getBlazhkoPeak(freq, LSpow, verbose=False):
 # =============================
 def blazhko_determine(df, dfnew):
     '''
-    This algorithm sorts through a DataFrame of light curve parameters and decides which are bad Blazhko Effect candidates,
-    which are inter BE candidates, good BE candidates and excellent BE candidates. The parameters we use for determining
-    BE candidates are amplitude, chi2 of 2 both LINEAR and ZTF, period and the periodogram analysis (sign of local peaks for BE).
+    This algorithm sorts through a DataFrame of light curve parameters and decides which stars are
+    BE candidates. The parameters we use for determining BE candidates are amplitude, chi2 of 2 both LINEAR and ZTF, 
+    period and the periodogram analysis (sign of local peaks for BE).
 
     Arguments:
         df(DataFrame) = input dataframe
@@ -114,12 +116,12 @@ def blazhko_determine(df, dfnew):
     '''
     for i in range(df.shape[0]):
         
-        # STEP 1: getting rid of trash
+        # STEP 1: getting rid of bad data
         # ---------
-        if df['Ampl_diff'][i]<2:
-            if df['L_chi2dofR'][i]<9 or df['Zchi2dofR'][i]<9 or df['Plinear'][i]<4 or df['Pztf'][i]<4:
-                if df['NdataLINEAR'][i]>250 and df['NdataZTF'][i]>40:
-                    if df['Pratio'][i]>0.8 and df['Pratio'][i]<1.2:
+        if df['Ampl_diff'][i]<2: # amplitude difference is larger than 2 mags
+            if df['L_chi2dofR'][i]<9 or df['Zchi2dofR'][i]<9 or df['Plinear'][i]<4 or df['Pztf'][i]<4: # if period isn't within RR Lyrae range and if chi^2 values are unrealistically high
+                if df['NdataLINEAR'][i]>250 and df['NdataZTF'][i]>40: # if number of data points is insufficient
+                    if df['Pratio'][i]>0.8 and df['Pratio'][i]<1.2: # if the ratio of periods is unrealistic for the same star (eg. ZTF period is twice the LINEAR period)
                         # STEP 2: determine periodogram likelihood of BE
                         # ---------
                         dPmin = 0.01
@@ -128,7 +130,7 @@ def blazhko_determine(df, dfnew):
                         LINEAR_pd_period = (np.abs(df['Plinear'][i]-0.5)>dPmin)&(np.abs(df['Plinear'][i]-1.0)>dPmin)&(np.abs(df['Plinear'][i]-2.0)>dPmin)
                         # blazhko period must be within RR Lyrae range
                         LINEAR_pd_pB = (df['BlazhkoPeriodL'][i]>35)&(df['BlazhkoPeriodL'][i]<325) 
-                        # relative strength and significance must be above certain value for it to be noticeable
+                        # relative strength and significance must be above 0.05 and 5 respectively
                         LINEAR_pd_sig = (df['BpowerRatioL'][i]>0.05)&(df['BsignificanceL'][i]>5)
                         #--- determining if ZTF part has periodogram indication of BE ---
                         ZTF_pd_period = (np.abs(df['Pztf'][i]-0.5)>dPmin)&(np.abs(df['Pztf'][i]-1.0)>dPmin)&(np.abs(df['Pztf'][i]-2.0)>dPmin)
@@ -136,70 +138,84 @@ def blazhko_determine(df, dfnew):
                         ZTF_pd_sig = (df['BpowerRatioZ'][i]>0.05)&(df['BsignificanceZ'][i]>5)
                         #---
                         BE = 0
+                        # if a star has indication of BE via both its periodograms
                         if ((LINEAR_pd_period&LINEAR_pd_pB&LINEAR_pd_sig)&(ZTF_pd_period&ZTF_pd_pB&ZTF_pd_sig)):
                             BE += 1
                             df.loc[i, 'IndicatorType'] = 'LZ'
+                        # indication of BE via LINEAR periodogram
                         if (LINEAR_pd_period&LINEAR_pd_pB&LINEAR_pd_sig):
                             BE += 1
                             df.loc[i, 'IndicatorType'] = 'L'
+                        # indication of BE via ZTF periodogram
                         if (ZTF_pd_period&ZTF_pd_pB&ZTF_pd_sig):
                             BE += 1
                             df.loc[i, 'IndicatorType'] = 'Z'
                         # ---
+                        # STEP 03: if a star has BE indication via periodogram, it is immediately selected
+                        # otherwise it goes through the scoring mechanism
                         if BE>0:
                             row = pd.DataFrame(df.iloc[[int(i)]])
                             dfnew = pd.concat([dfnew, row.reset_index(drop=True)], ignore_index=True, axis=0)
                         else:
+                            # select period, chi2 and amplitude values
                             period = df['dP'][i]
                             chiL = df['L_chi2dofR'][i]
                             chiZ = df['Zchi2dofR'][i]
                             ampl = df['Ampl_diff'][i]
 
                             # ---
-
+                            # assign starting scores
                             p_score = 0
                             chi_score = 0
                             amp_score = 0
 
                             # ---
 
-                            # PERIOD 
+                            # PERIOD scores
                             if period > 0.00002 and period < 0.00005: p_score += 2
                             if period >= 0.00005: p_score += 4
                             
-                            # CHI
+                            # CHI^2 scores
+                            # if both LINEAR and ZTF chi^2 scores are satisfied
                             if (chiZ>=2.0 and chiZ<=4.0)and(chiL >= 1.8 and chiL <= 3.0): 
                                 chi_score += 4
                                 df.loc[i, 'ChiType'] = 'LZ'
                             if (chiL>3.0)and(chiZ>4.0):
                                 chi_score += 6
                                 df.loc[i, 'ChiType'] = 'LZ'
+                            # LINEAR lower score satisfied
                             if (chiL >=1.8 and chiL <= 3.0):
                                 chi_score += 2
                                 df.loc[i, 'ChiType'] = 'L'
+                            # ZTF lower score satisfied
                             if (chiZ>=2.0 and chiZ<=4.0): 
                                 chi_score += 2
                                 df.loc[i, 'ChiType'] = 'Z'
+                            # LINEAR higher score satisfied
                             if chiL>3.0:
                                 chi_score += 3
                                 df.loc[i, 'ChiType'] = 'L'
+                            # ZTF higher schore satisfied
                             if chiZ>4.0:
                                 chi_score += 3
                                 df.loc[i, 'ChiType'] = 'Z'
 
-                            # AMPL
+                            # AMPL score
                             if ampl>0.05 and ampl<0.15: amp_score += 1
                             if ampl>0.15 and ampl<2: amp_score += 2
 
+                            # determining strength of amplitude or period score
                             if amp_score > p_score:
                                 df.loc[i, 'period_vs_amp'] = 'amp'
                             else:
                                 df.loc[i, 'period_vs_amp'] = 'period'
 
-                            # TOTAL SCORE
+                            # TOTAL SCORE calculation
                             score = p_score + chi_score + amp_score
                             df.loc[i, 'BE_score'] = score
 
+                            # if a star has a score of 5 or more, it is selected as a Blazhko candidate
+                            # 
                             if (score>4):
                                 row = pd.DataFrame(df.iloc[[int(i)]])
                                 dfnew = pd.concat([dfnew, row.reset_index(drop=True)], ignore_index=True, axis=0)
@@ -211,6 +227,22 @@ def blazhko_determine(df, dfnew):
 # ================================
 # Building a class for the visual interface
 class BE_analyzer:
+    '''
+    This class is used as an interface for user visual analysis: it contains 4 plots for the 4 phases of visual analysis.
+    At the bottom there is a KEEP and CONTINUE button, if KEEP is clicked, the star is saved in a database and then the 
+    interface moves onto the next star.
+
+    Arguments:
+        linear_ids(list): list of LINEAR IDs
+        tot(int): total number of stars
+        database_lightc(array): database of light curve data
+        be_cand(DataFrame): data of blazhko candidates
+        lightc_fits(array): data for light curve fits
+        lightc_per(array): data for periodograms
+        Zdata(array): collection of ZTF light curves
+        Ldata(array): collection of LINEAR light curves
+        plotSave(bool): default False, saving the total plot as an image
+    '''
     def __init__(self, linear_ids, tot, database_lightc, be_cand, lightc_fits, lightc_per, Zdata, Ldata,plotSave=False):
         self.linear_ids = linear_ids
         self.database_lightc = database_lightc
@@ -238,14 +270,17 @@ class BE_analyzer:
         #print('Engaging in plotting!')
         for i in range(len(self.linear_ids)):
             self.current_i = i
-            #print('My current i:', self.current_i)
+            # access the LINEAR id
             LID = self.linear_ids[self.current_i]
             for n, j in enumerate(self.lightc_fits):
                     if j[0]==LID:
                         break
+
+            # select light curve fits
             L1 = self.lightc_fits[n][1][0]
             L2 = self.lightc_fits[n][1][2]
 
+            # select the periodogram data
             for o, k in enumerate(self.lightc_per):
                     if k[0]==LID:
                         break
@@ -262,6 +297,7 @@ class BE_analyzer:
             fFoldedZ = self.lightc_per[o][2][2]
             pFoldedZ = self.lightc_per[o][2][3]
 
+            # selecting ZTF data
             lc = self.Ldata.get_light_curve(LID)
             tL = lc.T[0]
             for f, g in enumerate(self.Zdata):
@@ -269,8 +305,7 @@ class BE_analyzer:
                     break
             tZ = self.Zdata[f][1]
 
-            #print('Starting to plot!')
-            #makeLCplot_info(L1, L2, self.database_lightc, i, LID, self.Ldata)
+            # plotting all the graphs for visual analysis
             if self.plotSave:
                 BE_plotting.plotAll(LID, n, i, self.total_num, L1, L2, self.database_lightc, fL, pL, fZ, pZ, fFoldedL, fFoldedZ, pFoldedL, pFoldedZ, self.Ldata, tL, tZ, self.Zdata, plotSave=True)
             else:
@@ -331,6 +366,7 @@ def category_analysis(begin_data, fits, periodogr, ztf_data, dataLINEAR,end, id_
         end(string) = with which we save the data
     '''
 
+    # if there is a parameter specified, select all values with te desired parameter
     if parameter:
         new_dataset = begin_data.loc[(begin_data[parameter] == value)]
         new_dataset = new_dataset.reset_index(drop=True)
@@ -338,6 +374,7 @@ def category_analysis(begin_data, fits, periodogr, ztf_data, dataLINEAR,end, id_
 
         # ----
 
+        # access LINEAR ids and go through the entire process of blazhko star analysis 
         length = new_dataset.shape[0]
         Lids = new_dataset['LINEAR id'].to_numpy()
 
@@ -349,6 +386,8 @@ def category_analysis(begin_data, fits, periodogr, ztf_data, dataLINEAR,end, id_
             analysis = BE_analyzer(Lids, length, new_dataset, blazhko_analyzer, fits, periodogr, ztf_data, dataLINEAR)
             analysis.display_interface()
     else:
+        # if instead a list of IDS is provided instead of a specific parameter, repeat all previous steps 
+        # but with a small select of IDs for plotting and analyzing
         if id_list:
             new_dataset = begin_data[begin_data['LINEAR id'].isin(id_list)]
             new_dataset = new_dataset.reset_index(drop=True)
@@ -367,6 +406,7 @@ def category_analysis(begin_data, fits, periodogr, ztf_data, dataLINEAR,end, id_
                 analysis = BE_analyzer(Lids, length, new_dataset, blazhko_analyzer, fits, periodogr, ztf_data, dataLINEAR)
                 analysis.display_interface()
         else:
+            # if nothing else is specified, start the visual analysis process for all stars
             print(f'This dataset has {begin_data.shape[0]} stars.')
             length = begin_data.shape[0]
             Lids = begin_data['LINEAR id'].to_numpy()

@@ -1,3 +1,5 @@
+# IMPORTING LIBRARIES
+# ============
 from astropy.timeseries import LombScargle
 from astroML.datasets import fetch_LINEAR_geneva
 from astropy.table import Table
@@ -12,7 +14,7 @@ import numpy as np
 
 '''
 This Python script contains all of the functions necessary for selecting RR Lyrae stars and
-then subsequently finding the corresponding ZTF stars.
+then finding their corresponding ZTF stars.
 '''
 
 # SELECTION OF RR LYRAE STARS
@@ -22,7 +24,6 @@ def select_good_LINEAR(LDATA):
     This function selects correct LINEAR Ids and calculates the preliminary periods of light curves.
 
     Arguments:
-        NAME(string): name to save with
         LDATA = LINEAR data
     '''
     # ----------------------
@@ -58,6 +59,7 @@ def getZTFlightcurve(ra, dec, radius=3.0):
         radius(float): radius to search the sky with
     '''
     # matching radius is given in arcsec
+    # if able to find ZTF star save it, if not save an empty dataframe
     try:
        lcq = lightcurve.LCQuery()
        res = lcq.from_position(ra, dec, radius)

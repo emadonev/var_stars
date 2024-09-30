@@ -1,6 +1,5 @@
 # IMPORTING LIBRARIES
 # --------------
-# AstroML & Astropy
 from astroML.datasets import fetch_LINEAR_sample
 from astropy.timeseries import LombScargle
 from astroML.time_series import MultiTermFit
@@ -18,6 +17,10 @@ from blazhko_analysis import*
 This Python file contains functions used to calculate the parameters of RR Lyrae stars.
 '''
 
+# --------------
+
+# PERIOD CALCULATION FUNCTION
+# ============
 def doPeriods(time, mag, magErr, nterms, nyquist=100, freqFac=1.05, verbose=False):
     '''
     This function calculates the best period for RR Lyrae stars using the Lomb-Scargle periodogram. It first tries with the auto
@@ -32,16 +35,16 @@ def doPeriods(time, mag, magErr, nterms, nyquist=100, freqFac=1.05, verbose=Fals
         mag(array): magnitude data array for light curve
         magErr(array): magnitude error data array for light curve
         nterms(int): number of Fourier terms with which to fit for best period
-        lsPs(bool): decide if you want to save periodogram or not, default is True so yes
         nyquist(int): highest frequency of search
         freqFac(float): frequency for searching (defining the grid)
+        verbose(bool): helper print functions
     '''
     try:
         if verbose: print('Engaging in period calculation...')
         ls = LombScargle(time, mag, magErr, nterms=nterms) # set up a LombScargle object to model the frequency and power
         frequencyAuto, powerAuto = ls.autopower(nyquist_factor=nyquist) # calculate the frequency and power
         best_freq = frequencyAuto[np.argmax(powerAuto)]
-        frequency = np.arange(best_freq/freqFac, best_freq*freqFac, 5e-6)
+        frequency = np.arange(best_freq/freqFac, best_freq*freqFac, 5e-6) # arrange a finer LombScargle grid 
         power = ls.power(frequency)  # compute LS periodogram again
         period = 1. / frequency
         best_period = period[np.argmax(power)] # choosing the period with the highest power
@@ -55,26 +58,26 @@ def doPeriods(time, mag, magErr, nterms, nyquist=100, freqFac=1.05, verbose=Fals
         power = np.array(())
         return best_period, frequency, power
 
+# LINEAR calculation of period
+# =============
 def LINEARLS(dataL, Lid, nterms, verbose=False):
     '''
     This function accesses the LINEAR data and calculates the period.
 
     Arguments:
-        LINEARids(list): list of all LINEAR ids
-        LINEARlightcurves(array): light curve data
-        order(int): the order of light curve in the list
+        dataL(array): collection of LINEAR light curves
+        Lid(int): LINEAR ID
+        nterms(int): number of terms to fit for period calculation
         verbose(bool): printing statements  
     '''
     
     if verbose:
         print('------------------------------------------------------------')
         print('Period and light curve analysis for LINEAR ID =', Lid)
-    ### first prepare light curve data
-    # LINEAR light curve for this star (specified by provided LINEARid)
+    # LINEAR light curve for this star (specified by provided Lid)
     tL, mL, mLerr = dataL[Lid].T
 
-    ### now compute periods (using LombScargle from astropy.timeseries)
-    # LINEAR-only period
+    # calculation of LINEAR period
     if verbose:
         print('computing LINEAR period...')
     Plinear, fL, pL = doPeriods(tL, mL, mLerr, nterms)    
@@ -84,15 +87,15 @@ def LINEARLS(dataL, Lid, nterms, verbose=False):
 
     return Plinear, fL, pL, tL, mL, mLerr
 
-def ZTFs(ZTFdata, Lid, nterms, verbose=False):
+# ZTF PERIOD CALCULATION
+# ================
+def ZTFs(ZTFdata, nterms, verbose=False):
     """
     This function calculates the period of a ZTF light curve by taking the median of the periods of the 3 filters.
 
     Arguments:
         ZTFdata(array): dataframe of ZTF data for a light curve
         nterms(int): number of terms for the Fourier fitting
-        ZTFbands(list): list of filters, Default ["zg", "zr", "zi"]
-        lsPS(Bool): flag, Default False
         verbose(bool): printing statements
     """
 
@@ -105,19 +108,25 @@ def ZTFs(ZTFdata, Lid, nterms, verbose=False):
         print('  computing ZTF period...')
 
     BandData, timeZ, magZ, magErrZ = None, None, None, None
+
+    # for every filter in our collection of ZTF filters
     for b in ZTFbands:
         if verbose: print('Period calculation for ',b, 'filter.')
-
+        # find the ZTF data for that specific filter
         BandData = ZTFdata.loc[ZTFdata['filtercode'] == b]
+        # create time, magnitude, and magnitude error arrays from the selected filter
         timeZ = BandData['mjd'].to_numpy()
         magZ = BandData['mag'].to_numpy()
         magErrZ = BandData['magerr'].to_numpy()     
-
+        
+        # calculate period based on filter data
         ZTFperiod, Zfreq, Zpow = doPeriods(timeZ, magZ, magErrZ, nterms)
         if ZTFperiod > 0:
             ZTFperiod_ograms.append((ZTFperiod, Zfreq, Zpow, timeZ, magZ, magErrZ))
         
+    # sort the periods from smallest to largest
     ZTFperiod_ograms.sort(key=lambda x: x[0], reverse=True)
+    # select the median and assign proper values
     if len(ZTFperiod_ograms) < 3:
         ZTFbestPeriod, ZTFbestfreq, Zbestpow,timeZ, magZ, magErrZ = ZTFperiod_ograms[0]
     else:
@@ -129,6 +138,8 @@ def ZTFs(ZTFdata, Lid, nterms, verbose=False):
 
     return ZTFbestPeriod, ZTFbestfreq, Zbestpow, timeZ, magZ, magErrZ
 
+# PHASING AND FITTING LIGHT CURVES
+# ==================
 def LCanalysisFromP(time, mag, magErr, P, ntermsModels):
     '''
     This function fits light curve data with a sinusoidal wave using a certain number of terms and the period of
@@ -167,4 +178,5 @@ def LCanalysisFromP(time, mag, magErr, P, ntermsModels):
     LCanalysisResults['chi'] = delmag/LCanalysisResults['dataTemplateErr']
     LCanalysisResults['chi2dof'] = np.sum(LCanalysisResults['chi']**2)/np.size(LCanalysisResults['chi'])
     LCanalysisResults['chi2dofR'] = sigG(LCanalysisResults['chi'])
+
     return LCanalysisResults 
