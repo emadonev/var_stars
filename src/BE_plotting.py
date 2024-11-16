@@ -21,17 +21,17 @@ np.random.seed(42)
 os.environ['PATH'] = os.environ['PATH'] + ':/Library/TeX/texbin'
 
 # configuring plotting colors
-colors = ['#465BBB', '#3F8FCE', '#7ABBCE', '#3A3865', '#A82F43', '#612A37', '#DC5433', '#F29457']
+colors = ['#465BBB', '#3F8FCE', '#7ABBCE', '#3A2565', '#A82F43', '#612A37', '#DC5433', '#F25457']
 b1 = '#465BBB'
 b2 = '#3F8FCE'
 b3 = '#7ABBCE'
-b4 = '#3A3865'
-black1 = '#26212A'
+b4 = '#3A2565'
+black1 = '#37212A'
 black2 = '#2D1E21'
 or1 = '#A82F43'
 or2 = '#612A37'
 or3 = '#DC5433'
-or4 = '#F29457'
+or4 = '#F25457'
 muted_colors = sns.set_palette(sns.color_palette(colors))
 
 plt.rc('text', usetex=True)
@@ -42,6 +42,7 @@ plt.rcParams['text.latex.preamble'] = r'\usepackage{txfonts}'  # Use TX Times fo
 font = FontProperties()
 font.set_family('serif')
 font.set_name('Times')  # Times font
+font.set_size(36)
 
 sys.path.insert(0,'../src/')
 from helper import*
@@ -68,14 +69,14 @@ def makeLCplot_info(L1, L2, dataset, order, Lid, dataL, total_num, plotname='LCp
     '''
     # plot setup
     fig, ax = plt.subplots(1,3, figsize=(36,10))   # dimensions of plot
-    fig.suptitle('STAR '+str(order+1)+' from '+str(total_num), fontsize=30, fontproperties=font) # title of plot - star number
+    fig.suptitle('STAR '+str(order+1)+' from '+str(total_num), fontsize=40, fontproperties=font) # title of plot - star number
     fig.set_facecolor('white') # background color
 
     # plotting LINEAR phased light curve
     # ---------------
     # labels
-    ax[0].set_xlabel('data phased with best-fit LINEAR period', fontproperties=font, fontsize=23)
-    ax[0].set_ylabel('LINEAR normalized light curve', fontproperties=font, fontsize=23)
+    ax[0].set_xlabel('data phased with best-fit LINEAR period', fontproperties=font, fontsize=38)
+    ax[0].set_ylabel('LINEAR normalized light curve', fontproperties=font, fontsize=38)
     ax[0].set_xlim(-0.1, 1.1)
     ax[0].set_ylim(1.3, -0.3)
     # data for phased light curve
@@ -83,11 +84,13 @@ def makeLCplot_info(L1, L2, dataset, order, Lid, dataL, total_num, plotname='LCp
     ax[0].errorbar(xx, yy, zz, fmt='.k', ecolor=black1, lw=1, ms=4, capsize=1.5, alpha=0.2)
     # plotting the fit based off of LINEAR period
     ax[0].plot(L1['modelPhaseGrid'], L1['modTemplate'], or1, markeredgecolor=or1, lw=2, fillstyle='top', linestyle='dashed')
+    ax[0].tick_params(labelsize=28)
+
 
     # plotting ZTF phased light curve
     # --------------
-    ax[1].set_xlabel('data phased with best-fit ZTF period', fontproperties=font, fontsize=23)
-    ax[1].set_ylabel('ZTF normalized light curve', fontproperties=font, fontsize=23)
+    ax[1].set_xlabel('data phased with best-fit ZTF period', fontproperties=font, fontsize=38)
+    ax[1].set_ylabel('ZTF normalized light curve', fontproperties=font, fontsize=38)
     ax[1].set_xlim(-0.1, 1.1)
     ax[1].set_ylim(1.3, -0.3)
     # data for phased light curve
@@ -95,34 +98,36 @@ def makeLCplot_info(L1, L2, dataset, order, Lid, dataL, total_num, plotname='LCp
     ax[1].errorbar(xx1, yy1, zz1, fmt='.k', ecolor=black1, lw=1, ms=4, capsize=1.5, alpha=0.2)
     # fit for ZTF period
     ax[1].plot(L2['modelPhaseGrid'], L2['modTemplate'], or1, markeredgecolor=or1,  lw=2, fillstyle='top', linestyle='dashed')
+    ax[1].tick_params(labelsize=28)
 
     # overview of data calculated for particular light curve pair
     ax[2].axis([0, 8, 0, 10])
     # LINEAR chi2 robust
-    ax[2].text(0, 8, 'LINEAR period chi robust: '+str(dataset['L_chi2dofR'][order])+', LINEAR mean period chi robust: '+str(dataset['Lmean_chi2dofR'][order]),fontsize=26,fontproperties=font)
+    ax[2].text(0, 8, 'LINEAR period chi robust: '+str(dataset['L_chi2dofR'][order])+', LINEAR mean period chi robust: '+str(dataset['Lmean_chi2dofR'][order]),fontsize=37,fontproperties=font)
     # ZTF chi2 robust
-    ax[2].text(0, 7, 'ZTF period chi robust: '+str(dataset['Zchi2dofR'][order])+', ZTF mean period chi robust: '+str(dataset['Zmean_chi2dofR'][order]),fontsize=26,fontproperties=font)
+    ax[2].text(0, 7, 'ZTF period chi robust: '+str(dataset['Zchi2dofR'][order])+', ZTF mean period chi robust: '+str(dataset['Zmean_chi2dofR'][order]),fontsize=37,fontproperties=font)
     # LINEAR chi2 original
-    ax[2].text(0, 6, 'LINEAR period chi: '+str(dataset['L_chi2dof'][order])+', LINEAR mean period chi: '+str(dataset['Lmean_chi2dof'][order]),fontsize=26,fontproperties=font)
+    ax[2].text(0, 6, 'LINEAR period chi: '+str(dataset['L_chi2dof'][order])+', LINEAR mean period chi: '+str(dataset['Lmean_chi2dof'][order]),fontsize=37,fontproperties=font)
     # ZTF chi2 original
-    ax[2].text(0, 5, 'ZTF period chi: '+str(dataset['Zchi2dof'][order])+', ZTF mean period chi: '+str(dataset['Zmean_chi2dof'][order]),fontsize=26,fontproperties=font)
+    ax[2].text(0, 5, 'ZTF period chi: '+str(dataset['Zchi2dof'][order])+', ZTF mean period chi: '+str(dataset['Zmean_chi2dof'][order]),fontsize=37,fontproperties=font)
     # LINEAR and ZTF periods + period difference
-    ax[2].text(0, 4, 'LINEAR period: '+str(dataset['Plinear'][order])+', ZTF period: '+str(dataset['Pztf'][order])+', Period difference: '+str(dataset['dP'][order]),fontsize=26,fontproperties=font)
+    ax[2].text(0, 4, 'LINEAR period: '+str(dataset['Plinear'][order])+', ZTF period: '+str(dataset['Pztf'][order])+', Period difference: '+str(dataset['dP'][order]),fontsize=37,fontproperties=font)
     # average LINEAR magnitude
-    ax[2].text(0, 3, 'Average LINEAR magnitude: '+str(round(np.mean(dataL.get_light_curve(Lid).T[1]), 2)),fontsize=26,fontproperties=font)
+    ax[2].text(0, 3, 'Average LINEAR magnitude: '+str(round(np.mean(dataL.get_light_curve(Lid).T[1]), 2)),fontsize=37,fontproperties=font)
     # amplitude
-    ax[2].text(0, 2, 'LINEAR amplitude:'+str(dataset['Lampl'][order])+', ZTF amplitude:'+str(dataset['Zampl'][order]),fontsize=26,fontproperties=font)
+    ax[2].text(0, 2, 'LINEAR amplitude:'+str(dataset['Lampl'][order])+', ZTF amplitude:'+str(dataset['Zampl'][order]),fontsize=37,fontproperties=font)
     # if the star has a stronger period or amplitude score, display it
-    if dataset['period_vs_amp'][order] != np.nan:
-        ax[2].text(0, 1, '- this star has a stronger '+str(dataset['period_vs_amp'][order])+' score',fontsize=26,fontproperties=font)
+    #if dataset['period_vs_amp'][order] != np.nan:
+        #ax[2].text(0, 1, '- this star has a stronger '+str(dataset['period_vs_amp'][order])+' score',fontsize=37,fontproperties=font)
 
     ax[2].grid(False)
     ax[2].axis('off')
-    
+    ax[2].tick_params(labelsize=28)
+
     # if the user specified, please save plots
     if plotSave:
         plotName = plotname + '_' + str(Lid) + '.png'
-        plt.savefig('../visual_analysis/'+plotName, dpi=150,bbox_inches = 'tight')
+        plt.savefig('../visual_analysis/'+plotName, dpi=300,bbox_inches = 'tight')
     else:
         plt.show()
 
@@ -165,9 +170,9 @@ def plotBlazhkoPeaks(Lid, order, fL, pL, fZ, pZ, fFoldedL, pFoldedL, fFoldedZ, p
         print("No available periodogram data.")
     else:
         # plot setup
-        fig = plt.figure(figsize=(32, 8))
-        fig.subplots_adjust(hspace=0.1, bottom=0.06, top=0.94, left=0.12, right=0.94)
-        ax = fig.add_subplot(141)
+        fig = plt.figure(figsize=(36, 18))
+        #fig.subplots_adjust(hspace=0.1, bottom=0.06, top=0.94, left=0.12, right=0.94)
+        ax = fig.add_subplot(251)
 
         # LINEAR COMPLETE PLOT
         # ----------------------
@@ -183,7 +188,7 @@ def plotBlazhkoPeaks(Lid, order, fL, pL, fZ, pZ, fFoldedL, pFoldedL, fFoldedZ, p
         ax.plot([f1yr, f1yr], [0,0.7*np.max(pFoldedL)], lw = 2, ls='-.', c=b3)
         
         # setting plot title, limits on the graph
-        ax.text(0.03, 0.96, "LINEAR", ha='left', va='top', transform=ax.transAxes,fontproperties=font, fontsize=16)
+        ax.text(0.03, 0.96, "LINEAR", ha='left', va='top', transform=ax.transAxes,fontproperties=font, fontsize=18)
         if (fBlazhkoPeakL > flin*fac):
             ax.set_xlim(0.99*(2*flin-fBlazhkoPeakL), 1.01*fBlazhkoPeakL)
         else:
@@ -193,12 +198,14 @@ def plotBlazhkoPeaks(Lid, order, fL, pL, fZ, pZ, fFoldedL, pFoldedL, fFoldedZ, p
         ymax = ylim[0] + 1.1 * (ylim[1] - ylim[0])
         if ymax>1.0: ymax=1.0
         ax.set_ylim(0, ymax)
-        ax.set_ylabel('Lomb-Scargle power',fontproperties=font, fontsize=23)
-        ax.set_xlabel('frequency (d$^{-1}$)',fontproperties=font, fontsize=23)
+        ax.set_ylabel('Lomb-Scargle power',fontproperties=font, fontsize=25)
+        ax.set_xlabel('frequency (d$^{-1}$)',fontproperties=font, fontsize=25)
+        ax.tick_params(labelsize=18)
+
 
         # LINEAR FOLDED PLOT
         # ---------------------
-        ax = fig.add_subplot(142)
+        ax = fig.add_subplot(252)
 
         # plotting folded periodogram with the blazhko peak
         ax.plot(fFoldedL, pFoldedL, c=b1, alpha=0.8)
@@ -226,15 +233,16 @@ def plotBlazhkoPeaks(Lid, order, fL, pL, fZ, pZ, fFoldedL, pFoldedL, fFoldedZ, p
         ymax = ylim[0] + 1.1 * (ylim[1] - ylim[0])
         if ymax>1.0: ymax=1.0
         ax.set_ylim(0, ymax)
-        ax.set_ylabel('folded power',fontproperties=font, fontsize=23)
-        ax.set_xlabel('frequency (d$^{-1}$)',fontproperties=font, fontsize=23)
+        ax.set_ylabel('folded power',fontproperties=font, fontsize=25)
+        ax.set_xlabel('frequency (d$^{-1}$)',fontproperties=font, fontsize=25)
+        ax.tick_params(labelsize=18)
 
         # ZTF
         # ========
         
         # PLOTTING THE FULL PERIODOGRAM
         # ---------------
-        ax = fig.add_subplot(143)
+        ax = fig.add_subplot(253)
 
         # plotting the periodogram
         ax.plot(fL, pL, c=b1, alpha=0.8) # plotting basic periodogram
@@ -250,7 +258,7 @@ def plotBlazhkoPeaks(Lid, order, fL, pL, fZ, pZ, fFoldedL, pFoldedL, fFoldedZ, p
         ax.plot([f1yrZ, f1yrZ], [0,0.7*np.max(pFoldedZ)], lw = 2, ls='-.', c=b3)
 
         # adding y-axis text
-        ax.text(0.03, 0.96, "ZTF", ha='left', va='top', transform=ax.transAxes,fontproperties=font, fontsize=16)
+        ax.text(0.03, 0.96, "ZTF", ha='left', va='top', transform=ax.transAxes,fontproperties=font, fontsize=18)
         if (fBlazhkoPeakZ > fztf*fac):
             ax.set_xlim(0.99*(2*fztf-fBlazhkoPeakZ), 1.01*fBlazhkoPeakZ)
         else:
@@ -261,12 +269,13 @@ def plotBlazhkoPeaks(Lid, order, fL, pL, fZ, pZ, fFoldedL, pFoldedL, fFoldedZ, p
         ymax = ylim[0] + 1.1 * (ylim[1] - ylim[0])
         if ymax>1.0: ymax=1.0
         ax.set_ylim(0, ymax)
-        ax.set_ylabel('Lomb-Scargle power',fontproperties=font, fontsize=23)
-        ax.set_xlabel('frequency (d$^{-1}$)',fontproperties=font, fontsize=23)
+        ax.set_ylabel('Lomb-Scargle power',fontproperties=font, fontsize=25)
+        ax.set_xlabel('frequency (d$^{-1}$)',fontproperties=font, fontsize=25)
+        ax.tick_params(labelsize=18)
 
         # PLOTING FOLDED POWER SEQUENCE
         # ----------------
-        ax = fig.add_subplot(144)
+        ax = fig.add_subplot(254)
         # plotting folded ZTF data along with the Blazhko peaks
         ax.plot(fFoldedZ, pFoldedZ, c=b1, alpha=0.8)
         ax.plot([fBlazhkoPeakZ, fBlazhkoPeakZ], [0,0.4*np.max(pFoldedZ)], lw = 2, ls='--', c=or1)
@@ -294,12 +303,13 @@ def plotBlazhkoPeaks(Lid, order, fL, pL, fZ, pZ, fFoldedL, pFoldedL, fFoldedZ, p
         ymax = ylim[0] + 1.1 * (ylim[1] - ylim[0])
         if ymax>1.0: ymax=1.0
         ax.set_ylim(0, ymax)
-        ax.set_ylabel('folded power',fontproperties=font, fontsize=23)
-        ax.set_xlabel('frequency (d$^{-1}$)',fontproperties=font,fontsize=23)
+        ax.set_ylabel('folded power',fontproperties=font, fontsize=25)
+        ax.set_xlabel('frequency (d$^{-1}$)',fontproperties=font,fontsize=25)
+        ax.tick_params(labelsize=18)
 
         if plotSave:
             plotName = '../visual_analysis/periodogram'+str(Lid)+'.png'
-            plt.savefig(plotName, dpi=150,bbox_inches = 'tight')
+            plt.savefig(plotName, dpi=400,bbox_inches = 'tight')
             #print('saved plot as:', plotName) 
         plt.show()     
         return   
@@ -320,16 +330,16 @@ def plotLINEARmarkSeasons(Lid, ztf_data, order, LINEARlightcurves, plotName='sea
     # LINEAR PLOT
     # ================
     tL, mL, mLerr = LINEARlightcurves[Lid].T # accessing LINEAR data
-    fig, ax = plt.subplots(1,2, figsize=(32,10))   # setting up the plot
+    fig, ax = plt.subplots(1,2, figsize=(30,10))   # setting up the plot
     # drawing LINEAR data
     ax[0].set_ylim(np.min(mL)-0.3, np.max(mL)+0.3)
     #ax[0].set_title('LINEAR object {0}'.format(Lid),fontproperties=font,fontsize=18)
     ax[0].errorbar(tL, mL, mLerr, fmt='.k', ecolor=black1, alpha=0.3)
-    ax[0].set_xlabel('Time (days)', fontproperties=font, fontsize=23)
-    ax[0].set_ylabel('LINEAR magnitude', fontproperties=font, fontsize=23)
+    ax[0].set_xlabel('Time (days)', fontproperties=font, fontsize=36)
+    ax[0].set_ylabel('LINEAR magnitude', fontproperties=font, fontsize=36)
     ax[0].invert_yaxis()
     ax[0].set_xlim(np.min(tL)-230, np.max(tL)+230)
-
+    ax[0].tick_params(labelsize=26)
     redL = 0 # counting of seasons, used in another function for determining the number of season plots
 
     # determine the timespan of measurement and count the number of seasons of observation
@@ -346,11 +356,11 @@ def plotLINEARmarkSeasons(Lid, ztf_data, order, LINEARlightcurves, plotName='sea
     ax[1].set_ylim(np.min(mZ)-0.3, np.max(mZ)+0.3)
     ax[1].errorbar(tZ, mZ, meZ, fmt='.k', ecolor=black1, alpha=0.3)
     #ax[0].set_title('ZTF object {0}'.format(order),fontproperties=font,fontsize=18)
-    ax[1].set_xlabel('Time (days)', fontproperties=font, fontsize=23)
-    ax[1].set_ylabel('ZTF magnitude', fontproperties=font, fontsize=23)
+    ax[1].set_xlabel('Time (days)', fontproperties=font, fontsize=36)
+    ax[1].set_ylabel('ZTF magnitude', fontproperties=font, fontsize=36)
     ax[1].invert_yaxis()
     ax[1].set_xlim(np.min(tZ)-230, np.max(tZ)+230)
-
+    ax[1].tick_params(labelsize=26)
     # count number of seasons of obesrvation for ZTF
     redZ = 0 
     for r in range(1, 8):
@@ -361,7 +371,7 @@ def plotLINEARmarkSeasons(Lid, ztf_data, order, LINEARlightcurves, plotName='sea
 
     # plot saving mechanism
     if plotSave:
-        plt.savefig('../visual_analysis/'+plotName+str(Lid)+'.png', dpi=150)
+        plt.savefig('../visual_analysis/'+plotName+str(Lid)+'.png', dpi=400,bbox_inches = 'tight')
     plt.show()   
     
     return redL, redZ
@@ -383,15 +393,15 @@ def makeLCplotBySeason(Lid, L1, tL, L2, tZ, redL, redZ, plotrootname='LCplotBySe
         plotSave(bool): default False, saving the plot
     '''
     # setting up the plot
-    fig = plt.figure(figsize=(32, 30))
+    fig = plt.figure(figsize=(25, 30))
     fig.subplots_adjust(hspace=0.2, bottom=0.06, top=0.94, left=0.12, right=0.94)
     
     fig.suptitle('Seasons for:'+str(Lid), fontsize=30, fontproperties=font)
     
     # new function for plotting LINEAR seasons
     def plotPanelL(ax, L1, season):
-        ax.set_xlabel('phase', fontproperties=font, fontsize=14)
-        ax.set_ylabel('normalized phased light curve', fontproperties=font, fontsize=14)
+        ax.set_xlabel('phase', fontproperties=font, fontsize=25)
+        ax.set_ylabel('normalized phased light curve', fontproperties=font, fontsize=25)
         ax.set_xlim(-0.1, 1.1)
         ax.set_ylim(1.3, -0.4)
         # fit for LINEAR period
@@ -409,9 +419,10 @@ def makeLCplotBySeason(Lid, L1, tL, L2, tZ, redL, redZ, plotrootname='LCplotBySe
         wwS = ww[condition]
         ax.errorbar(xxS, yyS, zzS, fmt='.k', ecolor=black1, lw=1, ms=4, capsize=1.5, alpha=0.3)
         textString = "LINEAR season " + str(season)
-        ax.text(0.03, 0.96, textString, ha='left', va='top', transform=ax.transAxes, fontproperties=font,fontsize=23)
+        ax.text(0.03, 0.96, textString, ha='left', va='top', transform=ax.transAxes, fontproperties=font,fontsize=18)
         textString = "MJD=" + str(tSmin) + ' to ' + str(tSmax)
-        ax.text(0.53, 0.96, textString, ha='left', va='top', transform=ax.transAxes, fontproperties=font,fontsize=23)
+        ax.text(0.53, 0.96, textString, ha='left', va='top', transform=ax.transAxes, fontproperties=font,fontsize=18)
+        ax.tick_params(labelsize=18)
 
         
     # plot each season separately 
@@ -429,8 +440,8 @@ def makeLCplotBySeason(Lid, L1, tL, L2, tZ, redL, redZ, plotrootname='LCplotBySe
     # creating a new function for plotting the ZTF seasons
     def plotPanelZ(ax, L2, seasonZ):
         # plot setup
-        ax.set_xlabel('phase', fontproperties=font, fontsize=14)
-        ax.set_ylabel('normalized phased light curve', fontproperties=font, fontsize=14)
+        ax.set_xlabel('phase', fontproperties=font, fontsize=25)
+        ax.set_ylabel('normalized phased light curve', fontproperties=font, fontsize=25)
         ax.set_xlim(-0.1, 1.1)
         ax.set_ylim(1.3, -0.4)
         # fit for ZTF period
@@ -447,10 +458,10 @@ def makeLCplotBySeason(Lid, L1, tL, L2, tZ, redL, redZ, plotrootname='LCplotBySe
         wwS = ww[(ww>tSmin)&(ww<tSmax)]
         ax.errorbar(xxS, yyS, zzS, fmt='.k', ecolor=black1, lw=1, ms=4, capsize=1.5, alpha=0.3)
         textString = "ZTF season " + str(seasonZ-6)
-        ax.text(0.03, 0.96, textString, ha='left', va='top', transform=ax.transAxes, fontproperties=font,fontsize=23)
+        ax.text(0.03, 0.96, textString, ha='left', va='top', transform=ax.transAxes, fontproperties=font,fontsize=18)
         textString = "MJD=" + str(round(tSmin)) + ' to ' + str(round(tSmax))
-        ax.text(0.53, 0.96, textString, ha='left', va='top', transform=ax.transAxes, fontproperties=font,fontsize=23)
-
+        ax.text(0.53, 0.96, textString, ha='left', va='top', transform=ax.transAxes, fontproperties=font,fontsize=18)
+        ax.tick_params(labelsize=18)
         
     # plot each season separately 
     for seasonZ in range(redL,redL+redZ-1):
@@ -462,7 +473,7 @@ def makeLCplotBySeason(Lid, L1, tL, L2, tZ, redL, redZ, plotrootname='LCplotBySe
 
     if plotSave:
         plotName = plotrootname +str(Lid)+ '.png'
-        plt.savefig('../visual_analysis/'+plotName, dpi=150,bbox_inches = 'tight')
+        plt.savefig('../visual_analysis/'+plotName, dpi=400,bbox_inches = 'tight')
         #print('saved plot as:', plotName) 
     plt.show()     
     return
