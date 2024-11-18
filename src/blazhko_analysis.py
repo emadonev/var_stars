@@ -114,6 +114,7 @@ def blazhko_determine(df, dfnew):
         df(DataFrame) = input dataframe
         dfnew(DataFrame) = new dataframe for inputing good candidates
     '''
+    df_stat = pd.DataFrame([[0 for i in range(6)] for j in range(df.shape[0])], columns=['LINEAR chi2', 'ZTF chi2', 'LINEAR periodogram', 'ZTF periodogram', 'Amplitude', 'Period difference'])
     for i in range(df.shape[0]):
         
         # STEP 1: getting rid of bad data
@@ -146,10 +147,12 @@ def blazhko_determine(df, dfnew):
                         if (LINEAR_pd_period&LINEAR_pd_pB&LINEAR_pd_sig):
                             BE += 1
                             df.loc[i, 'IndicatorType'] = 'L'
+                            df_stat.loc[i, 'LINEAR periodogram'] = 1
                         # indication of BE via ZTF periodogram
                         if (ZTF_pd_period&ZTF_pd_pB&ZTF_pd_sig):
                             BE += 1
                             df.loc[i, 'IndicatorType'] = 'Z'
+                            df_stat.loc[i, 'ZTF periodogram'] = 1
                         # ---
                         # STEP 03: if a star has BE indication via periodogram, it is immediately selected
                         # otherwise it goes through the scoring mechanism
@@ -172,37 +175,53 @@ def blazhko_determine(df, dfnew):
                             # ---
 
                             # PERIOD scores
-                            if period > 0.00002 and period < 0.00005: p_score += 2
-                            if period >= 0.00005: p_score += 4
+                            if period > 0.00002 and period < 0.00005: 
+                                p_score += 2
+                                df_stat.loc[i, 'Period difference'] = 1
+                            if period >= 0.00005: 
+                                p_score += 4
+                                df_stat.loc[i, 'Period difference'] = 1
                             
                             # CHI^2 scores
                             # if both LINEAR and ZTF chi^2 scores are satisfied
                             if (chiZ>=2.0 and chiZ<=4.0)and(chiL >= 1.8 and chiL <= 3.0): 
                                 chi_score += 4
                                 df.loc[i, 'ChiType'] = 'LZ'
+                                df_stat.loc[i, 'LINEAR chi2'] = 1
+                                df_stat.loc[i, 'ZTF chi2'] = 1
                             if (chiL>3.0)and(chiZ>4.0):
                                 chi_score += 6
                                 df.loc[i, 'ChiType'] = 'LZ'
+                                df_stat.loc[i, 'LINEAR chi2'] = 1
+                                df_stat.loc[i, 'ZTF chi2'] = 1
                             # LINEAR lower score satisfied
                             if (chiL >=1.8 and chiL <= 3.0):
                                 chi_score += 2
                                 df.loc[i, 'ChiType'] = 'L'
+                                df_stat.loc[i, 'LINEAR chi2'] = 1
                             # ZTF lower score satisfied
                             if (chiZ>=2.0 and chiZ<=4.0): 
                                 chi_score += 2
                                 df.loc[i, 'ChiType'] = 'Z'
+                                df_stat.loc[i, 'ZTF chi2'] = 1
                             # LINEAR higher score satisfied
                             if chiL>3.0:
                                 chi_score += 3
                                 df.loc[i, 'ChiType'] = 'L'
+                                df_stat.loc[i, 'LINEAR chi2'] = 1
                             # ZTF higher schore satisfied
                             if chiZ>4.0:
                                 chi_score += 3
                                 df.loc[i, 'ChiType'] = 'Z'
+                                df_stat.loc[i, 'ZTF chi2'] = 1
 
                             # AMPL score
-                            if ampl>0.05 and ampl<0.15: amp_score += 1
-                            if ampl>0.15 and ampl<2: amp_score += 2
+                            if ampl>0.05 and ampl<0.15: 
+                                amp_score += 1
+                                df_stat.loc[i, 'Amplitude'] = 1
+                            if ampl>0.15 and ampl<2: 
+                                amp_score += 2
+                                df_stat.loc[i, 'Amplitude'] = 1
 
                             # determining strength of amplitude or period score
                             if amp_score > p_score:
@@ -221,7 +240,7 @@ def blazhko_determine(df, dfnew):
                                 dfnew = pd.concat([dfnew, row.reset_index(drop=True)], ignore_index=True, axis=0)
         else:
             pass
-    return dfnew
+    return dfnew, df_stat
 
 # BUILDING THE VISUAL INTERFACE
 # ================================
