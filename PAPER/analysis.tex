@@ -1,0 +1,144 @@
+
+\phantom{There is some latex bug somewhere and this call is needed to make it make pdf...}
+
+\section{Data Description \label{sec:data}}
+
+Analysis of field RR Lyrae stars requires a sensitive time-domain photometric survey over a large sky area.
+For our starting sample, we used $\sim$3,000 field RR Lyrae stars with light curves obtained by the LINEAR
+asteroid survey. In order to study long-term changes in light curves, we also utilized light curves obtained
+by the ZTF survey which monitored the sky $\sim$15 years after LINEAR. The combination of LINEAR and
+ZTF provided a unique opportunity to systematically search for the Blazhko effect in a large number of
+field RR Lyrae stars.
+
+
+We first describe each dataset in more detail, and then introduce our analysis methods. All our analysis
+code, written in Python, is available on GitHub\footnote{\url{https://github.com/emadonev/var_stars}}.  
+ 
+
+
+\subsection{LINEAR Dataset}
+
+The properties of the LINEAR asteroid survey and its photometric re-calibration based on SDSS data are discussed
+in \cite{2011AJ....142..190S}. Briefly, the LINEAR survey covered about 10,000 deg$^2$ of the northern sky in white
+light (no filters were used, see Figure 1 in \citealt{2011AJ....142..190S}), with photometric errors ranging from $\sim$0.03
+mag at an equivalent SDSS magnitude of $r=15$ to 0.20 mag at $r\sim18$. Light curves used in this work include,
+on average, 270 data points collected between December 2002 and September 2008.
+ 
+A sample of 7,010 periodic variable stars with $r<17$ discovered in LINEAR data were robustly classified by
+\cite{2013AJ....146..101P}, including
+about $\sim$3,000 field RR Lyrae stars of both ab and c type, detected to distances of about 30 kpc \citep{2013AJ....146...21S}.
+The sample used in this work contains 2196 ab-type and 745 c-type RR Lyrae, selected using classification labels and the {\it gi}
+color index from \cite{2013AJ....146..101P}.
+The LINEAR light curves, augmented with IDs, equatorial coordinates, and other data, were accessed using the astroML Python
+module\footnote{For an example of light curves, see \url{https://www.astroml.org/book_figures/chapter10/fig_LINEAR_LS.html}}.  
+
+
+\subsection{ZTF Dataset}
+
+The Zwicky Transient Factory (ZTF) is an optical time-domain survey that uses the Palomar 48-inch Schmidt telescope
+and a camera with 47 deg$^2$ field of view \citep{2019PASP..131a8002B}. The dataset analyzed here was obtained with
+SDSS-like $g$, $r$, and $i$ band filters. Light curves for objects in common with the LINEAR RR Lyrae sample typically
+have smaller random photometric errors than LINEAR light curves because ZTF data are deeper (compared to LINEAR,
+ZTF data have about 2-3 magnitudes fainter  $5\sigma$ depth). ZTF data used in this work were collected between
+February 2018 and December 2023, on average about 15 years after obtaining LINEAR data. 
+
+The ZTF dataset for this project was created by selecting ZTF IDs with matching equatorial coordinates to a corresponding
+LINEAR ID of an RR Lyrae star. This process used the {\it ztfquery} function, which searched the coordinates in the ZTF database
+within 3 arcsec from the LINEAR position. Our sample starting consisted of 2857 RR Lyrae stars with both LINEAR and ZTF data. 
+
+
+
+\section{Analysis Methodology: Searching for the Blazhko Effect  \label{sec:analysis}}  
+
+Given the two sets of light curves from LINEAR and ZTF, we searched for amplitude, period, and phase modulation,
+either during the 5-6 years of data taking by each survey, or during the average span of 15 years between the two
+surveys. We used two principal methods that are sensitive to different types of light curve modulation: direct light
+curve analysis and periodogram analysis, as follows.
+
+CHECK: {\it For efficient and robust analysis, another algorithm was developed to select viable Blazhko candidates to be visually analyzed. 
+The algorithm removed all stars with unrealistic data or insufficient data points (250 for LINEAR and 40 for ZTF).}
+
+
+\subsection{Direct Light Curve Analysis}
+
+
+The Blazhko effect most commonly presents as a modulation of amplitude, period, or both. 
+We phased the light curves, calculated their fit, and $\chi^2$ value was also calculated. The $\chi^2$ value gives a quantitative representation of \textit{"goodness of fit"}, which shows us if modulation is present. Fig \ref{fig:lc_pair} shows an example star with LINEAR and ZTF phased light curves, along with their {\it fits}. 
+
+
+
+\begin{figure}[ht]
+  \centering
+  \resizebox{\hsize}{!}{\includegraphics[width=14cm]{lc_pair.png}}
+       \caption{An example of period search and resulting phased light curves for LINEAR and ZTF data.}
+       \label{fig:lc_pair}
+  \end{figure}
+
+
+
+\subsection{Periodogram Analysis} 
+ 
+
+The periodic shape change of light curves for Blazhko stars is equivalent to periodic phase and amplitude changes of the
+harmonics that make up the light curve. This work used the Lomb-Scargle method for period calculation and periodogram analysis. By finding specific harmonics that create the final shape of the light curve and representing their power of fit using a periodogram, we can find a potential {\it blazhko frequency}.
+
+Comparing the Blazhko effect as a {\it blazhko frequency} interfering with the intrinsic frequency of pulsation of an RR Lyrae, it is observed that modulation of either period or amplitude arises. The effect is known as \textbf{interference beats}, described by the equation below:
+\begin{equation*}
+    y(t) = 2 \, cos(2\pi \ \Delta f) \, sin(2\pi \ f_{avg})
+\end{equation*}
+Where $\Delta f$ is the difference between the primary and Blazhko frequency, and $f_{avg}$ is the average between the two frequencies.
+
+A periodogram from a Blazhko star would contain a central peak with two equally distant local peaks at frequencies $f_-$ and $f_+$, with $f_- < f_0 < f_+$, where $f_0$ is the frequency of the main pulsation. The sideband peaks can be highly asymmetric
+\cite{2003ApJ...598..597A}. Observing periodograms can sometimes be much more complex \cite{2007MNRAS.377.1263S}.  
+
+For this project, we created an algorithm that searches for an interfering \textit{blazhko frequency} by folding the periodogram through the main peak and comparing if the folded peaks were statistically more significant than the background noise. The algorithm utilized the increased SNR due to the multiplication of peaks. It also eliminated stars with a yearly alias.
+
+The Blazhko period, calculated if the algorithm finds the Blazhko frequency, is defined as
+\begin{equation*}
+P_{BL} = |f_{-,+} - f_0|^{-1},
+\end{equation*}
+where $f_{-,+}$ means the Blazhko sideband frequency with a higher amplitude is chosen. 
+
+The observed Blazhko periods range from 3 to 3,000 days, and Blazhko amplitudes range from 0.01 mag to about 0.3 mag \citep{2007MNRAS.377.1263S}. In this work, we select a smaller Blazhko range due to the range of our data.
+
+\begin{figure}
+  \centering
+  \resizebox{\hsize}{!}{\includegraphics[width=14cm]{periodogram.png}}
+       \caption{Comparison of theoretical interference beats for a simulated light curve and real periodogram data from LINEAR and ZTF datasets.}
+       \label{fig:periodogram}
+  \end{figure}
+
+  Fig \ref{fig:periodogram} compares the theoretical periodogram produced by interference beats with our algorithm's periodogram,
+  signifying that local Blazhko peaks are present in real data.
+
+
+The correctness of the algorithm in recognizing the \textit{blazhko frequency} was examined. Fig \ref{fig:phase2} shows an example where the LINEAR periodogram is a perfect example of how the algorithm correctly identifies two very prominent peaks. If the peaks were aligned with the yearly aliases (like for the ZTF counterpart) or were not statistically significant, or if the algorithm detected a false signal, the star did not satisfy this phase.
+
+
+
+\subsection{Visual Confirmation of the Blazhko Effect}
+
+
+Then, it removed stars whose \textit{blazhko peak} was a yearly/daily alias, whose relative strength of peaks was below 0.05, and whose significance was below 5—their Blazhko period had to be between 30 and 325 days. 
+
+The selection of stars based on the period difference (difference between LINEAR and ZTF period, divided by the mean period), amplitude, and the $\chi^2$ value was made using a scoring mechanism.
+
+Based on the distribution of period differences and $\chi^2$ values, it was determined for LINEAR that $1.8<\chi^2<3.0$ was worth 2 and $\chi^2>3.0$ worth 3 points, while for ZTF $2.0<\chi^2<4.0$ and $\chi^2>4.0$ were the limits. If both $\chi^2$ parameters were satisfied, it was worth 4 or 6 points, respective of the limits. 
+The limits of the period difference were $0.00002 < dP < 0.00005$ worth 2, and $dP > 0.00005$ worth 4 points. Finally, $0.05 < ample < 0.15$ was worth one, and $0.15 < ample < 2.00$ was worth 2 points. 
+A star could score a maximum of 12 points or be directly selected via its \textit{blazhko frequency}.
+
+A smaller sample of 239 Blazhko candidates was selected. Visual analysis was separated into five categories: LINEAR or ZTF \textit{blazhko frequency}, LINEAR or ZTF $\chi^2$ value, and none of the above. 
+
+Firstly, the shape and noisiness of the phased light curves were examined. 
+
+If it was deemed that the light curve was precise enough, and if the phase contained different shapes. 
+
+Fig \ref{fig:phase1} shows the first phase of visual analysis, where the ZTF fit shows signs of the Blazhko effect.
+
+
+Thirdly, the general shape of the light curve was examined. Fig \ref{fig:phase3} depicts a case where the criteria are not satisfied: the overall shape of the data is rectangular, with perhaps slight amplitude modulation, which is unnoticeable. The criteria would be satisfied if the data had a clear wave-like pattern.
+    
+The final phase is the most important, analyzing the light curve fit for each observation season. Fig \ref{fig:phase4} shows an example of a Blazhko star, where from season to season, we can notice slight \textbf{phase and amplitude modulation} in the LINEAR data, while in the ZTF data, the phase modulation is quite visible. 
+
+
+If a star has satisfied the criteria of the first and final stage, only the second stage, or all four stages, it is most likely a Blazhko star. After visually analyzing the starting 239 Blazhko candidates, only 136 remain confirmed Blazhko stars.
