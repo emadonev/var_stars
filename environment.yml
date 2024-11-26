@@ -1,7 +1,7 @@
 name: rr_lyrae
 channels:
-  - astropy
   - defaults
+  - astropy
 dependencies:
   - appnope=0.1.2=py311hca03da5_1001
   - astroml=1.0.2.post1=pyhd8ed1ab_0
