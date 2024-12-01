@@ -46,17 +46,15 @@ February 2018 and December 2023, on average about 15 years after obtaining LINEA
 
 The ZTF dataset for this project was created by selecting ZTF IDs with matching equatorial coordinates to a corresponding
 LINEAR ID of an RR Lyrae star. This process used the {\it ztfquery} function, which searched the coordinates in the ZTF database
-within 3 arcsec from the LINEAR position. Our sample starting consisted of 2857 RR Lyrae stars with both LINEAR and ZTF data. 
+within 3 arcsec from the LINEAR position. The resulting sample consisted of 2857 RR Lyrae stars with both LINEAR and ZTF data.
+The fractions of RRab and RRc type RR Lyrae in this sample, 71\% RRab and 29\% RRc type, are consistent with results from
+other surveys \citep[e.g.,][]{2010ApJ...708..717S}. 
 
 
 \subsection{Period Estimation}
 
-The first step of our analysis is estimating the best-fit periods, separately for LINEAR and ZTF datasets. We further
-limited our initial dataset of 2857 RR Lyrae stars with both LINEAR and ZTF data by requiring at least 250 LINEAR
-data points and 40 ZTF data points (per band) in analyzed light curves. This additional requirement yielded the final sample
-of 2180 RR Lyrae stars with adequate LINEAR and ZTF data. 
-
-We estimated best-fit periods using the Lomb-Scargle method \citep{2015zndo.....14833V} as implemented in {\it astropy}
+The first step of our analysis is estimating best-fit periods, separately for LINEAR and ZTF datasets. 
+We used the Lomb-Scargle method \citep{2015zndo.....14833V} as implemented in {\it astropy}
 \citep{2018AJ....156..123A}. The period estimation used 3 Fourier components and a two-step process: an initial
 best-fit frequency was determined using the {\it autopower} frequency grid option and then the power spectrum was
 recomputed around the initial frequency using an order of magnitude smaller frequency step. In case of ZTF, we
@@ -91,9 +89,11 @@ modulation can be detected on time scales as long as 15 years, as discussed in t
 
 Given the two sets of light curves from LINEAR and ZTF, we searched for amplitude and phase modulation,
 either during the 5-6 years of data taking by each survey, or during the average span of 15 years between the two
-surveys. We used two principal methods that are sensitive to different types of light curve modulation: direct light
-curve analysis and periodogram analysis, as follows.
-
+surveys. Starting with a sample of 2857 RR Lyrae stars, we pre-selected a smaller sample that was inspected
+visually (see below for details). We also required at least 250 LINEAR data points and 40 ZTF data points (per band)
+in analyzed light curves. We used two pre-selection methods that are sensitive to different types of light curve
+modulation: direct light curve analysis and periodogram analysis, as follows.
+ 
 \begin{figure}
 \resizebox{\hsize}{!}{\includegraphics{chi_scatter.png}}
 \caption{A diagram constructed with the two sets of $\chi^2_{dof}$ values, for LINEAR and ZTF data sets, where
@@ -130,8 +130,10 @@ such that for LINEAR the range $1.8<\chi^2_{dof}<3.0$ was worth 2 points and $\c
 while for ZTF $2.0<\chi^2_{dof}<4.0$ and $\chi^2>4.0$ were the analogous limits. In addition, we also considered
 normalized period differences ($dP$ and amplitude differences ($dA$) and assigned: 2 points for $0.00002 < dP < 0.00005$
 and 4 points for $dP > 0.00005$; 1 point for $0.05 < dA < 0.15$ and 2 points for $dA > 0.15$. 
-A star could score a maximum of 12 points, and a minimum of 5 points was required for further visual analysis, as follows.
- 
+A star could score a maximum of 12 points, and a minimum of 5 points was required for further visual analysis. 
+The sample pre-selected using this method includes 189 stars. For most selected stars, the $\chi^2_{dof}$ values were
+larger for the ZTF data because the ZTF photometric uncertainties are smaller than for the LINEAR data set. 
+  
 
 \begin{figure*}[ht]
   \centering
@@ -161,27 +163,6 @@ A star could score a maximum of 12 points, and a minimum of 5 points was require
 \end{figure*}
 
 
-\subsubsection{Visual Confirmation}
-
-The pre-selected sample includes 189 stars. For most selected stars, the $\chi^2_{dof}$ values were larger for the ZTF data
-because the ZTF photometric uncertainties are smaller than for the LINEAR data set. 
- 
-Visual analysis included the following standard steps \citep[e.g.,][]{2009MNRAS.400.1006J}: 
-\begin{enumerate}
-\item The shape of the phased light curves and scatter of data points around the best-fit model were examined
-    for signatures of anomalous behavior indicative of the Blazhko effect. 
-    Fig.~\ref{fig:phase1} shows an example of such behavior where the ZTF data and fit show multiple coherent data point sequences
-    offset from the best-fit mean model. 
-  \item Full light curves were inspected for their repeatability between observing seasons (Fig.~\ref{fig:phase3}).
-       This step was sensitive to amplitude modulations with periods of the order a year or longer.  
-     \item The phased light curves normalized to unit amplitude were inspected for their repeatability between observing seasons.
-       This step was sensitive to phase modulations of a few percent or larger on time scales of the order a year or longer.  
-       Fig.~\ref{fig:phase4} shows an example of a Blazhko star where season-to-season phase (and amplitude) modulations
-       are seen in both the LINEAR data and (especially) the ZTF data. 
-\end{enumerate}
-
-After visually analyzing the starting sample of 189 Blazhko candidates, 112 are confirmed as displaying
-convincing evidence for the Blazhko effect. Their LINEAR IDs and other characteristics are listed in Table 1. 
 
 
 \subsection{Periodogram Analysis} 
@@ -190,7 +171,7 @@ convincing evidence for the Blazhko effect. Their LINEAR IDs and other character
 % is LINEAR ID= 1092244 could example for Blazhko beating?
 
 When light curve modulation is due to double-mode oscillation with two similar oscillation frequencies (periods),
-it is possible to recognize its signature in the periodogram computed as part of Lomb-Scargle analysis. Depending
+it is possible to recognize its signature in the periodogram computed as part of the Lomb-Scargle analysis. Depending
 on various details, such as data sampling and the exact values of periods, amplitudes, this method may be
 more efficient than direct light curve analysis.
 
@@ -245,7 +226,8 @@ P_{BL} = |f_{-,+} - f_0|^{-1},
 where $f_{-,+}$ means the Blazhko sideband frequency with a higher amplitude is chosen. 
 
 The observed Blazhko periods range from 3 to 3,000 days, and Blazhko amplitudes range from 0.01 mag to about 0.3 mag \citep{2007MNRAS.377.1263S}. In this work, we selected a smaller Blazhko range due to the limitations of our data: 30--325 days. 
-With this additional constraint, we selected 50 candidate Blazhko stars. 
+With this additional constraint, we selected 51 candidate Blazhko stars, with one star already included in the sample
+of 189 stars described in preceding section. 
 Fig \ref{fig:phase2} shows an example where two very prominent peaks were identified in the LINEAR periodogram. 
 
 \begin{figure*}[ht]
@@ -256,12 +238,27 @@ Fig \ref{fig:phase2} shows an example where two very prominent peaks were identi
 \end{figure*}
 
 
-\subsubsection{Visual Confirmation} 
 
-Out of 50 candidate Blazhko stars, we visually confirmed expected behavior for 24 stars, thus bringing
-the size of full sample of confirmed Blazhko stars to 136. These additional 24 stars are also listed in Table 1.
+\subsubsection{Visual Confirmation}
 
-XXX: What exactly did we visually inspect here? The periodograms or the same standard plots as in the first subsample? 
+The sample pre-selected for visual analysis includes 239 RR Lyrae stars (189 + 51, with one star selected twice),
+or 8.4\% of the starting LINEAR-ZTF sample. Visual analysis included the following standard steps \citep[e.g.,][]{2009MNRAS.400.1006J}: 
+\begin{enumerate}
+\item The shape of the phased light curves and scatter of data points around the best-fit model were examined
+    for signatures of anomalous behavior indicative of the Blazhko effect. 
+    Fig.~\ref{fig:phase1} shows an example of such behavior where the ZTF data and fit show multiple coherent data point sequences
+    offset from the best-fit mean model. 
+  \item Full light curves were inspected for their repeatability between observing seasons (Fig.~\ref{fig:phase3}).
+       This step was sensitive to amplitude modulations with periods of the order a year or longer.  
+     \item The phased light curves normalized to unit amplitude were inspected for their repeatability between observing seasons.
+       This step was sensitive to phase modulations of a few percent or larger on time scales of the order a year or longer.  
+       Fig.~\ref{fig:phase4} shows an example of a Blazhko star where season-to-season phase (and amplitude) modulations
+       are seen in both the LINEAR data and (especially) the ZTF data. 
+\end{enumerate}
+
+After visually analyzing the starting sample of 239 Blazhko candidates, we visually confirmed expected Blazhko
+behavior for 136 stars (112 out of 189 and 24 out of 50).  Their LINEAR IDs and other characteristics are listed in Table 1. 
+The properties of the selected sample of Blazhko stars are discussed in the next section. 
 
 
- 
+STOPPED HERE
