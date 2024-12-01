@@ -51,7 +51,7 @@ from helper import*
 
 # PLOTTING LIGHT CURVES
 # --------------------------
-def makeLCplot_info(L1, L2, dataset, order, Lid, dataL, total_num, plotname='LCplot', plotSave=False):
+def makeLCplot_info(L1, L2, dataset, order, Lid, dataL, total_num, plotname='LCplot', file='visual_analysis',plotSave=True):
     '''
     This function plots a single phase of a light curve with fit for both LINEAR and ZTF data, along with 
     a separate box for text data.
@@ -127,7 +127,7 @@ def makeLCplot_info(L1, L2, dataset, order, Lid, dataL, total_num, plotname='LCp
     # if the user specified, please save plots
     if plotSave:
         plotName = plotname + '_' + str(Lid) + '.png'
-        plt.savefig('../visual_analysis/'+plotName, dpi=300,bbox_inches = 'tight')
+        plt.savefig('../'+file+'/'+plotName, dpi=300,bbox_inches = 'tight')
     else:
         plt.show()
 
@@ -135,7 +135,7 @@ def makeLCplot_info(L1, L2, dataset, order, Lid, dataL, total_num, plotname='LCp
 
 # PLOTTING THE PERIODOGRAMS
 # =================
-def plotBlazhkoPeaks(Lid, order, fL, pL, fZ, pZ, fFoldedL, pFoldedL, fFoldedZ, pFoldedZ, dataset, fac=1.008, plotSave=False):
+def plotBlazhkoPeaks(Lid, order, fL, pL, fZ, pZ, fFoldedL, pFoldedL, fFoldedZ, pFoldedZ, dataset, file='visual_analysis', fac=1.008,plotSave=True):
     '''
     This function plots the periodogram of both LINEAR and ZTF light curves, as well as their folded periodograms
     indicating the presence of the Blazhko effect.
@@ -308,14 +308,14 @@ def plotBlazhkoPeaks(Lid, order, fL, pL, fZ, pZ, fFoldedL, pFoldedL, fFoldedZ, p
         ax.tick_params(labelsize=18)
 
         if plotSave:
-            plotName = '../visual_analysis/periodogram'+str(Lid)+'.png'
+            plotName = '../'+file+'/periodogram'+str(Lid)+'.png'
             plt.savefig(plotName, dpi=400,bbox_inches = 'tight')
             #print('saved plot as:', plotName) 
         plt.show()     
         return   
 
 
-def plotLINEARmarkSeasons(Lid, ztf_data, order, LINEARlightcurves, plotName='season_plot', plotSave=False):
+def plotLINEARmarkSeasons(Lid, ztf_data, order, LINEARlightcurves,plotName='season_plot', file='visual_analysis',plotSave=True):
     '''
     This function plots the total light curves of each light curve pair.
 
@@ -371,12 +371,12 @@ def plotLINEARmarkSeasons(Lid, ztf_data, order, LINEARlightcurves, plotName='sea
 
     # plot saving mechanism
     if plotSave:
-        plt.savefig('../visual_analysis/'+plotName+str(Lid)+'.png', dpi=400,bbox_inches = 'tight')
+        plt.savefig('../'+file+'/'+plotName+str(Lid)+'.png', dpi=400,bbox_inches = 'tight')
     plt.show()   
     
     return redL, redZ
 
-def makeLCplotBySeason(Lid, L1, tL, L2, tZ, redL, redZ, plotrootname='LCplotBySeason', plotSave=False):
+def makeLCplotBySeason(Lid, L1, tL, L2, tZ, redL, redZ, plotrootname='LCplotBySeason', file='visual_analysis',plotSave=True):
     '''
     This function is used for plotting the phased light curve fit for every season of observation compared to the
     light curve data for that season. 
@@ -473,12 +473,12 @@ def makeLCplotBySeason(Lid, L1, tL, L2, tZ, redL, redZ, plotrootname='LCplotBySe
 
     if plotSave:
         plotName = plotrootname +str(Lid)+ '.png'
-        plt.savefig('../visual_analysis/'+plotName, dpi=400,bbox_inches = 'tight')
+        plt.savefig('../'+file+'/'+plotName, dpi=400,bbox_inches = 'tight')
         #print('saved plot as:', plotName) 
     plt.show()     
     return
 
-def plotAll(Lid, orderlc, o, tot, L1, L2, blazhko_can, fL, pL, fZ, pZ, fFoldedL, fFoldedZ, pFoldedL, pFoldedZ, data, tL, tZ,ztf_data,plotSave=False):
+def plotAll(Lid, orderlc, o, tot, L1, L2, blazhko_can, fL, pL, fZ, pZ, fFoldedL, fFoldedZ, pFoldedL, pFoldedZ, data, tL, tZ,ztf_data,file='visual_analysis',plotSave=False):
     '''
     This function plots all of the graphs necessary for visual analysis of Blazhko stars
 
@@ -505,13 +505,13 @@ def plotAll(Lid, orderlc, o, tot, L1, L2, blazhko_can, fL, pL, fZ, pZ, fFoldedL,
         plotSave(bool): default False, saving the plot on computer
     '''
     if plotSave:
-        makeLCplot_info(L1, L2, blazhko_can, o, Lid, data, tot,plotSave=True)
-        plotBlazhkoPeaks(Lid, o, fL, pL, fZ, pZ, fFoldedL, pFoldedL, fFoldedZ, pFoldedZ, blazhko_can, fac=1.008, plotSave=True)
-        redLin, redZtf = plotLINEARmarkSeasons(Lid, ztf_data, orderlc, data, plotSave=True)
-        makeLCplotBySeason(Lid, L1, tL, L2, tZ, redLin, redZtf,plotSave=True)
+        makeLCplot_info(L1, L2, blazhko_can, o, Lid, data, tot,file=file)
+        plotBlazhkoPeaks(Lid, o, fL, pL, fZ, pZ, fFoldedL, pFoldedL, fFoldedZ, pFoldedZ, blazhko_can, file=file, fac=1.008)
+        redLin, redZtf = plotLINEARmarkSeasons(Lid, ztf_data, orderlc, data, file=file)
+        makeLCplotBySeason(Lid, L1, tL, L2, tZ, redLin, redZtf,file=file)
     else:
-        makeLCplot_info(L1, L2, blazhko_can, o, Lid, data, tot)
+        makeLCplot_info(L1, L2, blazhko_can, o, Lid, data, tot, plotSave=False)
         plotBlazhkoPeaks(Lid, o, fL, pL, fZ, pZ, fFoldedL, pFoldedL, fFoldedZ, pFoldedZ, blazhko_can, fac=1.008, plotSave=False)
-        redLin, redZtf = plotLINEARmarkSeasons(Lid, ztf_data, orderlc, data)
-        makeLCplotBySeason(Lid, L1, tL, L2, tZ, redLin, redZtf)
+        redLin, redZtf = plotLINEARmarkSeasons(Lid, ztf_data, orderlc, data, plotSave=False)
+        makeLCplotBySeason(Lid, L1, tL, L2, tZ, redLin, redZtf, plotSave=False)
     return

@@ -104,7 +104,7 @@ def getBlazhkoPeak(freq, LSpow, verbose=False):
 
 # BLAZHKO EFFECT CANDIDATES
 # =============================
-def blazhko_determine(df, dfnew):
+def blazhko_determine(df, dfnew, indic, bscore):
     '''
     This algorithm sorts through a DataFrame of light curve parameters and decides which stars are
     BE candidates. The parameters we use for determining BE candidates are amplitude, chi2 of 2 both LINEAR and ZTF, 
@@ -142,16 +142,16 @@ def blazhko_determine(df, dfnew):
                         # if a star has indication of BE via both its periodograms
                         if ((LINEAR_pd_period&LINEAR_pd_pB&LINEAR_pd_sig)&(ZTF_pd_period&ZTF_pd_pB&ZTF_pd_sig)):
                             BE += 1
-                            df.loc[i, 'IndicatorType'] = 'LZ'
+                            df.loc[i, indic] = 'LZ'
                         # indication of BE via LINEAR periodogram
                         if (LINEAR_pd_period&LINEAR_pd_pB&LINEAR_pd_sig):
                             BE += 1
-                            df.loc[i, 'IndicatorType'] = 'L'
+                            df.loc[i, indic] = 'L'
                             df_stat.loc[i, 'LINEAR periodogram'] = 1
                         # indication of BE via ZTF periodogram
                         if (ZTF_pd_period&ZTF_pd_pB&ZTF_pd_sig):
                             BE += 1
-                            df.loc[i, 'IndicatorType'] = 'Z'
+                            df.loc[i, indic] = 'Z'
                             df_stat.loc[i, 'ZTF periodogram'] = 1
                         # ---
                         # STEP 03: if a star has BE indication via periodogram, it is immediately selected
@@ -231,7 +231,7 @@ def blazhko_determine(df, dfnew):
 
                             # TOTAL SCORE calculation
                             score = p_score + chi_score + amp_score
-                            df.loc[i, 'BE_score'] = score
+                            df.loc[i, bscore] = score
 
                             # if a star has a score of 5 or more, it is selected as a Blazhko candidate
                             # 
