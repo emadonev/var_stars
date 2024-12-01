@@ -53,6 +53,16 @@ other surveys \citep[e.g.,][]{2010ApJ...708..717S}.
 
 \subsection{Period Estimation}
 
+\begin{figure}[ht]
+  \centering
+  \resizebox{\hsize}{!}{\includegraphics[width=14cm]{lc_pair.png}}
+  \caption{An example of a (Blazhko?) star with LINEAR (top row) and ZTF (bottom row) light curves (left panels,
+    data points with ``error bars''), phased light curves normalized to the 0--1 range (right panels, data points
+    with ``error bars''), with their best-fit models shown by dashed lines.}
+ \label{fig:lc_pair}
+\end{figure}
+
+
 The first step of our analysis is estimating best-fit periods, separately for LINEAR and ZTF datasets. 
 We used the Lomb-Scargle method \citep{2015zndo.....14833V} as implemented in {\it astropy}
 \citep{2018AJ....156..123A}. The period estimation used 3 Fourier components and a two-step process: an initial
@@ -74,18 +84,16 @@ of light curve phase modulation, each data set must be analyzed separately. On t
 modulation can be detected on time scales as long as 15 years, as discussed in the following section. 
 
 
-\begin{figure}[ht]
-  \centering
-  \resizebox{\hsize}{!}{\includegraphics[width=14cm]{lc_pair.png}}
-  \caption{An example of a (Blazhko?) star with LINEAR (top row) and ZTF (bottom row) light curves (left panels,
-    data points with ``error bars''), phased light curves normalized to the 0--1 range (right panels, data points
-    with ``error bars''), with their best-fit models shown by dashed lines.}
- \label{fig:lc_pair}
-\end{figure}
-
-
 
 \section{Analysis Methodology: Searching for the Blazhko Effect  \label{sec:analysis}}  
+
+\begin{figure}[ht]
+\resizebox{\hsize}{!}{\includegraphics{chi_scatter.png}}
+\caption{A diagram constructed with the two sets of $\chi^2_{dof}$ values, for LINEAR and ZTF data sets, where
+         blue symbols represents all RR Lyrae stars and the red symbols are the final sample of Blazhko stars.}
+\label{fig:chi2}
+\end{figure}
+
 
 Given the two sets of light curves from LINEAR and ZTF, we searched for amplitude and phase modulation,
 either during the 5-6 years of data taking by each survey, or during the average span of 15 years between the two
@@ -94,17 +102,21 @@ visually (see below for details). We also required at least 250 LINEAR data poin
 in analyzed light curves. We used two pre-selection methods that are sensitive to different types of light curve
 modulation: direct light curve analysis and periodogram analysis, as follows.
  
-\begin{figure}
-\resizebox{\hsize}{!}{\includegraphics{chi_scatter.png}}
-\caption{A diagram constructed with the two sets of $\chi^2_{dof}$ values, for LINEAR and ZTF data sets, where
-         blue symbols represents all RR Lyrae stars and the red symbols are the final sample of Blazhko stars.}
-\label{fig:chi2}
-\end{figure}
-
 
  
 \subsection{Direct Light Curve Analysis}
 
+\begin{figure*}[ht]
+    \centering
+    \includegraphics[width=17cm]{stats_categories.png}
+    \caption{The figure shows selection criteria and the resulting numbers of pre-selected Blazhko star candidates for each
+      criterion and their combinations. The dots represent each case a star can occupy, where every solid dot is a specific
+      criterion that is satisfied. Connections between solid dots represent stars which satisfy multiple criteria. Each dot
+      combination has its own count, represented by the horizontal countplot. The vertical countplot shows the total number
+      of stars that satisfy one criteria (union of all cases).}
+      \label{fig:selstats}
+    \end{figure*}
+    
 Given statistically correct period, amplitude and light curve shape estimates,
 as well as data being consistent with reported (presumably Gaussian) uncertainty estimates, the $\chi^2$ per degree
 of freedom gives a quantitative assessment of the \textit{"goodness of fit"},
@@ -131,41 +143,38 @@ while for ZTF $2.0<\chi^2_{dof}<4.0$ and $\chi^2>4.0$ were the analogous limits.
 normalized period differences ($dP$ and amplitude differences ($dA$) and assigned: 2 points for $0.00002 < dP < 0.00005$
 and 4 points for $dP > 0.00005$; 1 point for $0.05 < dA < 0.15$ and 2 points for $dA > 0.15$. 
 A star could score a maximum of 12 points, and a minimum of 5 points was required for further visual analysis. 
+
 The sample pre-selected using this method includes 189 stars. For most selected stars, the $\chi^2_{dof}$ values were
 larger for the ZTF data because the ZTF photometric uncertainties are smaller than for the LINEAR data set. 
-  
-
-\begin{figure*}[ht]
-  \centering
-  \includegraphics[width=17cm]{LCplot_7048826.png}
-  \caption{An illustration of visual analysis of phased light curves for the selected Blazhko candidates. The left
-    panel shows LINEAR data and the right panel shows ZTF data (symbols with ``error bars''). The dashed
-    lines are best-fit models. The numbers listed on the right side were added to aid  visual analysis. Note
-    multiple coherent data point sequences offset from the best-fit mean model in the right panel.}
-       \label{fig:phase1}
-\end{figure*}
-
-\begin{figure*}[ht] 
-    \centering
-       \includegraphics[width=17cm]{season_plot7048826.png}
-       \caption{Visual analysis of full light curves for the selected Blazhko candidates with emphasis
-         on their repeatability between observing seasons, marked with vertical lines (left: LINEAR data; right: ZTF data).}
-         \label{fig:phase3}
-\end{figure*}
-       
-\begin{figure*}[ht]
-    \centering
-    \includegraphics[width=17cm]{LCplotBySeason7048826.png}
-    \caption{The phased light curves normalized to unit amplitude are shown for single observing seasons
-      and compared to the mean best-fit models (top six panels: LINEAR data; bottom six panels: ZTF data).
-      Season-to-season phase and amplitude modulations are seen in both the LINEAR and the ZTF data.}
-      \label{fig:phase4}
-\end{figure*}
-
-
+Fig.~\ref{fig:selstats} summarizes the selection criteria and the resulting numbers of selected stars for each
+criterion and their combinations. 
+ 
 
 
 \subsection{Periodogram Analysis} 
+
+
+\begin{figure}[ht]
+  \centering
+  \resizebox{\hsize}{!}{\includegraphics[width=14cm]{periodogram.png}}
+  \caption{The top two panels show a simulated periodogram for a sum of two {\it sine} functions with similar frequencies -- 
+    the central peak corresponds to their mean. The bottom left panel shows a periodogram for an observed LINEAR light curve,
+    and the bottom right panel shows its folded version. The vertical dashed lines show the three frequencies identified by the
+     algorithm described in text.}
+       \label{fig:periodogram}
+\end{figure}
+
+
+
+\begin{figure*}[ht]
+  \centering       
+  \includegraphics[width=17cm]{periodogram7048826.png}
+  \caption{Phase 2 of visual analysis of Blazhko candidates. XXX Are these LINEAR and ZTF periodograms?
+       Is this figure a bit redundant with the previous figure? }
+    \label{fig:phase2}
+\end{figure*}
+
+
 
 
 % is LINEAR ID= 1092244 could example for Blazhko beating?
@@ -199,16 +208,6 @@ automated searching for the evidence of amplitude  modulation.
 Fig \ref{fig:periodogram} compares the theoretical periodogram produced by interference beats with our algorithm's periodogram,
 signifying that local Blazhko peaks are present in real data.
 
-\begin{figure}
-  \centering
-  \resizebox{\hsize}{!}{\includegraphics[width=14cm]{periodogram.png}}
-  \caption{The top two panels show a simulated periodogram for a sum of two {\it sine} functions with similar frequencies -- 
-    the central peak corresponds to their mean. The bottom left panel shows a periodogram for an observed LINEAR light curve,
-    and the bottom right panel shows its folded version. The vertical dashed lines show the three frequencies identified by the
-     algorithm described in text.}
-       \label{fig:periodogram}
-\end{figure}
-
 
 After the strongest peak in the Lomb-Scargle periodogram is found at frequency $f_o$, we search for  two equally
 distant local peaks at frequencies $f_-$ and $f_+$, with $f_- < f_0 < f_+$.  The sideband peaks can be highly asymmetric
@@ -230,13 +229,6 @@ With this additional constraint, we selected 51 candidate Blazhko stars, with on
 of 189 stars described in preceding section. 
 Fig \ref{fig:phase2} shows an example where two very prominent peaks were identified in the LINEAR periodogram. 
 
-\begin{figure*}[ht]
-  \centering       
-  \includegraphics[width=17cm]{periodogram7048826.png}
-    \caption{Phase 2 of visual analysis of Blazhko candidates.}
-    \label{fig:phase2}
-\end{figure*}
-
 
 
 \subsubsection{Visual Confirmation}
@@ -257,8 +249,37 @@ or 8.4\% of the starting LINEAR-ZTF sample. Visual analysis included the followi
 \end{enumerate}
 
 After visually analyzing the starting sample of 239 Blazhko candidates, we visually confirmed expected Blazhko
-behavior for 136 stars (112 out of 189 and 24 out of 50).  Their LINEAR IDs and other characteristics are listed in Table 1. 
-The properties of the selected sample of Blazhko stars are discussed in the next section. 
+behavior for 136 stars (112 out of 189 and 24 out of 50). LINEAR IDs and other characteristics for confirmed
+Blazhko stars are listed in Table 1 (Appendix A). Statistical properties of the selected sample of Blazhko stars are
+discussed in detail in the next section. 
 
 
 STOPPED HERE
+
+
+\begin{figure*}[ht]
+  \centering
+  \includegraphics[width=17cm]{LCplot_7048826.png}
+  \caption{An illustration of visual analysis of phased light curves for the selected Blazhko candidates. The left
+    panel shows LINEAR data and the right panel shows ZTF data (symbols with ``error bars''). The dashed
+    lines are best-fit models. The numbers listed on the right side were added to aid  visual analysis. Note
+    multiple coherent data point sequences offset from the best-fit mean model in the right panel.}
+       \label{fig:phase1}
+\end{figure*}
+
+\begin{figure*}[ht] 
+    \centering
+       \includegraphics[width=17cm]{season_plot7048826.png}
+       \caption{Visual analysis of full light curves for the selected Blazhko candidates with emphasis
+         on their repeatability between observing seasons, marked with vertical lines (left: LINEAR data; right: ZTF data).}
+         \label{fig:phase3}
+\end{figure*}
+       
+\begin{figure*}[ht]
+    \centering
+    \includegraphics[width=17cm]{LCplotBySeason7048826.png}
+    \caption{The phased light curves normalized to unit amplitude are shown for single observing seasons
+      and compared to the mean best-fit models (top six panels: LINEAR data; bottom six panels: ZTF data).
+      Season-to-season phase and amplitude modulations are seen in both the LINEAR and the ZTF data.}
+      \label{fig:phase4}
+\end{figure*}
