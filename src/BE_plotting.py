@@ -127,7 +127,7 @@ def makeLCplot_info(L1, L2, dataset, order, Lid, dataL, total_num, plotname='LCp
     # if the user specified, please save plots
     if plotSave:
         plotName = plotname + '_' + str(Lid) + '.png'
-        plt.savefig('../'+file+'/'+plotName, dpi=300,bbox_inches = 'tight')
+        plt.savefig('../'+file+'/'+plotName, dpi=150,bbox_inches = 'tight')
     else:
         plt.show()
 
@@ -309,7 +309,7 @@ def plotBlazhkoPeaks(Lid, order, fL, pL, fZ, pZ, fFoldedL, pFoldedL, fFoldedZ, p
 
         if plotSave:
             plotName = '../'+file+'/periodogram'+str(Lid)+'.png'
-            plt.savefig(plotName, dpi=400,bbox_inches = 'tight')
+            plt.savefig(plotName, dpi=150,bbox_inches = 'tight')
             #print('saved plot as:', plotName) 
         plt.show()     
         return   
@@ -371,7 +371,7 @@ def plotLINEARmarkSeasons(Lid, ztf_data, order, LINEARlightcurves,plotName='seas
 
     # plot saving mechanism
     if plotSave:
-        plt.savefig('../'+file+'/'+plotName+str(Lid)+'.png', dpi=400,bbox_inches = 'tight')
+        plt.savefig('../'+file+'/'+plotName+str(Lid)+'.png', dpi=150,bbox_inches = 'tight')
     plt.show()   
     
     return redL, redZ
@@ -473,12 +473,12 @@ def makeLCplotBySeason(Lid, L1, tL, L2, tZ, redL, redZ, plotrootname='LCplotBySe
 
     if plotSave:
         plotName = plotrootname +str(Lid)+ '.png'
-        plt.savefig('../'+file+'/'+plotName, dpi=400,bbox_inches = 'tight')
+        plt.savefig('../'+file+'/'+plotName, dpi=150,bbox_inches = 'tight')
         #print('saved plot as:', plotName) 
     plt.show()     
     return
 
-def plotAll(Lid, orderlc, o, tot, L1, L2, blazhko_can, fL, pL, fZ, pZ, fFoldedL, fFoldedZ, pFoldedL, pFoldedZ, data, tL, tZ,ztf_data,file='visual_analysis',plotSave=False):
+def plotAll(Lid, orderlc, o, tot, L1, L2, blazhko_can, fL, pL, fZ, pZ, fFoldedL, fFoldedZ, pFoldedL, pFoldedZ, data, tL, tZ,ztf_data,f='visual_analysis',plotSave=False):
     '''
     This function plots all of the graphs necessary for visual analysis of Blazhko stars
 
@@ -505,10 +505,10 @@ def plotAll(Lid, orderlc, o, tot, L1, L2, blazhko_can, fL, pL, fZ, pZ, fFoldedL,
         plotSave(bool): default False, saving the plot on computer
     '''
     if plotSave:
-        makeLCplot_info(L1, L2, blazhko_can, o, Lid, data, tot,file=file)
-        plotBlazhkoPeaks(Lid, o, fL, pL, fZ, pZ, fFoldedL, pFoldedL, fFoldedZ, pFoldedZ, blazhko_can, file=file, fac=1.008)
-        redLin, redZtf = plotLINEARmarkSeasons(Lid, ztf_data, orderlc, data, file=file)
-        makeLCplotBySeason(Lid, L1, tL, L2, tZ, redLin, redZtf,file=file)
+        makeLCplot_info(L1, L2, blazhko_can, o, Lid, data, tot,file=f)
+        plotBlazhkoPeaks(Lid, o, fL, pL, fZ, pZ, fFoldedL, pFoldedL, fFoldedZ, pFoldedZ, blazhko_can, file=f, fac=1.008)
+        redLin, redZtf = plotLINEARmarkSeasons(Lid, ztf_data, orderlc, data, file=f)
+        makeLCplotBySeason(Lid, L1, tL, L2, tZ, redLin, redZtf,file=f)
     else:
         makeLCplot_info(L1, L2, blazhko_can, o, Lid, data, tot, plotSave=False)
         plotBlazhkoPeaks(Lid, o, fL, pL, fZ, pZ, fFoldedL, pFoldedL, fFoldedZ, pFoldedZ, blazhko_can, fac=1.008, plotSave=False)
