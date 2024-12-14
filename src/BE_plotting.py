@@ -478,7 +478,7 @@ def makeLCplotBySeason(Lid, L1, tL, L2, tZ, redL, redZ, plotrootname='LCplotBySe
     plt.show()     
     return
 
-def plotAll(Lid, orderlc, o, tot, L1, L2, blazhko_can, fL, pL, fZ, pZ, fFoldedL, fFoldedZ, pFoldedL, pFoldedZ, data, tL, tZ,ztf_data,f='visual_analysis',plotSave=False):
+def plotAll(Lid, orderlc, o, tot, L1, L2, blazhko_can, fL, pL, fZ, pZ, fFoldedL, fFoldedZ, pFoldedL, pFoldedZ, data, tL, tZ,ztf_data,f='paper_support',plotSave=False):
     '''
     This function plots all of the graphs necessary for visual analysis of Blazhko stars
 
