@@ -114,7 +114,7 @@ def blazhko_determine(df, dfnew, indic, bscore):
         df(DataFrame) = input dataframe
         dfnew(DataFrame) = new dataframe for inputing good candidates
     '''
-    df_stat = pd.DataFrame([[0 for i in range(9)] for j in range(df.shape[0])], columns=['L2', 'Z2', 'LZ3','LZ4','LZ5','LINEAR periodogram', 'ZTF periodogram', 'Amplitude', 'Period difference'])
+    df_stat = pd.DataFrame([[0 for i in range(9)] for j in range(df.shape[0])], columns=['L2', 'Z2', 'LZ3','LZ4','LZ6','LINEAR periodogram', 'ZTF periodogram', 'Amplitude', 'Period difference'])
     for i in range(df.shape[0]):
         
         # STEP 1: getting rid of bad data
@@ -176,25 +176,31 @@ def blazhko_determine(df, dfnew, indic, bscore):
                 if (chiL > 1.5 and chiL < 3.0) and (chiZ < 1.8):
                     SCORE += 2
                     df_stat.loc[i, 'L2'] = 1
+                    df.loc[i, 'ChiType'] = "L2"
                 # sector Z2
                 elif (chiZ > 1.8 and chiZ < 3.5) and (chiL < 1.5):
                     SCORE += 2
                     df_stat.loc[i, 'Z2'] = 1
+                    df.loc[i, 'ChiType'] = "Z2"
                 # sector LZ3
                 elif (chiL > 1.5 and chiL < 3.0) and (chiZ > 1.8 and chiZ < 3.5):
                     SCORE += 3
                     df_stat.loc[i, 'LZ3'] = 1
+                    df.loc[i, 'ChiType'] = "LZ3"
                 # sectors LZ4
                 elif ((chiL > 3.0) and (chiZ < 3.5)):
                     SCORE += 4
                     df_stat.loc[i, 'LZ4'] = 1
+                    df.loc[i, 'ChiType'] = "LZ4"
                 elif ((chiL < 3.0) and (chiZ > 3.5)):
                     SCORE += 4
                     df_stat.loc[i, 'LZ4'] = 1
+                    df.loc[i, 'ChiType'] = "LZ4"
                 # sector LZ5
                 elif (chiL > 3.0 and chiZ > 3.5):
                     SCORE += 6
-                    df_stat.loc[i, 'LZ5'] = 1
+                    df_stat.loc[i, 'LZ6'] = 1
+                    df.loc[i, 'ChiType'] = "LZ6"
             
                 # AMPL score
                 # ----------------
