@@ -114,135 +114,114 @@ def blazhko_determine(df, dfnew, indic, bscore):
         df(DataFrame) = input dataframe
         dfnew(DataFrame) = new dataframe for inputing good candidates
     '''
-    df_stat = pd.DataFrame([[0 for i in range(6)] for j in range(df.shape[0])], columns=['LINEAR chi2', 'ZTF chi2', 'LINEAR periodogram', 'ZTF periodogram', 'Amplitude', 'Period difference'])
+    df_stat = pd.DataFrame([[0 for i in range(9)] for j in range(df.shape[0])], columns=['L2', 'Z2', 'LZ3','LZ4','LZ5','LINEAR periodogram', 'ZTF periodogram', 'Amplitude', 'Period difference'])
     for i in range(df.shape[0]):
         
         # STEP 1: getting rid of bad data
-        # ---------
-        if df['Ampl_diff'][i]<2: # amplitude difference is larger than 2 mags
-            if df['Plinear'][i]<4 or df['Pztf'][i]<4: # if period isn't within RR Lyrae range and if chi^2 values are unrealistically high
-                if df['NdataLINEAR'][i]>250 and df['NdataZTF'][i]>40: # if number of data points is insufficient
-                    if df['Pratio'][i]>0.8 and df['Pratio'][i]<1.2: # if the ratio of periods is unrealistic for the same star (eg. ZTF period is twice the LINEAR period)
-                        # STEP 2: determine periodogram likelihood of BE
-                        # ---------
-                        dPmin = 0.01
-                        #--- determining if LINEAR part has periodogram indication of BE ---
-                        # no daily alias of main period
-                        LINEAR_pd_period = (np.abs(df['Plinear'][i]-0.5)>dPmin)&(np.abs(df['Plinear'][i]-1.0)>dPmin)&(np.abs(df['Plinear'][i]-2.0)>dPmin)
-                        # blazhko period must be within RR Lyrae range
-                        LINEAR_pd_pB = (df['BlazhkoPeriodL'][i]>35)&(df['BlazhkoPeriodL'][i]<325) 
-                        # relative strength and significance must be above 0.05 and 5 respectively
-                        LINEAR_pd_sig = (df['BpowerRatioL'][i]>0.05)&(df['BsignificanceL'][i]>5)
-                        #--- determining if ZTF part has periodogram indication of BE ---
-                        ZTF_pd_period = (np.abs(df['Pztf'][i]-0.5)>dPmin)&(np.abs(df['Pztf'][i]-1.0)>dPmin)&(np.abs(df['Pztf'][i]-2.0)>dPmin)
-                        ZTF_pd_pB = (df['BlazhkoPeriodZ'][i]>35)&(df['BlazhkoPeriodZ'][i]<325) 
-                        ZTF_pd_sig = (df['BpowerRatioZ'][i]>0.05)&(df['BsignificanceZ'][i]>5)
-                        #---
-                        BE = 0
-                        # if a star has indication of BE via both its periodograms
-                        if ((LINEAR_pd_period&LINEAR_pd_pB&LINEAR_pd_sig)&(ZTF_pd_period&ZTF_pd_pB&ZTF_pd_sig)):
-                            BE += 1
-                            df.loc[i, indic] = 'LZ'
-                        # indication of BE via LINEAR periodogram
-                        if (LINEAR_pd_period&LINEAR_pd_pB&LINEAR_pd_sig):
-                            BE += 1
-                            df.loc[i, indic] = 'L'
-                            df_stat.loc[i, 'LINEAR periodogram'] = 1
-                        # indication of BE via ZTF periodogram
-                        if (ZTF_pd_period&ZTF_pd_pB&ZTF_pd_sig):
-                            BE += 1
-                            df.loc[i, indic] = 'Z'
-                            df_stat.loc[i, 'ZTF periodogram'] = 1
-                        # ---
-                        # STEP 03: if a star has BE indication via periodogram, it is immediately selected
-                        # otherwise it goes through the scoring mechanism
-                        if BE>0:
-                            row = pd.DataFrame(df.iloc[[int(i)]])
-                            dfnew = pd.concat([dfnew, row.reset_index(drop=True)], ignore_index=True, axis=0)
-                        else:
-                            # select period, chi2 and amplitude values
-                            period = df['dP'][i]
-                            chiL = df['L_chi2dof'][i]
-                            chiZ = df['Zchi2dof'][i]
-                            ampl = df['Ampl_diff'][i]
+        # ===============
+        # Amplitude for each star needs to be less than 2 mags
+        if (df['Lampl'][i]<2 or df['Zampl'][i]<2) and (df['Plinear'][i]<4 or df['Pztf'][i]<4) and (df['NdataLINEAR'][i]>200 and df['NdataZTF'][i]>150) and (df['Pratio'][i]>0.8 and df['Pratio'][i]<1.2):
+            # STEP 2: determine periodogram likelihood of BE
+            # ================
+            dPmin = 0.01
+            #--- determining if LINEAR part has periodogram indication of BE ---
+            # no daily alias of main period
+            LINEAR_pd_period = (np.abs(df['Plinear'][i]-0.5)>dPmin)&(np.abs(df['Plinear'][i]-1.0)>dPmin)&(np.abs(df['Plinear'][i]-2.0)>dPmin)
+            # blazhko period must be within RR Lyrae range
+            LINEAR_pd_pB = (df['BlazhkoPeriodL'][i]>35)&(df['BlazhkoPeriodL'][i]<325) 
+            # relative strength and significance must be above 0.05 and 5 respectively
+            LINEAR_pd_sig = (df['BpowerRatioL'][i]>0.05)&(df['BsignificanceL'][i]>5)
 
-                            # ---
-                            # assign starting scores
-                            p_score = 0
-                            chi_score = 0
-                            amp_score = 0
+            #--- determining if ZTF part has periodogram indication of BE ---
+            ZTF_pd_period = (np.abs(df['Pztf'][i]-0.5)>dPmin)&(np.abs(df['Pztf'][i]-1.0)>dPmin)&(np.abs(df['Pztf'][i]-2.0)>dPmin)
+            ZTF_pd_pB = (df['BlazhkoPeriodZ'][i]>35)&(df['BlazhkoPeriodZ'][i]<325) 
+            ZTF_pd_sig = (df['BpowerRatioZ'][i]>0.05)&(df['BsignificanceZ'][i]>5)
+            #---
+            BE = 0
+            # if a star has indication of BE via both its periodograms
+            if ((LINEAR_pd_period&LINEAR_pd_pB&LINEAR_pd_sig)&(ZTF_pd_period&ZTF_pd_pB&ZTF_pd_sig)):
+                BE += 1
+                df.loc[i, indic] = 'LZ'
+            # indication of BE via LINEAR periodogram
+            if (LINEAR_pd_period&LINEAR_pd_pB&LINEAR_pd_sig):
+                BE += 1
+                df.loc[i, indic] = 'L'
+                df_stat.loc[i, 'LINEAR periodogram'] = 1
+            # indication of BE via ZTF periodogram
+            if (ZTF_pd_period&ZTF_pd_pB&ZTF_pd_sig):
+                BE += 1
+                df.loc[i, indic] = 'Z'
+                df_stat.loc[i, 'ZTF periodogram'] = 1
+            # ---
+            # STEP 03: if a star has BE indication via periodogram, it is immediately selected
+            # otherwise it goes through the scoring mechanism
+            if BE>0:
+                row = pd.DataFrame(df.iloc[[int(i)]])
+                dfnew = pd.concat([dfnew, row.reset_index(drop=True)], ignore_index=True, axis=0)
+            else:
+                # select period, chi2 and amplitude values
+                period = df['dP'][i]
+                chiL = df['L_chi2dofR'][i]
+                chiZ = df['Zchi2dofR'][i]
+                ampl = df['Ampl_diff'][i]
 
-                            # ---
-                            
-                            # CHI^2 scores
-                            # if both LINEAR and ZTF chi^2 scores are satisfied
-                            if (chiZ > 4.0) or (chiL > 4.0):
-                                df.loc[i, bscore] = 5.0
-                                row = pd.DataFrame(df.iloc[[int(i)]])
-                                dfnew = pd.concat([dfnew, row.reset_index(drop=True)], ignore_index=True, axis=0)
-                            else:
-                                if (chiZ>=2.0 and chiZ<=4.0)and(chiL >= 1.8 and chiL <= 3.0): 
-                                    chi_score += 4
-                                    df.loc[i, 'ChiType'] = 'LZ'
-                                    df_stat.loc[i, 'LINEAR chi2'] = 1
-                                    df_stat.loc[i, 'ZTF chi2'] = 1
-                                if (chiL>3.0)and(chiZ>4.0):
-                                    chi_score += 6
-                                    df.loc[i, 'ChiType'] = 'LZ'
-                                    df_stat.loc[i, 'LINEAR chi2'] = 1
-                                    df_stat.loc[i, 'ZTF chi2'] = 1
-                                # LINEAR lower score satisfied
-                                if (chiL >=1.8 and chiL <= 3.0):
-                                    chi_score += 2
-                                    df.loc[i, 'ChiType'] = 'L'
-                                    df_stat.loc[i, 'LINEAR chi2'] = 1
-                                # ZTF lower score satisfied
-                                if (chiZ>=2.0 and chiZ<=4.0): 
-                                    chi_score += 2
-                                    df.loc[i, 'ChiType'] = 'Z'
-                                    df_stat.loc[i, 'ZTF chi2'] = 1
-                                # LINEAR higher score satisfied
-                                if chiL>3.0:
-                                    chi_score += 3
-                                    df.loc[i, 'ChiType'] = 'L'
-                                    df_stat.loc[i, 'LINEAR chi2'] = 1
-                                # ZTF higher schore satisfied
-                                if chiZ>4.0:
-                                    chi_score += 3
-                                    df.loc[i, 'ChiType'] = 'Z'
-                                    df_stat.loc[i, 'ZTF chi2'] = 1
+                # ---
+                # assign starting scores
+                SCORE = 0
 
-                                # AMPL score
-                                if ampl>0.05 and ampl<0.15: 
-                                    amp_score += 1
-                                    df_stat.loc[i, 'Amplitude'] = 1
-                                if ampl>0.15 and ampl<2: 
-                                    amp_score += 2
-                                    df_stat.loc[i, 'Amplitude'] = 1
+                # ---
+                
+                # CHI^2 scores
+                # sector L2
+                if (chiL > 1.5 and chiL < 3.0) and (chiZ < 1.8):
+                    SCORE += 2
+                    df_stat.loc[i, 'L2'] = 1
+                # sector Z2
+                elif (chiZ > 1.8 and chiZ < 3.5) and (chiL < 1.5):
+                    SCORE += 2
+                    df_stat.loc[i, 'Z2'] = 1
+                # sector LZ3
+                elif (chiL > 1.5 and chiL < 3.0) and (chiZ > 1.8 and chiZ < 3.5):
+                    SCORE += 3
+                    df_stat.loc[i, 'LZ3'] = 1
+                # sectors LZ4
+                elif ((chiL > 3.0) and (chiZ < 3.5)):
+                    SCORE += 4
+                    df_stat.loc[i, 'LZ4'] = 1
+                elif ((chiL < 3.0) and (chiZ > 3.5)):
+                    SCORE += 4
+                    df_stat.loc[i, 'LZ4'] = 1
+                # sector LZ5
+                elif (chiL > 3.0 and chiZ > 3.5):
+                    SCORE += 6
+                    df_stat.loc[i, 'LZ5'] = 1
+            
+                # AMPL score
+                # ----------------
+                if ampl>0.05 and ampl<0.15: 
+                    SCORE += 1
+                    df_stat.loc[i, 'Amplitude'] = 1
+                if ampl>0.15 and ampl<2: 
+                    SCORE += 2
+                    df_stat.loc[i, 'Amplitude'] = 1
 
-                                # PERIOD scores
-                                if period > 0.00002 and period < 0.00005: 
-                                    p_score += 2
-                                    df_stat.loc[i, 'Period difference'] = 1
-                                if period >= 0.00005: 
-                                    p_score += 4
-                                    df_stat.loc[i, 'Period difference'] = 1
+                # PERIOD scores
+                # -----------------
+                if period > 0.00002 and period < 0.00005: 
+                    SCORE += 2
+                    df_stat.loc[i, 'Period difference'] = 1
+                if period >= 0.00005: 
+                    SCORE += 4
+                    df_stat.loc[i, 'Period difference'] = 1
 
-                                # determining strength of amplitude or period score
-                                if amp_score > p_score:
-                                    df.loc[i, 'period_vs_amp'] = 'amp'
-                                else:
-                                    df.loc[i, 'period_vs_amp'] = 'period'
+                # TOTAL SCORE calculation
+                df.loc[i, bscore] = SCORE
 
-                                # TOTAL SCORE calculation
-                                score = p_score + chi_score + amp_score
-                                df.loc[i, bscore] = score
-
-                                # if a star has a score of 5 or more, it is selected as a Blazhko candidate
-                                # 
-                                if (score>4):
-                                    row = pd.DataFrame(df.iloc[[int(i)]])
-                                    dfnew = pd.concat([dfnew, row.reset_index(drop=True)], ignore_index=True, axis=0)
+                # if a star has a score of 5 or more, it is selected as a Blazhko candidate
+                # 
+                if (SCORE>4):
+                    row = pd.DataFrame(df.iloc[[int(i)]])
+                    dfnew = pd.concat([dfnew, row.reset_index(drop=True)], ignore_index=True, axis=0)
         else:
             pass
     return dfnew, df_stat

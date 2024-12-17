@@ -1,0 +1,50 @@
+This is BibTeX, Version 0.99d (TeX Live 2024)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: paper.aux
+The style file: aa.bst
+Database file #1: paper.bib
+Warning--entry type for "2015zndo.....14833V" isn't style-file defined
+--line 463 of file paper.bib
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+You've used 27 entries,
+            3039 wiz_defined-function locations,
+            881 strings with 25139 characters,
+and the built_in function-call counts, 43782 in all, are:
+= -- 3069
+> -- 6830
+< -- 15
++ -- 2283
+- -- 2256
+* -- 4324
+:= -- 8286
+add.period$ -- 27
+call.type$ -- 27
+change.case$ -- 858
+chr.to.int$ -- 27
+cite$ -- 27
+duplicate$ -- 525
+empty$ -- 763
+format.name$ -- 2309
+if$ -- 8491
+int.to.chr$ -- 1
+int.to.str$ -- 1
+missing$ -- 22
+newline$ -- 85
+num.names$ -- 110
+pop$ -- 852
+preamble$ -- 1
+purify$ -- 858
+quote$ -- 0
+skip$ -- 476
+stack$ -- 0
+substring$ -- 589
+swap$ -- 40
+text.length$ -- 3
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 243
+warning$ -- 0
+while$ -- 111
+width$ -- 0
+write$ -- 273
+(There was 1 warning)
