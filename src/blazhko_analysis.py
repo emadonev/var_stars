@@ -114,13 +114,13 @@ def blazhko_determine(df, dfnew, indic, bscore):
         df(DataFrame) = input dataframe
         dfnew(DataFrame) = new dataframe for inputing good candidates
     '''
-    df_stat = pd.DataFrame([[0 for i in range(9)] for j in range(df.shape[0])], columns=['L2', 'Z2', 'LZ3','LZ4','LZ6','LINEAR periodogram', 'ZTF periodogram', 'Amplitude', 'Period difference'])
+    df_stat = pd.DataFrame([[0 for i in range(7)] for j in range(df.shape[0])], columns=['LZ3','LZ4','LZ5','LINEAR periodogram', 'ZTF periodogram', 'Amplitude', 'Period difference'])
     for i in range(df.shape[0]):
         
         # STEP 1: getting rid of bad data
         # ===============
         # Amplitude for each star needs to be less than 2 mags
-        if (df['Lampl'][i]<2 or df['Zampl'][i]<2) and (df['Plinear'][i]<4 or df['Pztf'][i]<4) and (df['NdataLINEAR'][i]>200 and df['NdataZTF'][i]>150) and (df['Pratio'][i]>0.8 and df['Pratio'][i]<1.2):
+        if (df['Lampl'][i]<2 or df['Zampl'][i]<2) and (df['Ampl_diff'][i] <2) and (df['Plinear'][i]<4 or df['Pztf'][i]<4) and (df['NdataLINEAR'][i]>=150 and df['NdataZTF'][i]>=150) and (df['Pratio'][i]>0.8 and df['Pratio'][i]<1.2):
             # STEP 2: determine periodogram likelihood of BE
             # ================
             dPmin = 0.01
@@ -130,16 +130,16 @@ def blazhko_determine(df, dfnew, indic, bscore):
             # blazhko period must be within RR Lyrae range
             LINEAR_pd_pB = (df['BlazhkoPeriodL'][i]>35)&(df['BlazhkoPeriodL'][i]<325) 
             # relative strength and significance must be above 0.05 and 5 respectively
-            LINEAR_pd_sig = (df['BpowerRatioL'][i]>0.05)&(df['BsignificanceL'][i]>5)
+            LINEAR_pd_sig = (df['BpowerRatioL'][i]>0.15)&(df['BsignificanceL'][i]>5)
 
             #--- determining if ZTF part has periodogram indication of BE ---
             ZTF_pd_period = (np.abs(df['Pztf'][i]-0.5)>dPmin)&(np.abs(df['Pztf'][i]-1.0)>dPmin)&(np.abs(df['Pztf'][i]-2.0)>dPmin)
             ZTF_pd_pB = (df['BlazhkoPeriodZ'][i]>35)&(df['BlazhkoPeriodZ'][i]<325) 
-            ZTF_pd_sig = (df['BpowerRatioZ'][i]>0.05)&(df['BsignificanceZ'][i]>5)
+            ZTF_pd_sig = (df['BpowerRatioZ'][i]>0.15)&(df['BsignificanceZ'][i]>5)
             #---
             BE = 0
             # if a star has indication of BE via both its periodograms
-            if ((LINEAR_pd_period&LINEAR_pd_pB&LINEAR_pd_sig)&(ZTF_pd_period&ZTF_pd_pB&ZTF_pd_sig)):
+            if ((LINEAR_pd_period&LINEAR_pd_pB&(df['BpowerRatioL'][i]>0.10)&(df['BsignificanceL'][i]>5))&(ZTF_pd_period&ZTF_pd_pB&(df['BpowerRatioZ'][i]>0.10)&(df['BsignificanceZ'][i]>5))):
                 BE += 1
                 df.loc[i, indic] = 'LZ'
             # indication of BE via LINEAR periodogram
@@ -172,35 +172,45 @@ def blazhko_determine(df, dfnew, indic, bscore):
                 # ---
                 
                 # CHI^2 scores
-                # sector L2
-                if (chiL > 1.5 and chiL < 3.0) and (chiZ < 1.8):
-                    SCORE += 2
-                    df_stat.loc[i, 'L2'] = 1
-                    df.loc[i, 'ChiType'] = "L2"
-                # sector Z2
-                elif (chiZ > 1.8 and chiZ < 3.5) and (chiL < 1.5):
-                    SCORE += 2
-                    df_stat.loc[i, 'Z2'] = 1
-                    df.loc[i, 'ChiType'] = "Z2"
                 # sector LZ3
-                elif (chiL > 1.5 and chiL < 3.0) and (chiZ > 1.8 and chiZ < 3.5):
+                if (chiL > 2.0 and chiL < 3.0) and (chiZ > 2.0 and chiZ < 3.0):
+                    SCORE += 3
+                    df_stat.loc[i, 'LZ3'] = 1
+                    df.loc[i, 'ChiType'] = "LZ3"
+                elif (chiL > 2.0 and chiL < 3.0) and (chiZ < 3.0):
+                    SCORE += 3
+                    df_stat.loc[i, 'LZ3'] = 1
+                    df.loc[i, 'ChiType'] = "LZ3"
+                elif (chiZ > 2.0 and chiZ < 3.0) and (chiL < 3.0):
                     SCORE += 3
                     df_stat.loc[i, 'LZ3'] = 1
                     df.loc[i, 'ChiType'] = "LZ3"
                 # sectors LZ4
-                elif ((chiL > 3.0) and (chiZ < 3.5)):
+                elif ((chiL > 3.0 and chiL < 5.0) and (chiZ < 3.0)):
                     SCORE += 4
                     df_stat.loc[i, 'LZ4'] = 1
                     df.loc[i, 'ChiType'] = "LZ4"
-                elif ((chiL < 3.0) and (chiZ > 3.5)):
+                elif ((chiL < 3.0) and (chiZ > 3.0 and chiZ < 5.0)):
                     SCORE += 4
                     df_stat.loc[i, 'LZ4'] = 1
                     df.loc[i, 'ChiType'] = "LZ4"
                 # sector LZ5
-                elif (chiL > 3.0 and chiZ > 3.5):
-                    SCORE += 6
-                    df_stat.loc[i, 'LZ6'] = 1
-                    df.loc[i, 'ChiType'] = "LZ6"
+                elif (chiL > 5.0 and chiZ > 5.0):
+                    SCORE += 5
+                    df_stat.loc[i, 'LZ5'] = 1
+                    df.loc[i, 'ChiType'] = "LZ5"
+                elif (chiL > 3.0 and chiL < 5.0 and chiZ > 3.0 and chiZ < 5.0):
+                    SCORE += 5
+                    df_stat.loc[i, 'LZ5'] = 1
+                    df.loc[i, 'ChiType'] = "LZ5"
+                elif (chiL>5.0 and chiZ < 5.0):
+                    SCORE += 5
+                    df_stat.loc[i, 'LZ5'] = 1
+                    df.loc[i, 'ChiType'] = "LZ5"
+                elif (chiZ>5.0 and chiL < 5.0):
+                    SCORE += 5
+                    df_stat.loc[i, 'LZ5'] = 1
+                    df.loc[i, 'ChiType'] = "LZ5"
             
                 # AMPL score
                 # ----------------
@@ -214,10 +224,10 @@ def blazhko_determine(df, dfnew, indic, bscore):
                 # PERIOD scores
                 # -----------------
                 if period > 0.00002 and period < 0.00005: 
-                    SCORE += 2
+                    SCORE += 1
                     df_stat.loc[i, 'Period difference'] = 1
                 if period >= 0.00005: 
-                    SCORE += 4
+                    SCORE += 2
                     df_stat.loc[i, 'Period difference'] = 1
 
                 # TOTAL SCORE calculation
