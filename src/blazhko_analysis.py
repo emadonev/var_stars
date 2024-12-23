@@ -120,7 +120,11 @@ def blazhko_determine(df, dfnew, indic, bscore):
         # STEP 1: getting rid of bad data
         # ===============
         # Amplitude for each star needs to be less than 2 mags
-        if (df['Lampl'][i]<2 or df['Zampl'][i]<2) and (df['Ampl_diff'][i] <2) and (df['Plinear'][i]<4 or df['Pztf'][i]<4) and (df['NdataLINEAR'][i]>=150 and df['NdataZTF'][i]>=150) and (df['Pratio'][i]>0.8 and df['Pratio'][i]<1.2):
+        if ((df['Lampl'][i] < 2 or df['Zampl'][i] < 2) and 
+            (df['Ampl_diff'][i] < 2) and 
+            ((df['Plinear'][i] < 4) or (df['Pztf'][i] < 4)) and 
+            (df['NdataLINEAR'][i] >= 150 and df['NdataZTF'][i] >= 150) and 
+            (df['Pratio'][i] > 0.8 and df['Pratio'][i] < 1.2)):
             # STEP 2: determine periodogram likelihood of BE
             # ================
             dPmin = 0.01
@@ -130,28 +134,33 @@ def blazhko_determine(df, dfnew, indic, bscore):
             # blazhko period must be within RR Lyrae range
             LINEAR_pd_pB = (df['BlazhkoPeriodL'][i]>35)&(df['BlazhkoPeriodL'][i]<325) 
             # relative strength and significance must be above 0.05 and 5 respectively
-            LINEAR_pd_sig = (df['BpowerRatioL'][i]>0.15)&(df['BsignificanceL'][i]>5)
+            LINEAR_pd_ratio = (df['BpowerRatioL'][i]>0.15)
+            LINEAR_pd_sig = (df['BsignificanceL'][i]>5)
 
             #--- determining if ZTF part has periodogram indication of BE ---
             ZTF_pd_period = (np.abs(df['Pztf'][i]-0.5)>dPmin)&(np.abs(df['Pztf'][i]-1.0)>dPmin)&(np.abs(df['Pztf'][i]-2.0)>dPmin)
             ZTF_pd_pB = (df['BlazhkoPeriodZ'][i]>35)&(df['BlazhkoPeriodZ'][i]<325) 
-            ZTF_pd_sig = (df['BpowerRatioZ'][i]>0.15)&(df['BsignificanceZ'][i]>5)
+            ZTF_pd_ratio = (df['BpowerRatioZ'][i]>0.15)
+            ZTF_pd_sig = (df['BsignificanceZ'][i]>5)
             #---
             BE = 0
             # if a star has indication of BE via both its periodograms
-            if ((LINEAR_pd_period&LINEAR_pd_pB&(df['BpowerRatioL'][i]>0.10)&(df['BsignificanceL'][i]>5))&(ZTF_pd_period&ZTF_pd_pB&(df['BpowerRatioZ'][i]>0.10)&(df['BsignificanceZ'][i]>5))):
+            if ((LINEAR_pd_period&LINEAR_pd_pB&(df['BpowerRatioL'][i]>0.10)&LINEAR_pd_sig)&(ZTF_pd_period&ZTF_pd_pB&(df['BpowerRatioZ'][i]>0.10)&ZTF_pd_sig)):
                 BE += 1
                 df.loc[i, indic] = 'LZ'
+                df_stat.loc[i, 'LINEAR periodogram'] = 1
+                df_stat.loc[i, 'ZTF periodogram'] = 1
             # indication of BE via LINEAR periodogram
-            if (LINEAR_pd_period&LINEAR_pd_pB&LINEAR_pd_sig):
+            if (LINEAR_pd_period&LINEAR_pd_pB&LINEAR_pd_sig&LINEAR_pd_ratio):
                 BE += 1
                 df.loc[i, indic] = 'L'
                 df_stat.loc[i, 'LINEAR periodogram'] = 1
             # indication of BE via ZTF periodogram
-            if (ZTF_pd_period&ZTF_pd_pB&ZTF_pd_sig):
+            if (ZTF_pd_period&ZTF_pd_pB&ZTF_pd_sig&ZTF_pd_ratio):
                 BE += 1
                 df.loc[i, indic] = 'Z'
-                df_stat.loc[i, 'ZTF periodogram'] = 1
+                df_stat.loc[i, 'ZTF periodogram'] = 1    
+
             # ---
             # STEP 03: if a star has BE indication via periodogram, it is immediately selected
             # otherwise it goes through the scoring mechanism
