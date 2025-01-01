@@ -81,7 +81,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,0,0,0,0,1,0
 0,0,0,0,0,0,0
 0,0,0,0,0,0,0
-0,0,0,0,0,1,0
+0,0,0,1,0,0,0
 0,0,0,0,0,0,0
 0,0,1,0,0,0,0
 0,0,0,0,0,0,0
@@ -92,7 +92,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,0,0,0,0,1,1
 0,0,0,0,0,1,0
 0,0,0,0,0,1,0
-0,0,0,0,0,0,0
+0,0,0,0,1,0,0
 0,0,0,0,0,0,0
 1,0,0,0,0,1,1
 0,0,0,0,0,0,0
@@ -170,7 +170,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,0,0,0,0,0,0
 0,0,0,0,0,0,0
 0,1,0,0,0,0,0
-0,0,0,0,0,0,0
+0,0,0,0,1,0,0
 0,0,0,0,0,0,0
 0,0,0,0,0,1,0
 0,0,1,0,0,0,1
@@ -232,7 +232,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,0,0,0,0,0,0
 0,0,0,0,0,1,0
 0,0,0,0,0,0,0
-0,0,0,0,0,0,0
+0,0,0,1,0,0,0
 0,0,0,0,0,0,0
 1,0,0,0,0,1,0
 1,0,0,0,0,1,0
@@ -321,7 +321,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,1,0,0,0,1,0
 0,0,0,0,0,0,0
 0,0,0,0,0,0,1
-0,0,0,0,0,0,0
+0,0,0,0,1,0,0
 0,0,0,0,0,1,0
 0,0,0,0,0,0,0
 0,0,0,0,0,1,0
@@ -329,7 +329,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,0,0,0,0,1,0
 0,0,0,0,0,0,0
 0,0,0,0,0,0,0
-0,0,0,0,0,0,0
+0,0,0,0,1,0,0
 0,0,0,0,0,0,0
 0,0,0,0,0,1,0
 0,0,0,0,0,0,0
@@ -387,7 +387,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,1,0,0,0,1,0
 0,0,0,0,0,1,0
 0,0,0,0,0,0,0
-0,0,0,0,0,1,0
+0,0,0,0,1,0,0
 1,0,0,0,0,1,0
 0,0,0,0,0,0,0
 0,0,0,0,0,0,0
@@ -413,7 +413,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,0,0,0,0,0,1
 0,0,0,0,0,0,0
 0,0,0,0,0,1,0
-0,0,0,0,0,0,1
+0,0,0,1,0,0,0
 0,0,0,0,0,0,0
 0,0,0,0,0,0,0
 1,0,0,0,0,1,0
@@ -635,7 +635,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,0,0,0,0,1,0
 0,0,0,0,0,0,0
 0,0,0,0,0,0,0
-0,0,0,0,0,0,0
+0,0,0,0,1,0,0
 1,0,0,0,0,1,0
 0,0,0,0,0,0,0
 0,1,0,0,0,0,0
@@ -773,15 +773,15 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,1,0,0,0,1,0
 0,0,0,0,0,0,0
 0,0,0,0,0,1,0
-0,0,1,0,0,0,0
+0,0,0,1,0,0,0
 0,0,0,0,0,1,0
 1,0,0,0,0,1,0
 0,0,0,0,0,0,0
 0,1,0,0,0,1,1
-0,0,0,0,0,1,0
+0,0,0,1,0,0,0
 0,0,0,0,0,1,0
 0,1,0,0,0,0,0
-0,0,0,0,0,1,0
+0,0,0,0,1,0,0
 0,0,0,0,0,1,0
 0,0,0,0,0,0,0
 0,0,0,0,0,1,1
@@ -914,7 +914,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,0,0,0,0,1,0
 1,0,0,0,0,1,0
 0,1,0,0,0,1,0
-1,0,0,0,0,0,0
+0,0,0,1,0,0,0
 0,0,0,0,0,1,0
 0,0,0,0,0,0,0
 0,0,0,0,0,0,0
@@ -978,7 +978,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,0,0,0,0,0,0
 0,0,0,0,0,0,0
 0,0,0,0,0,0,0
-0,0,0,0,0,0,0
+0,0,0,1,0,0,0
 0,0,0,0,0,0,0
 0,0,0,0,0,0,0
 0,0,0,0,0,0,0
@@ -1093,10 +1093,10 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,0,0,0,0,1,0
 0,0,0,0,0,1,0
 0,0,0,0,0,1,0
-0,0,0,0,0,1,0
+0,0,0,1,0,0,0
 1,0,0,0,0,1,1
 0,0,0,0,0,0,0
-0,0,0,0,0,0,0
+0,0,0,1,0,0,0
 0,0,0,0,0,0,0
 0,1,0,0,0,0,1
 0,0,0,0,0,1,0
@@ -1159,7 +1159,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,0,0,0,0,0,0
 1,0,0,0,0,1,0
 0,0,0,0,0,0,0
-1,0,0,0,0,1,0
+0,0,0,1,0,0,0
 0,0,0,0,0,1,0
 0,0,0,0,0,0,0
 0,0,0,0,0,0,0
@@ -1259,7 +1259,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,0,0,0,0,1,0
 1,0,0,0,0,0,0
 0,0,0,0,0,0,0
-0,0,0,0,0,0,0
+0,0,0,0,1,0,0
 0,0,0,0,0,0,0
 0,0,0,0,0,1,0
 0,0,1,0,0,1,0
@@ -1352,7 +1352,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 1,0,0,0,0,1,0
 0,0,0,0,0,0,0
 0,0,0,0,0,0,0
-0,0,0,0,0,1,0
+0,0,0,1,0,0,0
 0,0,0,0,0,0,0
 0,0,0,0,0,0,0
 0,0,0,0,0,0,0
@@ -1405,7 +1405,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 1,0,0,0,0,1,0
 0,0,0,0,0,0,0
 1,0,0,0,0,1,0
-0,0,0,0,0,1,0
+0,0,0,1,0,0,0
 0,0,0,0,0,1,0
 0,0,0,0,0,0,0
 0,0,0,0,0,0,0
@@ -1474,7 +1474,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,0,0,0,0,0,0
 0,1,0,0,0,1,1
 0,0,0,0,0,1,0
-0,1,0,0,0,1,0
+0,0,0,1,0,0,0
 0,1,0,0,0,1,0
 0,0,0,0,0,0,0
 0,0,0,0,0,0,0
@@ -1509,7 +1509,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,0,0,0,0,1,0
 1,0,0,0,0,1,0
 0,1,0,0,0,0,1
-1,0,0,0,0,1,0
+0,0,0,1,0,0,0
 0,0,0,0,0,1,1
 1,0,0,0,0,0,1
 1,0,0,0,0,1,0
@@ -1566,7 +1566,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,0,0,0,0,0,1
 0,0,0,0,0,1,0
 0,0,0,0,0,1,0
-0,0,0,0,0,1,0
+0,0,0,1,0,0,0
 0,0,0,0,0,0,0
 0,0,0,0,0,1,0
 1,0,0,0,0,1,0
@@ -1587,7 +1587,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,0,0,0,0,0,0
 0,0,0,0,0,1,0
 0,0,0,0,0,1,0
-0,1,0,0,0,0,0
+0,0,0,1,0,0,0
 0,0,0,0,0,1,0
 0,0,0,0,0,1,1
 1,0,0,0,0,0,0
@@ -1603,7 +1603,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,0,0,0,0,1,0
 0,0,0,0,0,1,0
 0,0,0,0,0,1,1
-0,1,0,0,0,1,0
+0,0,0,1,0,0,0
 0,0,0,0,0,1,0
 0,0,0,0,0,0,0
 0,0,1,0,0,0,1
@@ -1691,8 +1691,8 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,0,0,0,0,1,0
 0,0,1,0,0,1,0
 0,0,0,0,0,1,0
-0,0,0,0,0,1,0
-0,0,0,0,0,0,0
+0,0,0,1,0,0,0
+0,0,0,1,0,0,0
 1,0,0,0,0,0,0
 1,0,0,0,0,1,0
 0,0,0,0,0,0,0
@@ -1728,7 +1728,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,0,0,0,0,0,0
 0,0,0,0,0,0,0
 0,0,0,0,0,0,0
-0,0,0,0,0,1,0
+0,0,0,1,0,0,0
 0,1,0,0,0,1,1
 0,0,0,0,0,0,0
 0,0,0,0,0,0,0
@@ -1787,9 +1787,9 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,1,0,0,0,0,0
 0,0,0,0,0,1,0
 0,0,1,0,0,0,0
-0,1,0,0,0,1,1
+0,0,0,0,0,0,0
 0,0,0,0,0,1,0
-0,0,0,0,0,1,0
+0,0,0,1,0,0,0
 0,0,0,0,0,0,0
 0,0,0,0,0,1,0
 1,0,0,0,0,1,1
@@ -1852,7 +1852,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,0,0,0,0,0,0
 0,0,1,0,0,0,0
 0,0,0,0,0,1,0
-0,0,0,0,0,0,1
+0,0,0,1,0,0,0
 0,0,0,0,0,0,0
 0,0,0,0,0,0,0
 0,0,0,0,0,1,0
@@ -1950,7 +1950,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,1,0,0,0,1,1
 0,0,0,0,0,0,0
 0,0,0,0,0,0,0
-0,0,0,0,0,1,0
+0,0,0,1,0,0,0
 1,0,0,0,0,1,0
 0,0,0,0,0,1,0
 0,0,0,0,0,0,0
@@ -1961,7 +1961,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,0,0,0,0,1,0
 0,0,0,0,0,0,0
 0,0,0,0,0,0,0
-0,0,0,0,0,0,0
+0,0,0,1,0,0,0
 0,0,0,0,0,0,0
 0,0,0,0,0,0,0
 1,0,0,0,0,1,0
@@ -1983,7 +1983,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,0,1,0,0,1,0
 0,0,0,0,0,0,0
 0,0,0,0,0,1,0
-0,0,0,0,0,1,0
+0,0,0,1,0,0,0
 0,0,0,0,0,0,0
 0,0,0,0,0,0,0
 0,0,0,0,0,1,0
@@ -2001,7 +2001,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,0,0,0,0,1,0
 0,1,0,0,0,1,0
 0,0,0,0,0,0,0
-0,0,0,0,0,0,0
+0,0,0,1,0,0,0
 0,0,0,0,0,0,0
 1,0,0,0,0,0,0
 0,0,0,0,0,1,0
@@ -2064,7 +2064,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,0,0,0,0,0,0
 0,0,0,0,0,1,0
 1,0,0,0,0,1,0
-0,0,0,0,0,0,0
+0,0,0,0,1,0,0
 0,0,0,0,0,0,0
 0,0,0,0,0,0,0
 0,1,0,0,0,0,0
@@ -2083,7 +2083,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 1,0,0,0,0,1,1
 0,0,0,0,0,0,0
 0,0,0,0,0,0,0
-1,0,0,0,0,0,1
+0,0,0,1,0,0,0
 0,0,0,0,0,1,0
 0,0,0,0,0,1,0
 0,0,0,0,0,0,1
@@ -2235,12 +2235,12 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,0,0,0,0,1,0
 0,0,0,0,0,0,0
 0,1,0,0,0,1,1
-0,0,0,0,0,1,0
+0,0,0,1,0,0,0
 0,0,0,0,0,0,0
 0,0,0,0,0,1,0
 0,0,0,0,0,0,0
 0,0,0,0,0,0,0
-0,0,0,0,0,0,0
+0,0,0,1,0,0,0
 0,0,0,0,0,0,0
 0,0,0,0,0,1,0
 0,0,0,0,0,0,0
@@ -2281,7 +2281,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,0,0,0,0,0,0
 0,0,0,0,0,0,0
 0,0,0,0,0,0,0
-0,0,0,0,0,0,0
+0,0,0,1,0,0,0
 0,0,0,0,0,0,0
 1,0,0,0,0,1,0
 0,0,0,0,0,1,0
@@ -2337,7 +2337,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,0,0,0,0,0,0
 0,0,0,0,0,1,0
 0,0,0,0,0,1,0
-1,0,0,0,0,1,0
+0,0,0,1,0,0,0
 0,0,0,0,0,1,0
 0,0,0,0,0,0,0
 0,0,0,0,0,1,0
@@ -2394,7 +2394,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,0,0,0,0,0,0
 0,1,0,0,0,1,1
 0,0,1,0,0,1,0
-1,0,0,0,0,1,0
+0,0,0,1,0,0,0
 0,0,0,0,0,1,0
 0,0,0,0,0,1,0
 0,0,0,0,0,0,0
@@ -2431,7 +2431,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,0,0,0,0,1,0
 0,0,0,0,0,0,0
 0,0,0,0,0,1,0
-0,1,0,0,0,1,0
+0,0,0,1,0,0,0
 0,0,0,0,0,1,0
 1,0,0,0,0,0,0
 0,0,0,0,0,0,0
@@ -2517,7 +2517,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 1,0,0,0,0,1,0
 0,0,0,0,0,0,1
 0,0,0,0,0,1,0
-0,0,1,0,0,1,1
+0,0,0,1,0,0,0
 1,0,0,0,0,0,1
 0,0,0,0,0,0,0
 0,0,0,0,0,0,0
@@ -2619,7 +2619,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,0,0,0,0,0,0
 0,0,0,0,0,0,0
 0,0,0,0,0,0,0
-0,0,0,0,0,0,0
+0,0,0,0,1,0,0
 0,0,0,0,0,1,0
 1,0,0,0,0,1,0
 0,0,0,0,0,0,1
@@ -2784,7 +2784,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,0,0,0,0,0,0
 1,0,0,0,0,1,0
 0,0,0,0,0,0,0
-1,0,0,0,0,0,1
+0,0,0,1,0,0,0
 0,0,1,0,0,0,1
 0,0,1,0,0,0,0
 0,0,0,0,0,0,0
@@ -2835,7 +2835,7 @@ LZ3,LZ4,LZ5,LINEAR periodogram,ZTF periodogram,Amplitude,Period difference
 0,0,0,0,0,0,0
 1,0,0,0,0,0,1
 0,0,0,0,0,0,0
-0,0,0,0,0,1,0
+0,0,0,1,0,0,0
 0,0,0,0,0,1,0
 0,0,0,0,0,0,0
 1,0,0,0,0,1,0
