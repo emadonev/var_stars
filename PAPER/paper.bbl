@@ -1,4 +1,4 @@
-\begin{thebibliography}{27}
+\begin{thebibliography}{29}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
 
 \bibitem[{{Alcock} {et~al.}(2003){Alcock}, {Alves}, {Becker}, {Bennett}, {Cook}, {Drake}, {Freeman}, {Geha}, {Griest}, {Kov{\'a}cs}, {Lehner}, {Marshall}, {Minniti}, {Nelson}, {Peterson}, {Popowski}, {Pratt}, {Quinn}, {Rodgers}, {Stubbs}, {Sutherland}, {Vandehei}, \& {Welch}}]{2003ApJ...598..597A}
@@ -46,6 +46,9 @@
 \bibitem[{{Palaversa} {et~al.}(2013){Palaversa}, {Ivezi{\'c}}, {Eyer}, {Ru{\v{z}}djak}, {Sudar}, {Galin}, {Kroflin}, {Mesari{\'c}}, {Munk}, {Vrbanec}, {Bo{\v{z}}i{\'c}}, {Loebman}, {Sesar}, {Rimoldini}, {Hunt-Walker}, {VanderPlas}, {Westman}, {Stuart}, {Becker}, {Srdo{\v{c}}}, {Wozniak}, \& {Oluseyi}}]{2013AJ....146..101P}
 {Palaversa}, L., {Ivezi{\'c}}, {\v{Z}}., {Eyer}, L., {et~al.} 2013, \aj, 146, 101
 
+\bibitem[{{Prudil} \& {Skarka}(2017)}]{2017MNRAS.466.2602P}
+{Prudil}, Z. \& {Skarka}, M. 2017, \mnras, 466, 2602
+
 \bibitem[{{Sesar} {et~al.}(2010){Sesar}, {Ivezi{\'c}}, {Grammer}, {Morgan}, {Becker}, {Juri{\'c}}, {De Lee}, {Annis}, {Beers}, {Fan}, {Lupton}, {Gunn}, {Knapp}, {Jiang}, {Jester}, {Johnston}, \& {Lampeitl}}]{2010ApJ...708..717S}
 {Sesar}, B., {Ivezi{\'c}}, {\v{Z}}., {Grammer}, S.~H., {et~al.} 2010, \apj, 708, 717
 
@@ -54,6 +57,9 @@
 
 \bibitem[{{Sesar} {et~al.}(2011){Sesar}, {Stuart}, {Ivezi{\'c}}, {Morgan}, {Becker}, \& {Wo{\'z}niak}}]{2011AJ....142..190S}
 {Sesar}, B., {Stuart}, J.~S., {Ivezi{\'c}}, {\v{Z}}., {et~al.} 2011, \aj, 142, 190
+
+\bibitem[{{Skarka} {et~al.}(2020){Skarka}, {Prudil}, \& {Jurcsik}}]{2020MNRAS.494.1237S}
+{Skarka}, M., {Prudil}, Z., \& {Jurcsik}, J. 2020, \mnras, 494, 1237
 
 \bibitem[{{Smith}(1995)}]{1995CAS....27.....S}
 {Smith}, H.~A. 1995, Cambridge Astrophysics Series, 27
