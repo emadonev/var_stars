@@ -1,14 +1,14 @@
 # Fdb version 4
-["bibtex paper"] 1736340878.74142 "paper.aux" "paper.bbl" "paper" 1736340886.76964 0
+["bibtex paper"] 1736532357.15523 "paper.aux" "paper.bbl" "paper" 1736532389.81565 0
   "./aa.bst" 1585639998 32103 296074362bd3e822c5209e1570c1d28f ""
   "./paper.bib" 1734550074.76791 37656 5623979a2eb40da260f25009753168df ""
-  "paper.aux" 1736340886.49116 26590 1ff0f939a042c74ec1486dcbd5aa373e "pdflatex"
+  "paper.aux" 1736532389.45478 27670 6aa2cd15efdb99d10bad0ae950a94b79 "pdflatex"
   (generated)
   "paper.bbl"
   "paper.blg"
   (rewritten before read)
-["pdflatex"] 1736340878.85298 "/Users/emadonev/Documents/PROJECTS/var_stars/PAPER/paper.tex" "paper.pdf" "paper" 1736340886.76982 0
-  "/Users/emadonev/Documents/PROJECTS/var_stars/PAPER/paper.tex" 1736340858.41934 3930 96a522b3b36e472ac238c05a126a7de6 ""
+["pdflatex"] 1736532381.6779 "/Users/emadonev/Documents/PROJECTS/var_stars/PAPER/paper.tex" "paper.pdf" "paper" 1736532389.81585 0
+  "/Users/emadonev/Documents/PROJECTS/var_stars/PAPER/paper.tex" 1736532379.68307 3939 eb1c401b2fe233a3216cc385b8b686dc ""
   "/usr/local/texlive/2024/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2024/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2024/texmf-dist/fonts/tfm/jknappen/ec/ecrm1000.tfm" 1136768653 3584 adb004a0c8e7c46ee66cad73671f37b4 ""
@@ -162,20 +162,22 @@
   "LCplotBySeason10030349.png" 1734550074.75823 667212 f6d6d5ae7ae81cd6d5cd7d2785007ff0 ""
   "LCplot_10030349.png" 1734550074.76342 516644 2e710cbdf7cc5585341ca4a87bbf60b1 ""
   "aa.cls" 1678816150 64012 73cf6290493c2fac070aedbd04508d96 ""
-  "analysis.tex" 1734550074.76528 18548 9084024cb2900b0052af1ee47f854d6e ""
-  "chi_scatter.png" 1731423707.16986 137165 bb3950c93375335b4dedb5120c9b6e63 ""
-  "discussion.tex" 1734550074.76577 3653 2883eb4358cf8cb49f3bd492c53e454b ""
-  "intro.tex" 1734550074.76703 3107 be426eb591cca7cbdcc96e819c933049 ""
+  "analysis.tex" 1736527212.84572 19813 641d9c8a81e544ec90780212520d857f ""
+  "be_master.tex" 1736532236.19977 9757 50a2dd30dcfafe900cec5162e4c9aad4 ""
+  "candidate_chi2_overlap.png" 1736272561.31452 180157 bd20bdd02d2072274d7bb27dfed4d00e ""
+  "candidate_metrics.png" 1736272578.22564 107610 7faf623aa5a49ce4461ed538a71dccd5 ""
+  "discussion.tex" 1736531389.22776 4013 b36902be87e4a6e3ca321079f0e22017 ""
+  "final_chi2_b.png" 1736526289.33206 117582 0b349fef22fe027257c837c9c702751c ""
+  "intro.tex" 1736444398.39394 3101 f8812a3858b8ae885da54d712f95b8a6 ""
   "lc_pair.png" 1731767349.33316 3251281 233a2eef0b75772da9838059079f196a ""
   "linenoaa.sty" 1678816158 4357 d31f2f5f0bafa2f5c86d6f32fb187820 ""
-  "paper.aux" 1736340886.49116 26590 1ff0f939a042c74ec1486dcbd5aa373e "pdflatex"
-  "paper.bbl" 1736340878.8506 12441 d3c2021578e3641d8406f4c791cc1ce2 "bibtex paper"
-  "paper.out" 1736340886.49455 2029 6a07254222cafae83c3497ad05fc1e9e "pdflatex"
-  "paper.tex" 1736340858.41934 3930 96a522b3b36e472ac238c05a126a7de6 ""
+  "paper.aux" 1736532389.45478 27670 6aa2cd15efdb99d10bad0ae950a94b79 "pdflatex"
+  "paper.bbl" 1736532357.28064 12441 d3c2021578e3641d8406f4c791cc1ce2 "bibtex paper"
+  "paper.out" 1736532389.4591 2029 6a07254222cafae83c3497ad05fc1e9e "pdflatex"
+  "paper.tex" 1736532379.68307 3939 eb1c401b2fe233a3216cc385b8b686dc ""
   "periodogram.png" 1731423107.8834 1124874 102a5ed48e47f748e5f97ea818f62f6d ""
-  "results.tex" 1733129030.97465 1084 1ab95501f11f79a2355044ce7ff71ef8 ""
+  "results.tex" 1736531251.97884 1823 5cc6c58b3270b9f24149189f159b5bc6 ""
   "season_plot10030349.png" 1734550074.80164 256486 554e9c2c55f77a49c45a4edd90692ff4 ""
-  "stats_categories.png" 1732631045.42861 544682 1fd881742122ca282a49cc0e10b514c0 ""
   (generated)
   "paper.aux"
   "paper.log"

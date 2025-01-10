@@ -6,7 +6,7 @@
 \begin{figure*}[ht]
   \centering
   \includegraphics[width=18cm]{lc_pair.png}
-  \vskip -0.5in
+  \vskip -0.2in
   \caption{An example of a Blazhko star (LINEARid = 1212611) with LINEAR (top row) and ZTF (bottom row) light
     curves (left panels, data points with ``error bars''), phased light curves normalized to the 0--1 range (right panels, data points
     with ``error bars''), with their best-fit models shown by dashed lines. The best-fit period is determined for each
@@ -70,7 +70,7 @@ We used the Lomb-Scargle method \citep{2015zndo.....14833V} as implemented in {\
 \citep{2018AJ....156..123A}. The period estimation used 3 Fourier components and a two-step process: an initial
 best-fit frequency was determined using the {\it autopower} frequency grid option and then the power spectrum was
 recomputed around the initial frequency using an order of magnitude smaller frequency step. In case of ZTF, we
-estimated period separately for each available passband and adopted their mean value. Once the best-fit
+estimated period separately for each available passband and adopted their median value. Once the best-fit
 period was determined, a best-fit model for the phased light curve was computed using 6 Fourier components.
 Fig \ref{fig:lc_pair} shows an example of a star with LINEAR and ZTF light curves, phased light curves, and their
 best-fit models.  
@@ -90,9 +90,9 @@ modulation can be detected on time scales as long as 15 years, as discussed in t
 \section{Analysis Methodology: Searching for the Blazhko Effect  \label{sec:analysis}}  
 
 \begin{figure}[ht]
-\resizebox{\hsize}{!}{\includegraphics[width=17cm]{chi_scatter.png}}
+\resizebox{\hsize}{!}{\includegraphics[width=17cm]{candidate_chi2_overlap.png}}
 \caption{A selection diagram constructed with the two sets of robust $\chi^2_{dof}$ values, for LINEAR and ZTF data sets, where
-  blue symbols represents all RR Lyrae stars and the red symbols are the final sample of Blazhko stars. The horizontal
+  blue symbols represents all RR Lyrae stars, light red symbols represent all the Blazhko candidate stars, and the dark red symbols are the final sample of Blazhko stars. The horizontal
   and vertical dashed lines mark Blazhko candidate selection boundaries (see text).}
 \label{fig:chi2}
 \end{figure}
@@ -101,7 +101,7 @@ modulation can be detected on time scales as long as 15 years, as discussed in t
 Given the two sets of light curves from LINEAR and ZTF, we searched for amplitude and phase modulation,
 either during the 5-6 years of data taking by each survey, or during the average span of 15 years between the two
 surveys. Starting with a sample of 2857 RR Lyrae stars, we pre-selected a smaller sample that was inspected
-visually (see below for details). We also required at least 250 LINEAR data points and 40 ZTF data points (per band)
+visually (see below for details). We also required at least 150 LINEAR data points and 150 ZTF data points (for the selected band from which we calculated the period)
 in analyzed light curves. We used two pre-selection methods that are sensitive to different types of light curve
 modulation: direct light curve analysis and periodogram analysis, as follows.
  
@@ -111,8 +111,8 @@ modulation: direct light curve analysis and periodogram analysis, as follows.
 
 \begin{figure*}[ht]
     \centering
-    \resizebox{\hsize}{!}{\includegraphics[width=22cm]{stats_categories.png}}
-    \vskip -0.3in
+    \resizebox{\hsize}{!}{\includegraphics[width=21cm]{candidate_metrics.png}}
+    \vskip -0.1in
     \caption{The figure shows selection criteria and the resulting numbers of pre-selected Blazhko star candidates for each
       criterion and their combinations. The dots represent each case a star can occupy, where every solid dot is a specific
       criterion that is satisfied. Connections between solid dots represent stars which satisfy multiple criteria. Each dot
@@ -141,14 +141,37 @@ Using the two sets of $\chi^2_{dof}$ values, we algorithmically pre-selected a s
 for further visual analysis of their light curves. The visual analysis is needed to confirm the expected Blazhko behavior
 in observed light curves, as well as to identify cases of data problems, such as photometric outliers. 
 
-We used a simple scoring algorithm, optimized through trial and error,
-such that for LINEAR the range $1.8<\chi^2_{dof}<3.0$ was worth 2 points and $\chi^2_{dof}>3.0$ worth 3 points,
-while for ZTF $2.0<\chi^2_{dof}<4.0$ and $\chi^2>4.0$ were the analogous limits. In addition, we also considered
-normalized period differences ($dP$ and amplitude differences ($dA$) and assigned: 2 points for $0.00002 < dP < 0.00005$
-and 4 points for $dP > 0.00005$; 1 point for $0.05 < dA < 0.15$ and 2 points for $dA > 0.15$. 
-A star could score a maximum of 12 points, and a minimum of 5 points was required for further visual analysis. 
+We used a simple scoring algorithm, optimized through trial and error, illustrated in Fig.~\ref{fig:chi2} with dashed lines signifying $\chi^2_{dof}$ boundaries.
+The algorithm used area boundaries for $\chi^2_{dof}$ values ($\chi^2_L$ is the $\chi^2_{dof}$ value for LINEAR, while $\chi^2_Z$ is analogous for ZTF data.)
 
-The sample pre-selected using this method includes 189 stars. For most selected stars, the $\chi^2_{dof}$ values were
+The \textit{3-point area} includes ranges of:
+\begin{enumerate}
+    \item $\chi^2_L > 2.0$ and $\chi^2_L < 3.0$ and $\chi^2_Z > 2.0$ and $\chi^2_Z < 3.0$,
+    \item $\chi^2_L > 2.0$ and $\chi^2_L < 3.0$ and $\chi^2_Z < 3.0$,
+    \item $\chi^2_Z > 2.0$ and $\chi^2_Z < 3.0$ and $\chi^2_L <3.0$.
+\end{enumerate}
+
+The \textit{4-point area} includes ranges of:
+
+\begin{enumerate}
+\item $\chi^2_L > 3.0$ and $\chi^2_L < 5.0$ and $\chi^2_Z < 3.0$
+\item $\chi^2_L < 3.0$ and $\chi^2_Z > 3.0$ and $\chi^2_Z < 5.0$
+\end{enumerate}
+    
+The \textit{5-point area} includes ranges of:
+
+\begin{enumerate}
+\item $\chi^2_L > 5.0$ and $\chi^2_Z > 5.0$
+\item $\chi^2_L > 3.0$ and $\chi^2_L < 5.0$ and $\chi^2_Z > 3.0$ and $\chi^2_Z < 5.0$
+\item $\chi^2_L > 5.0$ and $\chi^2_Z < 5.0$
+\item $\chi^2_Z > 5.0$ and $\chi^2_L < 5.0$
+\end{enumerate}
+
+In addition, we also considered normalized period differences ($dP$) and amplitude differences ($dA$) and assigned: 1 points for $0.00002 < dP < 0.00005$
+and 2 points for $dP > 0.00005$; 1 point for $0.05 < dA < 0.15$ and 2 points for $dA > 0.15$. 
+A star could score a maximum of 9 points, and a minimum of 5 points was required for further visual analysis. 
+
+The sample pre-selected using this method includes 531 stars. For most selected stars, the $\chi^2_{dof}$ values were
 larger for the ZTF data because the ZTF photometric uncertainties are smaller than for the LINEAR data set. 
 Fig.~\ref{fig:selstats} summarizes the selection criteria and the resulting numbers of selected stars for each
 criterion and their combinations. 
@@ -203,6 +226,12 @@ automated searching for the evidence of amplitude  modulation.
 Fig \ref{fig:periodogram} compares the theoretical periodogram produced by interference beats with our algorithm's periodogram,
 signifying that local Blazhko peaks are present in real data.
 
+\begin{figure}[ht]
+  \resizebox{\hsize}{!}{\includegraphics[width=17cm]{final_chi2_b.png}}
+  \caption{The figure shows in which $\chi^2_{dof}$ area Blazhko stars are. Each dot is colored a different shade of red
+  based on its score during selection, while blue dots are stars selected via periodogram.}
+  \label{fig:chi_final}
+  \end{figure}
 
 After the strongest peak in the Lomb-Scargle periodogram is found at frequency $f_o$, we search for  two equally
 distant local peaks at frequencies $f_-$ and $f_+$, with $f_- < f_0 < f_+$.  The sideband peaks can be highly asymmetric
@@ -210,7 +239,7 @@ distant local peaks at frequencies $f_-$ and $f_+$, with $f_- < f_0 < f_+$.  The
 We fold the periodogram through the main peak at $f_o$, multiply the two branches and then search for the strongest peaks
 in the resulting folded periodogram that is statistically more significant than the background noise. The background noise
 is computed as the scatter of the folded periodogram estimated from the interquartile range. We require a ``signal-to-noise''
-ratio of at least 5, as well as the peak strength of at least 0.05. 
+ratio of at least 5, as well as the peak strength of at least 0.05 for ZTF, while 0.10 for LINEAR data. 
 If such a peak is found,
 and it doesn't correspond to yearly alias, we select the star as a candidate Blazhko star and compute
 its Blazhko period as 
@@ -220,9 +249,8 @@ P_{BL} = |f_{-,+} - f_0|^{-1},
 where $f_{-,+}$ means the Blazhko sideband frequency with a higher amplitude is chosen. 
 
 The observed Blazhko periods range from 3 to 3,000 days, and Blazhko amplitudes range from 0.01 mag to about 0.3 mag \citep{2007MNRAS.377.1263S}. In this work, we selected a smaller Blazhko range due to the limitations of our data: 30--325 days. 
-With this additional constraint, we selected 51 candidate Blazhko stars, with one star already included in the sample
-of 189 stars described in preceding section. 
-Fig \ref{fig:phase2} shows an example where two very prominent peaks were identified in the LINEAR periodogram. 
+With this additional constraint, we selected 52 candidate Blazhko stars. 
+Fig \ref{fig:periodogram} shows an example where two very prominent peaks were identified in the LINEAR periodogram. 
 
 
 
@@ -263,8 +291,8 @@ Fig \ref{fig:phase2} shows an example where two very prominent peaks were identi
 
 
 
-The sample pre-selected for visual analysis includes 239 RR Lyrae stars (189 + 51, with one star selected twice),
-or 8.4\% of the starting LINEAR-ZTF sample. Visual analysis included the following standard steps
+The sample pre-selected for visual analysis includes 531 RR Lyrae stars (479 + 52),
+or 18.1\% of the starting LINEAR-ZTF sample. Visual analysis included the following standard steps
 \citep[e.g.,][]{2009MNRAS.400.1006J, 2017MNRAS.466.2602P}: 
 \begin{enumerate}
 \item The shape of the phased light curves and scatter of data points around the best-fit model were examined
@@ -279,11 +307,8 @@ or 8.4\% of the starting LINEAR-ZTF sample. Visual analysis included the followi
        are seen in both the LINEAR data and (especially) the ZTF data. 
 \end{enumerate}
 
-After visually analyzing the starting sample of 239 Blazhko candidates, we visually confirmed expected Blazhko
-behavior for 136 stars (112 out of 189 and 24 out of 50). LINEAR IDs and other characteristics for confirmed
+After visually analyzing the starting sample of 531 Blazhko candidates, we visually confirmed expected Blazhko
+behavior for 228 stars (214 out of 479 and 14 out of 52). LINEAR IDs and other characteristics for confirmed
 Blazhko stars are listed in Table 1 (Appendix A). Statistical properties of the selected sample of Blazhko stars are
 discussed in detail in the next section. 
-
-
-STOPPED HERE
 
