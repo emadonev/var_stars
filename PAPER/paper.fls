@@ -372,11 +372,11 @@ INPUT /usr/local/texlive/2024/texmf-dist/fonts/vf/public/txfonts/txr.vf
 INPUT /usr/local/texlive/2024/texmf-dist/fonts/vf/public/txfonts/txr.vf
 INPUT /usr/local/texlive/2024/texmf-dist/fonts/vf/public/txfonts/t1xi.vf
 INPUT /usr/local/texlive/2024/texmf-dist/fonts/tfm/public/txfonts/rtxi.tfm
-INPUT ./candidate_chi2_overlap.png
-INPUT ./candidate_chi2_overlap.png
-INPUT ./candidate_chi2_overlap.png
-INPUT ./candidate_chi2_overlap.png
-INPUT ./candidate_chi2_overlap.png
+INPUT ./chi2_select.png
+INPUT ./chi2_select.png
+INPUT ./chi2_select.png
+INPUT ./chi2_select.png
+INPUT ./chi2_select.png
 INPUT ./candidate_metrics.png
 INPUT ./candidate_metrics.png
 INPUT ./candidate_metrics.png
