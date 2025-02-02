@@ -31,7 +31,7 @@ code, written in Python, is available on GitHub\footnote{\url{https://github.com
 
 The properties of the LINEAR asteroid survey and its photometric re-calibration based on SDSS data are discussed
 in \cite{2011AJ....142..190S}. Briefly, the LINEAR survey covered about 10,000 deg$^2$ of the northern sky in white
-light (no filters were used, see Figure 1 in \citealt{2011AJ....142..190S}), with photometric errors ranging from $\sim$0.03
+light (no filters were used, see Fig.~1 in \citealt{2011AJ....142..190S}), with photometric errors ranging from $\sim$0.03
 mag at an equivalent SDSS magnitude of $r=15$ to 0.20 mag at $r\sim18$. Light curves used in this work include,
 on average, 270 data points collected between December 2002 and September 2008.
  
@@ -52,7 +52,8 @@ and a camera with 47 deg$^2$ field of view \citep{2019PASP..131a8002B}. The data
 SDSS-like $g$, $r$, and $i$ band filters. Light curves for objects in common with the LINEAR RR Lyrae sample typically
 have smaller random photometric errors than LINEAR light curves because ZTF data are deeper (compared to LINEAR,
 ZTF data have about 2-3 magnitudes fainter  $5\sigma$ depth). ZTF data used in this work were collected between
-February 2018 and December 2023, on average about 15 years after obtaining LINEAR data. 
+February 2018 and December 2023, on average about 15 years after obtaining LINEAR data. The median number of
+ observations per star for ZTF light curves is $\sim$500. 
 
 The ZTF dataset for this project was created by selecting ZTF IDs with matching equatorial coordinates to a corresponding
 LINEAR ID of an RR Lyrae star. This process used the {\it ztfquery} function, which searched the coordinates in the ZTF database
@@ -91,11 +92,9 @@ modulation can be detected on time scales as long as 15 years, as discussed in t
 \begin{figure}[ht]
 \resizebox{\hsize}{!}{\includegraphics[width=17cm]{chi2_select.png}}
 \caption{A selection diagram constructed with the two sets of robust $\chi^2_{dof}$ values, for LINEAR and ZTF data sets, where
- the dark blue dots represent all RR Lyrae stars and the squares
- represent candidate Blazhko stars (color-coded according to the
- legend, with B\_score representing the
- number of points scored from the selection algorithm).  The horizontal
-  and vertical dashed lines mark Blazhko candidate selection boundaries (see text).}
+ the dark blue dots represent all RR Lyrae stars and the squares  represent candidate Blazhko stars (color-coded according to the
+ legend, with B\_score representing the number of points scored from the selection algorithm).  The horizontal
+  and vertical dashed lines help visualize selection boundaries for Blazhko candidates (see text).}
 \label{fig:chi2}
 \end{figure}
 
@@ -141,7 +140,7 @@ Of course, $\chi^2_{dof}$ can also be large due to underestimated measurement un
 or to occasional non-Gaussian measurement error (the so-called outliers). 
 
 Therefore, to search for signatures of the Blazhko effect, manifested through statistically unlikely large values
-of $\chi^2_{dof}$, we computed $\chi^2_{dof}$ separately for LINEAR and ZTF data (see Figure~\ref{fig:chi2}). 
+of $\chi^2_{dof}$, we computed $\chi^2_{dof}$ separately for LINEAR and ZTF data (see Fig.~\ref{fig:chi2}). 
 Using the two sets of $\chi^2_{dof}$ values, we algorithmically pre-selected a sample of candidate Blazhko stars
 for further visual analysis of their light curves. The visual analysis is needed to confirm the expected Blazhko behavior
 in observed light curves, as well as to identify cases of data problems, such as photometric outliers. 
@@ -194,7 +193,7 @@ criterion and their combinations.
     The bottom left panel shows a periodogram for an observed LINEAR light curve for $ID=1748058$, and the bottom right panel shows its
     folded version (around the main frequency $f_o=3.223$ d$^{-1}$). In the bottom left panel, the three vertical dashed
     lines show the three  frequencies identified by the algorithm described in text, and the two dot-dashed lines mark
-    yearly aliases around the main frequency $f_o$, at frequencies $f_o \pm 0.034$ d$^{-1}$. The two vertical lines in the
+    yearly aliases around the main frequency $f_o$, at frequencies $f_o \pm 0.0274$ d$^{-1}$. The two vertical lines in the
     bottom right panel have the same meaning, and the horizontal dashed line shows the noise level multiplied by 5.}
 \label{fig:periodogram}
 \end{figure*}
@@ -233,8 +232,7 @@ signifying that local Blazhko peaks are present in real data.
 
 \begin{figure}[ht]
   \resizebox{\hsize}{!}{\includegraphics[width=17cm]{final_chi2_b.png}}
-  \caption{The figure shows in which $\chi^2_{dof}$ area Blazhko stars are. Each dot is colored a different shade of red
-  based on its score during selection, while blue dots are stars selected via periodogram.}
+  \caption{Analogous to figure~\ref{fig:chi2}, except that here only visually verified Blazhko stars are shown.}
   \label{fig:chi_final}
   \end{figure}
 
@@ -255,7 +253,7 @@ where $f_{-,+}$ means the Blazhko sideband frequency with a higher amplitude is 
 
 The observed Blazhko periods range from 3 to 3,000 days, and Blazhko amplitudes range from 0.01 mag to about 0.3 mag \citep{2007MNRAS.377.1263S}. In this work, we selected a smaller Blazhko range due to the limitations of our data: 30--325 days. 
 With this additional constraint, we selected 52 candidate Blazhko stars. 
-Fig \ref{fig:periodogram} shows an example where two very prominent peaks were identified in the LINEAR periodogram. 
+Fig.~\ref{fig:periodogram} shows an example where two very prominent peaks were identified in the LINEAR periodogram. 
 
 
 
@@ -288,7 +286,8 @@ Fig \ref{fig:periodogram} shows an example where two very prominent peaks were i
     \centering
 %    \includegraphics[width=17cm]{LCplotBySeason7048826.png}
     \resizebox{\hsize}{!}{\includegraphics[width=16cm]{LCplotBySeason10030349.png}}
-    \caption{The phased light curves normalized to unit amplitude are shown for single observing seasons
+    \caption{The phased light curves normalized to unit amplitude of
+      the overall best-fit model are shown for single observing seasons
       and compared to the mean best-fit models (top six panels: LINEAR data; bottom six panels: ZTF data).
       Data shown are for star with LINEARid = 10030349.
       Season-to-season phase and amplitude modulations are seen in both the LINEAR and the ZTF data.}
@@ -302,7 +301,7 @@ Fig \ref{fig:periodogram} shows an example where two very prominent peaks were i
     \caption{Analogous to Fig.~\ref{fig:phase4}, except that star
     with LINEARid = 16300450 is shown. Unlike example shown in
     Fig.~\ref{fig:phase4},  only phase modulation is visible here,
-    without any amplitude modulation.}
+    without any amplitude modulation, in both LINEAR and ZTF light curves.}
       \label{fig:phase5}
 \end{figure*}
 
