@@ -145,40 +145,25 @@ Using the two sets of $\chi^2_{dof}$ values, we algorithmically pre-selected a s
 for further visual analysis of their light curves. The visual analysis is needed to confirm the expected Blazhko behavior
 in observed light curves, as well as to identify cases of data problems, such as photometric outliers. 
 
-We used a simple scoring algorithm, optimized through trial and error, illustrated in Fig.~\ref{fig:chi2}, with dashed lines signifying $\chi^2_{dof}$ boundaries.
-The algorithm used area boundaries for $\chi^2_{dof}$ values ($\chi^2_L$ is the $\chi^2_{dof}$ value for LINEAR, while $\chi^2_Z$ is analogous for ZTF data).
-
-The \textit{3-point area} includes ranges of:
-\begin{enumerate}
-    \item $\chi^2_L > 2.0$ and $\chi^2_L < 3.0$ and $\chi^2_Z > 2.0$ and $\chi^2_Z < 3.0$,
-    \item $\chi^2_L > 2.0$ and $\chi^2_L < 3.0$ and $\chi^2_Z < 3.0$,
-    \item $\chi^2_Z > 2.0$ and $\chi^2_Z < 3.0$ and $\chi^2_L <3.0$.
-\end{enumerate}
-
-The \textit{4-point area} includes ranges of:
-
-\begin{enumerate}
-\item $\chi^2_L > 3.0$ and $\chi^2_L < 5.0$ and $\chi^2_Z < 3.0$
-\item $\chi^2_L < 3.0$ and $\chi^2_Z > 3.0$ and $\chi^2_Z < 5.0$
-\end{enumerate}
-    
-The \textit{5-point area} includes ranges of:
-
-\begin{enumerate}
-\item $\chi^2_L > 5.0$ and $\chi^2_Z > 5.0$
-\item $\chi^2_L > 3.0$ and $\chi^2_L < 5.0$ and $\chi^2_Z > 3.0$ and $\chi^2_Z < 5.0$
-\item $\chi^2_L > 5.0$ and $\chi^2_Z < 5.0$
-\item $\chi^2_Z > 5.0$ and $\chi^2_L < 5.0$
-\end{enumerate}
-
-In addition, we also considered normalized period differences ($dP$) and amplitude differences ($dA$) and assigned: 1 points for $0.00002 < dP < 0.00005$
-and 2 points for $dP > 0.00005$; 1 point for $0.05 < dA < 0.15$ and 2 points for $dA > 0.15$. 
-A star could score a maximum of 9 points, and a minimum of 5 points was required for further visual analysis. 
-
-The sample pre-selected using this method includes 531 stars. For most selected stars, the $\chi^2_{dof}$ values were
-larger for the ZTF data because the ZTF photometric uncertainties are smaller than for the LINEAR data set. 
-Fig.~\ref{fig:selstats} summarizes the selection criteria and the resulting numbers of selected stars for each
-criterion and their combinations. 
+We used a simple scoring algorithm, optimized through trial and error, that utilized the two values of $\chi^2_{dof}$,
+augmented by period and amplitude differences, as follows. A star could score a maximum of 9 points,
+and a minimum of 5 points was required for further visual analysis. The $\chi^2_{dof}$ selection boundaries are 
+illustrated in Fig.~\ref{fig:chi2}. If either value of $\chi^2_{dof}$
+exceeded 5, or both exceeded 3, a star was awarded 5 points and immediately selected
+for further analysis. If these $\chi^2_{dof}$ criteria were not met, a
+star could still be selected by meeting less stringent $\chi^2_{dof}$
+selection if it also had large period or amplitude difference between
+LINEAR and ZTF datasets. Stars with at least one value of $\chi^2_{dof}$
+above 2 would receive 3 points and those with at least one
+$\chi^2_{dof}$ above 3 would receive 4 points. A period
+difference exceeding $2\times10^{-4}$ day would be awarded 1 point
+and two points for exceeding $5\times10^{-4}$ day. Analogous limits
+for amplitude difference were 0.05 mag and 0.15 mag, respectively. 
+ 
+The candidate Blazhko sample pre-selected using this method includes 531 stars. For most selected stars,
+the $\chi^2_{dof}$ values were larger for the ZTF data because the ZTF photometric uncertainties are smaller
+than for the LINEAR data set.  Fig.~\ref{fig:selstats} summarizes the selection criteria and the resulting numbers of
+selected stars for each criterion and their combinations. 
  
 
 
@@ -202,7 +187,8 @@ criterion and their combinations.
 When light curve modulation is due to double-mode oscillation with two similar oscillation frequencies (periods),
 it is possible to recognize its signature in the periodogram computed as part of the Lomb-Scargle analysis. Depending
 on various details, such as data sampling and the exact values of periods, amplitudes, this method may be
-more efficient than direct light curve analysis \citep{2020MNRAS.494.1237S}. 
+more efficient than direct light curve analysis \citep{2020MNRAS.494.1237S}. We also employed this method to select
+additional candidates, as follows.
 
 A sum of two {\it sine} functions with same amplitudes and with frequencies $f_1$ and $f_2$ can be rewritten 
 using trigonometric equalities as 
@@ -232,7 +218,8 @@ signifying that local Blazhko peaks are present in real data.
 
 \begin{figure}[ht]
   \resizebox{\hsize}{!}{\includegraphics[width=17cm]{final_chi2_b.png}}
-  \caption{Analogous to figure~\ref{fig:chi2}, except that here only visually verified Blazhko stars are shown.}
+  \caption{Analogous to figure~\ref{fig:chi2}, except that here only
+    228 visually verified Blazhko stars are shown.}
   \label{fig:chi_final}
   \end{figure}
 
@@ -318,8 +305,9 @@ or 18.1\% of the starting LINEAR-ZTF sample. Visual analysis included the follow
        This step was sensitive to amplitude modulations with periods of the order a year or longer.  
      \item The phased light curves normalized to unit amplitude were inspected for their repeatability between observing seasons.
        This step was sensitive to phase modulations of a few percent or larger on time scales of the order a year or longer.  
-       Fig.~\ref{fig:phase4} shows an example of a Blazhko star where season-to-season phase (and amplitude) modulations
-       are seen in both the LINEAR data and (especially) the ZTF data. 
+       Fig.~\ref{fig:phase4} shows an example of a Blazhko star where season-to-season phase and amplitude modulations
+       are seen in both the LINEAR data and (especially) the ZTF data. Another example is shown in Fig.~\ref{fig:phase5}
+       where only phase modulation is visible,  without any discernible amplitude modulation.
 \end{enumerate}
 
 After visually analyzing the starting sample of 531 Blazhko candidates, we visually confirmed expected Blazhko

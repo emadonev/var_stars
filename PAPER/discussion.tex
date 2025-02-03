@@ -1,65 +1,43 @@
 
 \section{Discussion and Conclusions\label{sec:discussion}}
 
-
-%%% MAIN CONCLUSIONS
-%% - a lower limit of 11\% for the incidence rate of Blazhko stars
-%% - ab type Blazhko stars have about 5% shorter periods 
-%% - Blazhko effect appears not stationary on time scales shorter than a decade
-%% 
-
-
-%% these datasets are not perfect, especially compared to LSST 
-
-%% one would want to look at neighboring objects to confirm photometric quality
-%% as well as at images to test hypothesis that we have an isolated point source
-%% (e.g. blended object photometry can be affected by variable seeing beyond
-%%  aperture correction valid for isolated point sources 
-
+We found excellent agreement
+between the best-fit periods for RR Lyrae stars estimated separately from LINEAR and ZTF light curves. 
+The sample of 228 stars presented here nearly doubles the number of field RR Lyrae stars displaying the Blazhko
+effect and  places a lower limit of (11.4$\pm$0.8)\% for their incidence rate. 
 The reported incidence rates for the Blazhko effect
-range from 5\% \citep{2007MNRAS.377.1263S} to 60\% \citep{2014A&A...570A.100S}. For a relatively small sample of
+range from 5\% \citep{2007MNRAS.377.1263S} to 60\% \citep{2014A&A...570A.100S}.
+Differences in reported incidence rates can occur due to varying data precision, the temporal baseline length, and differences in visual or algorithmic analysis.
+For a relatively small sample of
 151 stars with Kepler data, a claim has been made that essentially every RR Lyrae star exhibits modulated light curve
 \citep{2018A&A...614L...4K}. The difference in Blazhko incidence rates for the two most extensive samples, obtained
-by the OGLE-III survey for the Large Magellanic Cloud (LMC, 20\% out of 17,693 stars; \citealt{2009AcA....59....1S}).
-Moreover, the Galactic bulge (30\% out of 11,756 stars; \citealt{2011AcA....61....1S}) indicates a possible variation of
-the Blazhko incidence rate with underlying stellar population properties. In this work, 7.75\% of the original RR Lyrae dataset are Blazhko stars. Since our sample size is considerable, we conclude that the incidence rate of Blazhko stars in our work is representative and aligns with other works. We theorize that the difference in incidence rates occurs due to varying data precision, the temporal baseline length, and differences in visual or algorithmic analysis.
-We also conclude that our algorithm's success rate in finding 228 out of 531 potential Blazhko stars is 43\% . This high number indicates that the algorithm is quite successful and can be used and refined further for efficient Blazhko star selection. 
-
-For future research, we would like to explore the final finding and find a connection or a factor that might give rise to a mechanism that explains the Blazhko effect. Due to the significant time difference between LINEAR and ZTF observing times ( around 15 years difference ), stars
-where the effect is found in both datasets might prove very interesting as they show the Blazhko effect to be long lasting and present for long periods of time in relation to the short period of RR Lyrae stars. 
-Based on the final finding, we confirm that the light curve modulation can be unstable, as discussed by \cite{2009MNRAS.400.1006J} 
-The project is an excellent example of automatizing the search for Blazhko stars. It can further be improved by training a neural network to replace visual analysis, and our current algorithms can be improved with other models. This work can provide a base for finding more Blazhko stars for the future Vera Rubin observatory. The Legacy Survey of Space and Time (LSST; \citealt{2019ApJ...873..111I}) will be an excellent survey for studying Blazhko effect
-\citep{2022ApJS..258....4H} because it will have both a long temporal
-baseline (10 years) and a large number of observations per object
-(nominally 825; LSST Science Requirements Document\footnote{Available as ls.st/srd}).
-
-A prominent issue in this work is a short temporal baseline which results in few datapoints, limiting our ability to find small changes or modulations in the data.
-With time-resolved photometry expected from LSST, a similar analysis will be performed for
-RR Lyrae stars in the southern sky and we anticipate a higher fraction of discovered Blazhko stars due to better sampling
-and superior photometric quality, since the incidence rate of the Blazhko effect increases with sensitivity to small-amplitude modulation, and thus with
-photometric data quality \citep{2009MNRAS.400.1006J}.
-
-
-\citep{2020MNRAS.494.1237S} classify Blazhko stars in 6 classes using the morphology of their amplitude modulation
-(though we note that the most dominant class includes 90\% of the sample). They find bimodal distribution of Blazko periods, with two components
-centered on 48 d and 186 d.
-
- LINEAR and ZTF data used here do not
- have as many data points as OGLE-III used by them (comment earlier, in Introduction? also Kepler is great, \citep{2010MNRAS.409.1585B}).
+by the OGLE-III survey for the Large Magellanic Cloud (LMC, 20\% out of 17,693 stars; \citealt{2009AcA....59....1S})
+and the Galactic bulge (30\% out of 11,756 stars; \citealt{2011AcA....61....1S}) indicates a possible variation of
+the Blazhko incidence rate with underlying stellar population properties. 
  
+We find that ab type RR Lyrae that show the Blazhko effect have about 5\% (0.030 day) shorter periods than starting
+sample. While not large, the statistical signifcance of this difference is 7.1$\sigma$. At a similar uncertainty level
+($\sim$1\%), we don't detect period difference for c type stars, and don't detect any difference in amplitude distributions.
+We also find that for some stars the Blazhko effect is discernible in only one dataset. This finding  strongly suggests that Blazhko effect can
+appear and disappear on time scales shorter than about a decade, in agreement with \cite{2009MNRAS.400.1006J}. 
 
- From \cite{2009MNRAS.400.1006J}: A sample of 30 RRab stars was extensively observed, and light-curve modulation was detected in 14 cases. The 47 per cent occurrence rate of the modulation is much larger than any previous estimate.
+The LINEAR and ZTF datasets analyzed in this work were sufficiently large that we had to rely on algorithmic
+pruning of the initial sample. The sample size problem will be even larger for surveys such as the Legacy Survey
+of Space and Time (LSST; \citealt{2019ApJ...873..111I}). LSST will be an excellent survey for studying Blazhko effect
+\citep{2022ApJS..258....4H} because it will have both a long temporal baseline (10 years) and a large number of
+observations per object (nominally 825; LSST Science Requirements Document\footnote{Available as ls.st/srd}).
+We anticipate a higher fraction of discovered Blazhko stars with LSST than reported here due to better sampling
+and superior photometric quality, since the incidence rate of the Blazhko effect increases with sensitivity to
+small-amplitude modulation, and thus with photometric data quality \citep{2009MNRAS.400.1006J}.
 
-
- %Although close to 8,000 Blazhko stars were discovered or confirmed in the Galactic bulge and LMC/SMC by
-% the OGLE-III survey, only about 200 stars have been reported in all field RR Lyrae stars studies to date;
-
-% We found excellent agreement between the best-fit periods estimated separately from LINEAR and ZTF light curves.
-
-We find that stars that show the Blazhko effect have a smaller fraction of
-large light curve amplitudes than the starting sample, with no large differences in their period and apparent
-magnitude (signal-to-noise ratio) distributions. Analyzed light curves span two decades and show that Blazhko
-effect can appear and disappear on time scales of several years: about half of all stars with Blazhko effect show
-it in both LINEAR and ZTF data, with similar fractions of stars showing the effect only in a single survey.
-
+The size and quality of LSST sample will motivate further developments of the selection algorithms. 
+One obvious improvement will be inspection of neighboring objects to confirm photometric quality,
+as well as inspection of images to test implication of an isolated point source (e.g., blended object photometry
+can be affected by variable seeing beyond aperture correction valid for isolated point sources). 
+Another improvement is forward modeling of the Blazhko modulation, rather than searching for $\chi^2$
+outliers. For example, \citep{2020MNRAS.494.1237S} classified Blazhko stars in 6 classes using the morphology
+of their amplitude modulation (the most dominant class includes 90\% of the sample). They also found bimodal distribution
+of Blazko periods, with two components centered on 48 d and 186 d. These results give hope that forward
+modeling of the Blazhko effect will improve the selection of such stars.
+ 
 

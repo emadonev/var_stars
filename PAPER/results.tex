@@ -2,32 +2,38 @@
 
 \section{Results}\label{sec:results}
 
-Starting with a sample of 2857 field RR Lyrae stars with both LINEAR and ZTF data, we found 228 stars exhibiting
-convincing Blazhko effect. Out of these 228, 14 were selected via periodogram, and 214 via the scoring algorithm. 
+Starting with a sample of 2857 field RR Lyrae stars with both LINEAR and ZTF data, we constructed a subsample of
+1996 with light curves of sufficient quality and selected and verified 228 stars that exhibit convincing Blazhko effect.
+In this section we compare various statistical properties of selected Blazhko stars to those of the starting sample. 
 
-From Fig.~\ref{fig:chi_final} we can see that most Blazhko stars selected via periodogram have very low $\chi^2_{dof}$ values for both 
-LINEAR and ZTF data. Meanwhile, Blazhko stars selected via the scoring algorithm generally have low $\chi^2_{dof}$ LINEAR scores, with an average of 1.78, and higher $\chi^2_{dof}$ ZTF values,
-with an average of 4.09. Most Blazhko stars are part of the 4-point $\chi^2_{dof}$ range (94 stars), with 66 stars in the 5-point range and 54 in the 3-point range. In accordance with this, the
-average Blazhko candidate score is 5.90. Based on the light curve type, 78.95 \% of stars are RRab type, and 21.05 \% are RRc type stars. Ratio of RRab to RRc stars is in accordance with other works.
+\subsection{The Blazhko Incidence Rate}
 
-During visual analysis, we noticed that many Blazhko stars exhibited convincing Blazhko effect either in LINEAR or in ZTF data, with few examples of the effect in both datasets. 
-Also, the modulation in light curves isn't constant for most stars, rather it varies throughout the observing season. In the following discussion we discuss how to utilize this finding.
+The implied incidence rate for the Blazhko effect is
+11.4$\pm$0.8\%. Due to selection effects and unknown completeness,
+this rate should be considered as a lower limit. 
+When ab and c types are considered separately, the
+rate is slightly higher for the former than for the latter: 12.1$\pm$0.9\%
+vs. 9.2$\pm$1.3\%.  The difference of 2.9\% has low statistical significance ($<2\sigma$). 
 
 
-\subsection{Statistical Properties of selected Blazhko Stars}
+\subsection{Period, Amplitude and Magnitude Distributions}
 
 \begin{figure*}[ht]
     \centering
     \resizebox{\hsize}{!}{\includegraphics[width=16cm]{cumulative_distib_L.png}}
-     \resizebox{\hsize}{!}{\includegraphics[width=16cm]{cumulative_distib.png}}
+     \resizebox{\hsize}{!}{\includegraphics[width=16cm]{CDF_abtype.png}}
+     \resizebox{\hsize}{!}{\includegraphics[width=16cm]{CDF_ctype.png}}
    \caption{A comparison of cumulative distributions of period (left),
    amplitude (middle) and apparent magnitude for starting sample,
    selected Blazhko candidates and visually verified Blazhko
-   stars. The top row is based on LINEAR data and the bottom row is
-   based on ZTF data. The differences in period and amplitude
+   stars. The top row is based on LINEAR data and both ab type and c
+   type stars. The middle and bottom rows are
+   based on ZTF data, and show separately data for ab type and c type
+   stars, respectively. The differences in period and amplitude
    distributions are futher examined in figure~\ref{fig:AmplPeriod2D}.}
       \label{fig:AmplPeriod}
 \end{figure*}
+
 
 \begin{figure*}[ht]
     \centering
@@ -41,32 +47,53 @@ Also, the modulation in light curves isn't constant for most stars, rather it va
       \label{fig:AmplPeriod2D}
 \end{figure*}
 
-
+ 
 Marginal distributions of  period, amplitude and apparent magnitude
-for starting sample and Blazhko stars are compared in Fig.~\ref{fig:AmplPeriod}. 
+for the starting sample and Blazhko stars are compared in Fig.~\ref{fig:AmplPeriod}. 
+Encouragingly, their magnitude distributions are statistically
+indistinguishable which indicates that the completeness is not a
+strong function of the photometric signal-to-noise ratio. This
+result is probably due to the fact that the sample is defined by the
+depth of LINEAR survey, while ZTF survey is deeper than this limit and
+its photometric quality is approximately constant across the probed
+magnitude range. 
 
-The median period for ab type Blazhko stars is 5\% shorter than for starting
-RR Lyrae sample, while for c type Blazhko stars have 2\% longer median period. 
-
-For the latter, the effect corresponds to only 1.1$\sigma$ deviation, while for ab type the
-difference is significant at the 7.1$\sigma$ level. At the same time, the difference in
-median amplitudes for ab type corresponds to only 0.6$\sigma$ deviation. 
-
-Therefore, the only significantly detected difference is 5\% shorter periods for
-ab type Blazhko stars, with an uncertainty of about 1\%. At a similar uncerainty level,
-we don't detect period difference for c type stars, and don't detect any difference
-in amplitude distribution. 
+The suspected differences in amplitude and period distributions are
+further explored in Fig.~\ref{fig:AmplPeriod2D}. It is already
+discernible by eye that the period distribution for Blazhko stars of
+ab type is shifted to smaller values than for the starting sample. We have
+found that the median period for ab type Blazhko stars is about 5\% shorter
+than for the starting RR Lyrae sample. This difference is significant at
+the 7.1$\sigma$ level.  At the same time, the difference in median
+amplitudes for ab type stars corresponds to only 0.6$\sigma$ deviation. 
+No statistically significant differences are found in period and
+amplitude distributions for c type stars. 
 
 
 \subsection{Long-term behavior of Blazhko Stars}
 
+\begin{figure*}[ht]
+    \centering
+    \resizebox{\hsize}{!}{\includegraphics[width=16cm]{3196780_sn.png}}
+    \caption{Analogous to Fig.~\ref{fig:phase4}, except that star
+    with LINEARid = 3196780 is shown. Amplitude modulation is clearly
+    seen in LINEAR light curves (top two rows), while not discernible
+    in ZTF light curves (bottom two rows). Additional stars with
+    similar behavior include LINEARid = 2889542, 7723614, 8342007.
+    This behavior strongly  suggests that Blazhko effect can appear and disappear on time scales shorter than
+      about a decade.
+      }
+      \label{fig:phase6}
+\end{figure*}
 
-There are stars where Blazhko effect is much more prominent in one survey than in other one,
-strongly suggesting that Blazhko effect can appear and disappear on time scales shorter than
-about a decade. Fig. XX shows a star (LINEARid = 23193507), where Blazhko effect is evident in LINEAR but not noticeable
-in ZTF. Additional stars with similar behavior include LINEARid = 2889542, 3196780, 7723614, 8342007.
-There are also stars where Blazhko effect is evident in ZTF but not in LINEAR data (e.g., LINEARid = 19466437, 14155360). 
 
+During visual analysis, we noticed that some Blazhko stars exhibit
+convincing Blazhko effect either in LINEAR or in ZTF data, but not in
+both surveys. Fig.~\ref{fig:phase6} shows an example where amplitude
+modulation is clearly seen in LINEAR light curves, while not discernible
+in ZTF light curves.  There are also examples of stars where Blazhko effect is evident in
+ZTF but not in LINEAR data (e.g., LINEARid = 19466437, 14155360). 
+This finding  strongly suggests that Blazhko effect can appear and disappear on time scales shorter than
+about a decade.
 
-
-
+ 
