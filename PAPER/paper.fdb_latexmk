@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex paper"] 1739628257.61286 "paper.aux" "paper.bbl" "paper" 1739628269.53528 0
+["bibtex paper"] 1739628257.61286 "paper.aux" "paper.bbl" "paper" 1739657388.44481 0
   "./aa.bst" 1585639998 32103 296074362bd3e822c5209e1570c1d28f ""
   "./paper.bib" 1739628219.48882 41651 69b264d9065dcf369982cc924f7675a3 ""
-  "paper.aux" 1739628269.2738 34271 3a279c0f5c42ad5d3295198ce8c74b1d "pdflatex"
+  "paper.aux" 1739657388.17206 34271 3a279c0f5c42ad5d3295198ce8c74b1d "pdflatex"
   (generated)
   "paper.bbl"
   "paper.blg"
   (rewritten before read)
-["pdflatex"] 1739628257.72574 "/Users/emadonev/Documents/PROJECTS/var_stars/PAPER/paper.tex" "paper.pdf" "paper" 1739628269.53546 0
+["pdflatex"] 1739657376.35454 "/Users/emadonev/Documents/PROJECTS/var_stars/PAPER/paper.tex" "paper.pdf" "paper" 1739657388.44501 0
   "/Users/emadonev/Documents/PROJECTS/var_stars/PAPER/paper.tex" 1739628219.51186 4879 4b96dbc1129f47c48041440eaa8f2639 ""
   "/usr/local/texlive/2024/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2024/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -174,12 +174,12 @@
   "cumulative_distib_L.png" 1738690027.65159 378598 3361ab935e8685726ffa331229517215 ""
   "discussion.tex" 1739628219.48812 3785 632b3a0ff61d293725b5a1b0720c021c ""
   "final_chi2_b.png" 1738699748.64132 109191 0c12ee9affa236a219deb14681ab8f98 ""
-  "intro.tex" 1738690027.65392 3085 6ad830e8e4e923a9a368f0cebd6b4cf6 ""
+  "intro.tex" 1739657376.02351 3085 9818bce0b8ecf7d51f83bcdec07bd636 ""
   "lc_pair.png" 1731767349.33316 3251281 233a2eef0b75772da9838059079f196a ""
   "linenoaa.sty" 1678816158 4357 d31f2f5f0bafa2f5c86d6f32fb187820 ""
-  "paper.aux" 1739628269.2738 34271 3a279c0f5c42ad5d3295198ce8c74b1d "pdflatex"
+  "paper.aux" 1739657388.17206 34271 3a279c0f5c42ad5d3295198ce8c74b1d "pdflatex"
   "paper.bbl" 1739628257.72321 13539 4fdeb297da2c5712e347afb6d7999047 "bibtex paper"
-  "paper.out" 1739628269.27869 2766 2e54fee1f33eff382968874db68313b2 "pdflatex"
+  "paper.out" 1739657388.17674 2766 2e54fee1f33eff382968874db68313b2 "pdflatex"
   "paper.tex" 1739628219.51186 4879 4b96dbc1129f47c48041440eaa8f2639 ""
   "periodogram.png" 1736972254.85629 1108530 f850d0940d86f59751ee8d961f1c8afd ""
   "results.tex" 1739628219.51409 5693 9115a0f7fd5822ce4b8846dfc9aca89c ""
