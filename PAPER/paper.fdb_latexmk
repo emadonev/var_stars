@@ -1,14 +1,14 @@
 # Fdb version 4
-["bibtex paper"] 1738701135.33141 "paper.aux" "paper.bbl" "paper" 1738703656.33123 0
+["bibtex paper"] 1739628257.61286 "paper.aux" "paper.bbl" "paper" 1739628269.53528 0
   "./aa.bst" 1585639998 32103 296074362bd3e822c5209e1570c1d28f ""
-  "./paper.bib" 1734550074.76791 37656 5623979a2eb40da260f25009753168df ""
-  "paper.aux" 1738703656.03439 33064 bbc6152eff5f28c036794b3d46b33237 "pdflatex"
+  "./paper.bib" 1739628219.48882 41651 69b264d9065dcf369982cc924f7675a3 ""
+  "paper.aux" 1739628269.2738 34271 3a279c0f5c42ad5d3295198ce8c74b1d "pdflatex"
   (generated)
   "paper.bbl"
   "paper.blg"
   (rewritten before read)
-["pdflatex"] 1738703643.99371 "/Users/emadonev/Documents/PROJECTS/var_stars/PAPER/paper.tex" "paper.pdf" "paper" 1738703656.33144 0
-  "/Users/emadonev/Documents/PROJECTS/var_stars/PAPER/paper.tex" 1738700572.01596 4280 83ec82d557ba1966a5fbab9c79e42c65 ""
+["pdflatex"] 1739628257.72574 "/Users/emadonev/Documents/PROJECTS/var_stars/PAPER/paper.tex" "paper.pdf" "paper" 1739628269.53546 0
+  "/Users/emadonev/Documents/PROJECTS/var_stars/PAPER/paper.tex" 1739628219.51186 4879 4b96dbc1129f47c48041440eaa8f2639 ""
   "/usr/local/texlive/2024/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2024/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2024/texmf-dist/fonts/tfm/jknappen/ec/ecrm1000.tfm" 1136768653 3584 adb004a0c8e7c46ee66cad73671f37b4 ""
@@ -167,22 +167,22 @@
   "LCplotBySeason10030349.png" 1734550074.75823 667212 f6d6d5ae7ae81cd6d5cd7d2785007ff0 ""
   "LCplot_10030349.png" 1734550074.76342 516644 2e710cbdf7cc5585341ca4a87bbf60b1 ""
   "aa.cls" 1678816150 64012 73cf6290493c2fac070aedbd04508d96 ""
-  "analysis.tex" 1738701123.08241 20798 b77ab7bb49092167e4c26e9aa32c2703 ""
+  "analysis.tex" 1739628219.48792 20747 0980e5067cc676b8fc6d36f04bf53740 ""
   "be_master.tex" 1736532236.19977 9757 50a2dd30dcfafe900cec5162e4c9aad4 ""
   "candidate_metrics.png" 1736272578.22564 107610 7faf623aa5a49ce4461ed538a71dccd5 ""
   "chi2_select.png" 1738699584.28811 168414 5960653205426425e2e80a53f4f4244f ""
   "cumulative_distib_L.png" 1738690027.65159 378598 3361ab935e8685726ffa331229517215 ""
-  "discussion.tex" 1738690027.65233 3679 c6926118d60ca083463c65f49128dae1 ""
+  "discussion.tex" 1739628219.48812 3785 632b3a0ff61d293725b5a1b0720c021c ""
   "final_chi2_b.png" 1738699748.64132 109191 0c12ee9affa236a219deb14681ab8f98 ""
   "intro.tex" 1738690027.65392 3085 6ad830e8e4e923a9a368f0cebd6b4cf6 ""
   "lc_pair.png" 1731767349.33316 3251281 233a2eef0b75772da9838059079f196a ""
   "linenoaa.sty" 1678816158 4357 d31f2f5f0bafa2f5c86d6f32fb187820 ""
-  "paper.aux" 1738703656.03439 33064 bbc6152eff5f28c036794b3d46b33237 "pdflatex"
-  "paper.bbl" 1738701135.44359 12441 d3c2021578e3641d8406f4c791cc1ce2 "bibtex paper"
-  "paper.out" 1738703656.03944 2766 2e54fee1f33eff382968874db68313b2 "pdflatex"
-  "paper.tex" 1738700572.01596 4280 83ec82d557ba1966a5fbab9c79e42c65 ""
+  "paper.aux" 1739628269.2738 34271 3a279c0f5c42ad5d3295198ce8c74b1d "pdflatex"
+  "paper.bbl" 1739628257.72321 13539 4fdeb297da2c5712e347afb6d7999047 "bibtex paper"
+  "paper.out" 1739628269.27869 2766 2e54fee1f33eff382968874db68313b2 "pdflatex"
+  "paper.tex" 1739628219.51186 4879 4b96dbc1129f47c48041440eaa8f2639 ""
   "periodogram.png" 1736972254.85629 1108530 f850d0940d86f59751ee8d961f1c8afd ""
-  "results.tex" 1738703643.77456 4703 4c54ca6bf27c2fe372775863deea0f0f ""
+  "results.tex" 1739628219.51409 5693 9115a0f7fd5822ce4b8846dfc9aca89c ""
   "season_plot10030349.png" 1734550074.80164 256486 554e9c2c55f77a49c45a4edd90692ff4 ""
   (generated)
   "paper.aux"

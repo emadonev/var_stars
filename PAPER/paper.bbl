@@ -1,4 +1,4 @@
-\begin{thebibliography}{29}
+\begin{thebibliography}{33}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
 
 \bibitem[{{Alcock} {et~al.}(2003){Alcock}, {Alves}, {Becker}, {Bennett}, {Cook}, {Drake}, {Freeman}, {Geha}, {Griest}, {Kov{\'a}cs}, {Lehner}, {Marshall}, {Minniti}, {Nelson}, {Peterson}, {Popowski}, {Pratt}, {Quinn}, {Rodgers}, {Stubbs}, {Sutherland}, {Vandehei}, \& {Welch}}]{2003ApJ...598..597A}
@@ -13,11 +13,20 @@
 \bibitem[{{Benk{\H{o}}} {et~al.}(2010){Benk{\H{o}}}, {Kolenberg}, {Szab{\'o}}, {Kurtz}, {Bryson}, {Bregman}, {Still}, {Smolec}, {Nuspl}, {Nemec}, {Moskalik}, {Kopacki}, {Koll{\'a}th}, {Guggenberger}, {di Criscienzo}, {Christensen-Dalsgaard}, {Kjeldsen}, {Borucki}, {Koch}, {Jenkins}, \& {van Cleve}}]{2010MNRAS.409.1585B}
 {Benk{\H{o}}}, J.~M., {Kolenberg}, K., {Szab{\'o}}, R., {et~al.} 2010, \mnras, 409, 1585
 
+\bibitem[{{Benk{\H{o}}} {et~al.}(2014){Benk{\H{o}}}, {Plachy}, {Szab{\'o}}, {Moln{\'a}r}, \& {Koll{\'a}th}}]{2014ApJS..213...31B}
+{Benk{\H{o}}}, J.~M., {Plachy}, E., {Szab{\'o}}, R., {Moln{\'a}r}, L., \& {Koll{\'a}th}, Z. 2014, \apjs, 213, 31
+
+\bibitem[{{Benk{\H{o}}} {et~al.}(2011){Benk{\H{o}}}, {Szab{\'o}}, \& {Papar{\'o}}}]{2011MNRAS.417..974B}
+{Benk{\H{o}}}, J.~M., {Szab{\'o}}, R., \& {Papar{\'o}}, M. 2011, \mnras, 417, 974
+
 \bibitem[{{Bla{\v{z}}ko}(1907)}]{1907AN....175..325B}
 {Bla{\v{z}}ko}, S. 1907, Astronomische Nachrichten, 175, 325
 
 \bibitem[{{Catelan}(2009)}]{2009Ap&SS.320..261C}
 {Catelan}, M. 2009, \apss, 320, 261
+
+\bibitem[{{Guggenberger} {et~al.}(2012){Guggenberger}, {Kolenberg}, {Nemec}, {Smolec}, {Benk{\H{o}}}, {Ngeow}, {Cohen}, {Sesar}, {Szab{\'o}}, {Catelan}, {Moskalik}, {Kinemuchi}, {Seader}, {Smith}, {Tenenbaum}, \& {Kjeldsen}}]{2012MNRAS.424..649G}
+{Guggenberger}, E., {Kolenberg}, K., {Nemec}, J.~M., {et~al.} 2012, \mnras, 424, 649
 
 \bibitem[{{Hernitschek} \& {Stassun}(2022)}]{2022ApJS..258....4H}
 {Hernitschek}, N. \& {Stassun}, K.~G. 2022, \apjs, 258, 4
@@ -45,6 +54,9 @@
 
 \bibitem[{{Palaversa} {et~al.}(2013){Palaversa}, {Ivezi{\'c}}, {Eyer}, {Ru{\v{z}}djak}, {Sudar}, {Galin}, {Kroflin}, {Mesari{\'c}}, {Munk}, {Vrbanec}, {Bo{\v{z}}i{\'c}}, {Loebman}, {Sesar}, {Rimoldini}, {Hunt-Walker}, {VanderPlas}, {Westman}, {Stuart}, {Becker}, {Srdo{\v{c}}}, {Wozniak}, \& {Oluseyi}}]{2013AJ....146..101P}
 {Palaversa}, L., {Ivezi{\'c}}, {\v{Z}}., {Eyer}, L., {et~al.} 2013, \aj, 146, 101
+
+\bibitem[{{Poretti} {et~al.}(2010){Poretti}, {Papar{\'o}}, {Deleuil}, {Chadid}, {Kolenberg}, {Szab{\'o}}, {Benk{\H{o}}}, {Chapellier}, {Guggenberger}, {Le Borgne}, {Rostagni}, {Trinquet}, {Auvergne}, {Baglin}, {Sarro}, \& {Weiss}}]{2010A&A...520A.108P}
+{Poretti}, E., {Papar{\'o}}, M., {Deleuil}, M., {et~al.} 2010, \aap, 520, A108
 
 \bibitem[{{Prudil} \& {Skarka}(2017)}]{2017MNRAS.466.2602P}
 {Prudil}, Z. \& {Skarka}, M. 2017, \mnras, 466, 2602
