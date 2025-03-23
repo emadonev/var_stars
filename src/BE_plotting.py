@@ -81,7 +81,7 @@ def makeLCplot_info(L1, L2, dataset, order, Lid, dataL, total_num, plotname='LCp
     ax[0].set_ylim(1.3, -0.3)
     # data for phased light curve
     xx, yy, zz = sort3arr(L1['dataPhasedTime'], L1['dataTemplate'], L1['dataTemplateErr'])
-    ax[0].errorbar(xx, yy, zz, fmt='.k', ecolor=black1, lw=1, ms=4, capsize=1.5, alpha=0.2)
+    ax[0].errorbar(xx, yy, zz, fmt='.k', ecolor=black1, lw=1, ms=10, capsize=1.5, alpha=0.4)
     # plotting the fit based off of LINEAR period
     ax[0].plot(L1['modelPhaseGrid'], L1['modTemplate'], or1, markeredgecolor=or1, lw=2, fillstyle='top', linestyle='dashed')
     ax[0].tick_params(labelsize=28)
@@ -95,7 +95,7 @@ def makeLCplot_info(L1, L2, dataset, order, Lid, dataL, total_num, plotname='LCp
     ax[1].set_ylim(1.3, -0.3)
     # data for phased light curve
     xx1, yy1, zz1 = sort3arr(L2['dataPhasedTime'], L2['dataTemplate'], L2['dataTemplateErr'])
-    ax[1].errorbar(xx1, yy1, zz1, fmt='.k', ecolor=black1, lw=1, ms=4, capsize=1.5, alpha=0.2)
+    ax[1].errorbar(xx1, yy1, zz1, fmt='.k', ecolor=black1, lw=1, ms=10, capsize=1.5, alpha=0.4)
     # fit for ZTF period
     ax[1].plot(L2['modelPhaseGrid'], L2['modTemplate'], or1, markeredgecolor=or1,  lw=2, fillstyle='top', linestyle='dashed')
     ax[1].tick_params(labelsize=28)
@@ -417,7 +417,7 @@ def makeLCplotBySeason(Lid, L1, tL, L2, tZ, redL, redZ, plotrootname='LCplotBySe
         yyS = yy[condition]
         zzS = zz[condition]
         wwS = ww[condition]
-        ax.errorbar(xxS, yyS, zzS, fmt='.k', ecolor=black1, lw=1, ms=4, capsize=1.5, alpha=0.3)
+        ax.errorbar(xxS, yyS, zzS, fmt='.k', ecolor=black1, lw=1, ms=8, capsize=1.5, alpha=0.3)
         textString = "LINEAR season " + str(season)
         ax.text(0.03, 0.96, textString, ha='left', va='top', transform=ax.transAxes, fontproperties=font,fontsize=18)
         textString = "MJD=" + str(tSmin) + ' to ' + str(tSmax)
@@ -456,7 +456,7 @@ def makeLCplotBySeason(Lid, L1, tL, L2, tZ, redL, redZ, plotrootname='LCplotBySe
         yyS = yy[(ww>tSmin)&(ww<tSmax)]
         zzS = zz[(ww>tSmin)&(ww<tSmax)]
         wwS = ww[(ww>tSmin)&(ww<tSmax)]
-        ax.errorbar(xxS, yyS, zzS, fmt='.k', ecolor=black1, lw=1, ms=4, capsize=1.5, alpha=0.3)
+        ax.errorbar(xxS, yyS, zzS, fmt='.k', ecolor=black1, lw=1, ms=8, capsize=1.5, alpha=0.3)
         textString = "ZTF season " + str(seasonZ-6)
         ax.text(0.03, 0.96, textString, ha='left', va='top', transform=ax.transAxes, fontproperties=font,fontsize=18)
         textString = "MJD=" + str(round(tSmin)) + ' to ' + str(round(tSmax))
