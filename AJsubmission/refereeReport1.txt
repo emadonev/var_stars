@@ -1,0 +1,99 @@
+
+
+> Referee Report
+> Reviewer:
+
+> Firstly, I would like to congratulate the authors for this very nice and comprehensive work.
+> Below, I list my comments and suggestions to further improve the manuscript.
+
+Thank you very much for excellent expect comments! We have implemented them as detailed below. 
+
+----
+> line 137: "The fractions of RRab and RRc type RR Lyrae in this sample, 71% RRab and 29% RRc type, are consistent
+> with results from other surveys (e.g., Sesar et al. 2010)."
+
+> Please also mention the Gaia DR3 statistics, based on their Table 10 here:
+> https://ui.adsabs.harvard.edu/abs/2023A%26A...674A..18C/
+
+We have added a reference to this important paper. 
+
+----
+> line 166: "LINEAR data can predict the phase of ZTF light curve 166 with an uncertainty of 0.2."
+
+> An additional complicating factor here is that RR Lyrae stars experience phase shifts and period changes for various reasons,
+> therefore shifts exceeding 0.2 can appear naturally, even on a 15 year timescale. This further confirms the need to analyze
+> the two data sets separately. See. e.g.,
+> https://ui.adsabs.harvard.edu/abs/2011MNRAS.411.1744S/abstract
+> https://ui.adsabs.harvard.edu/abs/2017IBVS.6228....1D/abstract
+
+Yes, agreed, thank you for these additional references. 
+
+-----
+> Section 3.2:
+> Did the authors identify and/or filter out double-mode (RRd) stars?
+
+Since their expected sample fraction is below 1\%, we didn't try to identify them, as we
+now explicitly state in the paper. 
+
+-----
+> paragraph after line 273 (line numbering is missing for me here): "The sideband peaks can be highly asymmetric Alcock et al. (2003)
+> and observed periodograms can sometimes be much more complex Szczygieł & Fabrycky (2007)."
+
+> It appears that the method requires side peaks on both sides to be detected, is that true? That is fine as this is a methodological choice.
+> Since we don't know what the physical reason behind the modulation is, we can only set (and have to set) phenomenological constraints.
+> Nevertheless, I'd mention in passing that modulation may appear with side peaks (only on one side, without a symmetric pair (above the
+> detection threshold). Netzel et al. (2018) found that about of a quarter of RRc stars fall into this group:
+> https://ui.adsabs.harvard.edu/abs/2018MNRAS.480.1229N
+
+> And Molnar et al. (2023) found similar examples in the Kepler observations:
+> https://ui.adsabs.harvard.edu/abs/2023A%26A...678A.104M
+
+We allow for asymmetric peaks (that is, we don't require identical peaks) but it is true that
+the selection of highly asymmetric peaks will be low. We added a statement to this effect,
+strengthened by the provided references. 
+
+
+-----
+> line 309: "Another example is shown in Fig. 9 where only phase modulation is visible, without any discernible amplitude modulation."
+
+> This is a very interesting find, because then that star is another member of an intriguing RRc subgroup, with strong phase modulation
+> but no amplitude modulation. While such phase modulation could indicate binarity (through the light-time effect), the calculated
+> companion masses are way too high, so the physical reason for this behavior is unclear, too:
+> https://ui.adsabs.harvard.edu/abs/2004MNRAS.354..821D/
+> https://ui.adsabs.harvard.edu/abs/2017MNRAS.465L...1S/
+> https://ui.adsabs.harvard.edu/abs/2019arXiv190200905L/
+
+Thank you very much for this expert comment! We added it to the manuscript, as well as the suggested references. 
+
+----
+> footnote: "1 The Blazhko effect was discovered by Lidiya Petrovna Tseraskaya and first reported by Sergey Blazhko."
+
+> I disagree with Don Kurtz's interpretation of Sergei Blazhko's German phrasing on this. My translation would be "Below are the results
+> of my findings on one of the variable stars discovered/observed by Frau Ceraski.", indicating that her contribution was the discovery of
+> and/or data collection for this RRL star, but not the discovery of the phase variations themselves, and that that analysis was done by
+> Blazhko himself. So I'd keep, but rephrase the footnote somewhat.
+
+We were unaware of this controversy. We rephrased this footnote. 
+
+-----
+> A stylistic/aesthetic comment on the plots: right now they're dominated by the error bars, with the actual data points being hardly visible.
+> I'd suggest increasing the point sizes. I personally also like error bars without caps at the ends, but I leave that up to the authors' preferences.
+
+Agreed and implemented as suggested.
+
+> Fig 1: please include the period used to fold the data into phase curves in the caption. Also, the axis labels are a bit too large.
+> Figs 8-9: please include the periods in the caption here, too.
+
+Agreed and implemented as suggested.
+
+> Fig 11: could you make the two plots equally sized? Now the color bar takes up space from the right plot, which makes the two distributions
+> a bit harder to compare visually.
+
+Agreed and implemented as suggested.
+
+Thank you again for your comments that certainly improved the paper!
+
+
+
+
+
