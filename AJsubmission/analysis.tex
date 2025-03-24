@@ -7,14 +7,14 @@
   \centering
   \includegraphics[width=18cm]{lc_pair.png}
   \vskip -0.2in
-  \caption{An example of a Blazhko star (LINEARid = 136668) with LINEAR (top row) and ZTF (bottom row) light
+  \caption{An example of a Blazhko star (LINEARid = 136668) with
+    LINEAR (top row; period = 0.532923 day) and ZTF (bottom row; period = 0.532929 day) light
     curves (left panels, data points with ``error bars''), phased light curves normalized to the 0--1 range (right panels, data points
     with ``error bars''), with their best-fit models shown by dashed lines. The best-fit period is determined for each
     dataset separately using 3 Fourier terms. The models shown in the right panels are evaluated with 6 Fourier terms. }
  \label{fig:lc_pair}
 \end{figure*}
-
-
+ 
 \section{Data Description and Period Estimation \label{sec:data}}
 
 Analysis of field RR Lyrae stars requires a sensitive time-domain photometric survey over a large sky area.
@@ -59,7 +59,7 @@ The ZTF dataset for this project was created by selecting ZTF IDs with matching 
 LINEAR ID of an RR Lyrae star. This process used the {\it ztfquery} function, which searched the coordinates in the ZTF database
 within 3 arcsec from the LINEAR position. The resulting sample consisted of 2857 RR Lyrae stars with both LINEAR and ZTF data.
 The fractions of RRab and RRc type RR Lyrae in this sample, 71\% RRab and 29\% RRc type, are consistent with results from
-other surveys \citep[e.g.,][]{2010ApJ...708..717S}. 
+other surveys \citep[e.g.,][]{2010ApJ...708..717S, 2023A&A...674A..18C}. 
 
 
 \subsection{Period Estimation}
@@ -82,10 +82,12 @@ $2\times10^{-5}$. With a median sample period of 0.56 days, the implied scatter 
 Given on average about 15 years between LINEAR and ZTF data sets, and a typical period of 0.56 days, this time
 difference corresponds to about 10,000 oscillations. With a fractional period uncertainty of $2\times10^{-5}$,
 LINEAR data can predict the phase of ZTF light curve with an uncertainty of 0.2. Therefore, for a robust detection
-of light curve phase modulation, each data set must be analyzed separately. On the other hand, amplitude
-modulation can be detected on time scales as long as 15 years, as discussed in the following section. 
+of light curve phase modulation \citep[see e.g.,][]{2011MNRAS.411.1744S, 2017IBVS.6228....1D}, each data set must
+be analyzed separately. On the other hand, amplitude modulation can be detected on time scales as long as 15 years,
+as discussed in the following section. 
 
-
+We did not try to identify double-mode (RRd) stars because their expected sample fraction is below 1\%
+\citep[][]{2023A&A...674A..18C}. 
 
 \section{Analysis Methodology: Searching for the Blazhko Effect  \label{sec:analysis}}  
 
@@ -227,9 +229,11 @@ signifying that local Blazhko peaks are present in real data.
 
 After the strongest peak in the Lomb-Scargle periodogram is found at frequency $f_o$, we search for  two equally
 distant local peaks at frequencies $f_-$ and $f_+$, with $f_- < f_0 < f_+$.  The sideband peaks can be highly asymmetric
-\cite{2003ApJ...598..597A} and observed periodograms can sometimes be much more complex \cite{2007MNRAS.377.1263S}.  
+\citep{2003ApJ...598..597A} and observed periodograms can sometimes be much more complex \citep{2007MNRAS.377.1263S}.  
 We fold the periodogram through the main peak at $f_o$, multiply the two branches and then search for the strongest peaks
-in the resulting folded periodogram that is statistically more significant than the background noise. The background noise
+in the resulting folded periodogram that is statistically more significant than the background noise.
+The multiplication of the two branches allows for detection of moderately asymmetric peaks
+\citep{2018MNRAS.480.1229N, 2023A&A...678A.104M}.  The background noise
 is computed as the scatter of the folded periodogram estimated from the interquartile range. We require a ``signal-to-noise''
 ratio of at least 5, as well as the peak strength of at least 0.05 for ZTF, while 0.10 for LINEAR data. 
 If such a peak is found,
@@ -278,7 +282,7 @@ Fig.~\ref{fig:periodogram} shows an example where two very prominent peaks were 
     \caption{The phased light curves normalized to unit amplitude of
       the overall best-fit model are shown for single observing seasons
       and compared to the mean best-fit models (top six panels: LINEAR data; bottom six panels: ZTF data).
-      Data shown are for star with LINEARid = 10030349.
+      Data shown are for star with LINEARid = 10030349 (period = 0.54073 day). 
       Season-to-season phase and amplitude modulations are seen in both the LINEAR and the ZTF data.}
       \label{fig:phase4}
 \end{figure*}
@@ -288,7 +292,7 @@ Fig.~\ref{fig:periodogram} shows an example where two very prominent peaks were 
     \centering
     \resizebox{\hsize}{!}{\includegraphics[width=16cm]{16300450_sn.png}}
     \caption{Analogous to Fig.~\ref{fig:phase4}, except that star
-    with LINEARid = 16300450 is shown. Unlike example shown in
+    with LINEARid = 16300450 is shown (period = 0.33562 day). Unlike example shown in
     Fig.~\ref{fig:phase4},  only phase modulation is visible here,
     without any amplitude modulation, in both LINEAR and ZTF light curves.}
       \label{fig:phase5}
@@ -309,7 +313,8 @@ or 18.1\% of the starting LINEAR-ZTF sample. Visual analysis included the follow
        This step was sensitive to phase modulations of a few percent or larger on time scales of the order a year or longer.  
        Fig.~\ref{fig:phase4} shows an example of a Blazhko star where season-to-season phase and amplitude modulations
        are seen in both the LINEAR data and (especially) the ZTF data. Another example is shown in Fig.~\ref{fig:phase5}
-       where only phase modulation is visible,  without any discernible amplitude modulation.
+       where only phase modulation is visible,  without any discernible amplitude modulation\footnote{The physical reason
+        for this behavior remains unclear, see \cite{2004MNRAS.354..821D, 2017MNRAS.465L...1S, 2019arXiv190200905L}.}. 
 \end{enumerate}
 
 After visually analyzing the starting sample of 531 Blazhko candidates, we visually confirmed expected Blazhko
