@@ -6,7 +6,7 @@
 > Firstly, I would like to congratulate the authors for this very nice and comprehensive work.
 > Below, I list my comments and suggestions to further improve the manuscript.
 
-Thank you very much for excellent expect comments! We have implemented them as detailed below. 
+Thank you very much for excellent and expert comments! We have implemented them as detailed below. 
 
 ----
 > line 137: "The fractions of RRab and RRc type RR Lyrae in this sample, 71% RRab and 29% RRc type, are consistent
