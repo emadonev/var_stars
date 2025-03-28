@@ -27,7 +27,7 @@ def select_good_LINEAR(LDATA):
         LDATA = LINEAR data
     '''
     # ----------------------
-    # convert to dataframe for easier manipulation
+    
     IDs = [x for x in LDATA.ids] # making a list of ids
 
     # ACCESSING THE OFFICIAL PERIODS

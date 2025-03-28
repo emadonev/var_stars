@@ -48,6 +48,11 @@ sys.path.insert(0,'../src/')
 from helper import*
 
 # ===============
+'''
+This Python script contains functions used for plotting the light curves and periodograms of Blazhko stars.
+The script includes functions for plotting the light curves, periodograms, and seasonal data of LINEAR and ZTF light curves.
+'''
+# ===============
 
 # PLOTTING LIGHT CURVES
 # --------------------------
@@ -116,9 +121,6 @@ def makeLCplot_info(L1, L2, dataset, order, Lid, dataL, total_num, plotname='LCp
     ax[2].text(0, 3, 'Average LINEAR magnitude: '+str(round(np.mean(dataL.get_light_curve(Lid).T[1]), 2)),fontsize=37,fontproperties=font)
     # amplitude
     ax[2].text(0, 2, 'LINEAR amplitude:'+str(dataset['Lampl'][order])+', ZTF amplitude:'+str(dataset['Zampl'][order]),fontsize=37,fontproperties=font)
-    # if the star has a stronger period or amplitude score, display it
-    #if dataset['period_vs_amp'][order] != np.nan:
-        #ax[2].text(0, 1, '- this star has a stronger '+str(dataset['period_vs_amp'][order])+' score',fontsize=37,fontproperties=font)
 
     ax[2].grid(False)
     ax[2].axis('off')
