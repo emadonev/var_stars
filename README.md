@@ -1,13 +1,20 @@
 # Analysis of the Blazhko Effect for Field RR Lyrae Stars using LINEAR and ZTF Light Curves
 
 ### Abstract
-We analyzed the incidence and properties of stars that show evidence for amplitude, period, and phase modulation (the so-called Blazhko Effect) in a sample of ∼3,000 field RR Lyrae stars with LINEAR and ZTF light curve data. A preliminary subsample of about ∼240 stars was selected using various light curve statistics, and then ∼140 stars were confirmed visually as displaying the Blazhko effect. Although there are close to 8,000 Blazhko stars discovered in the Galactic bulge and LMC/SMC by the OGLE-III survey, only about 200 stars are reported in all the studies of field RR Lyrae stars to date.
-
-### Methods
-Analysis was done using Python, including various other modules such as Pandas, Numpy, etc. LINEAR and ZTF light curves were accessed using the astroML module and using equatorial coordinates to select ZTF pairs using ztfquery. Methods of analyzing RR Lyrae were $chi^2$ calculation, Lomb-Scargle periodogram analysis, and creating an algorithm for recognizing local peaks in periodograms of potential Blazhko stars. After analysis, using another algorithm with a score based mechanism, 239 stars were selected for visual analysis.
-
-### Results & discussion
-136 Blazhko stars were found in this sample of LINEAR and ZTF pairs of RR Lyrae, with a selection algorithm percentage of 57%. The total incidence rate is 4.67%, which aligns with other larger surveys of Blazhko stars. We found that extremely small differences in period and amplitude are present for Blazhko stars, hence a long temporal baseline as well as very precise data is needed for future Blazhko effect research. We also note that the time difference between LINEAR and ZTF (around 10 years) shows that the effect isn't present in both datasets for every star. This could mean imprecise data, but also that the Blazhko effect sometimes isn't detectable in stars. 
+We analyzed the incidence and properties of RR Lyrae stars that show evidence for amplitude and
+phase modulation (the so-called Blazhko Effect) in a sample of $\sim$3,000 stars with LINEAR and ZTF light
+curve data collected during the periods of 2002-2008 and 2018-2023, respectively. A preliminary subsample
+of about $\sim$500 stars was algorithmically pre-selected using various data quality and light curve statistics,
+and then 228 stars were confirmed visually as displaying the Blazhko effect. This sample increases the number
+of field RR Lyrae stars displaying the Blazhko effect by more than 50\% and places a lower
+limit of (11.4$\pm$0.8)\% for their incidence rate. We find that ab type RR Lyrae that show the Blazhko effect have
+about 5\% (0.030 day) shorter periods than starting sample, a 7.1$\sigma$ statistically significant
+difference. We find no significant differences in their light curve amplitudes and apparent magnitude (essentially,
+signal-to-noise ratio) distributions. No period or other differences are found for c type RR Lyrae. We find convincing
+examples of stars where the Blazhko effect can appear and disappear on time scales of several years.  With
+time-resolved photometry expected from LSST, a similar analysis will be performed for even larger samples of fields
+RR Lyrae stars in the southern sky and we anticipate a higher fraction of discovered Blazhko stars due to better
+sampling and superior photometric quality.
 
 ---
-The notebooks in this repository are numbered for easy reading, so readers can fully understand the research process. 
+The notebooks in this repository are numbered for easy reading, so readers can understand the research process.
