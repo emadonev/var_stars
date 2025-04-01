@@ -81,10 +81,10 @@ $2\times10^{-5}$. With a median sample period of 0.56 days, the implied scatter 
 
 Given on average about 15 years between LINEAR and ZTF data sets, and a typical period of 0.56 days, this time
 difference corresponds to about 10,000 oscillations. With a fractional period uncertainty of $2\times10^{-5}$,
-LINEAR data can predict the phase of ZTF light curve with an uncertainty of 0.2. Therefore, for a robust detection
-of light curve phase modulation \citep[see e.g.,][]{2011MNRAS.411.1744S, 2017IBVS.6228....1D}, each data set must
-be analyzed separately. On the other hand, amplitude modulation can be detected on time scales as long as 15 years,
-as discussed in the following section. 
+LINEAR data can predict the phase of ZTF light curve with an uncertainty of 0.2. RR Lyrae light curves may experience
+phase changes of this magnitude \citep[see e.g.,][]{2011MNRAS.411.1744S, 2017IBVS.6228....1D};  therefore, each
+data set must be analyzed separately. On the other hand, amplitude modulation can be detected on time scales as
+long as 15 years, as discussed in the following section. 
 
 We did not try to identify double-mode (RRd) stars because their expected sample fraction is below 1\%
 \citep[][]{2023A&A...674A..18C}. 
@@ -231,12 +231,11 @@ After the strongest peak in the Lomb-Scargle periodogram is found at frequency $
 distant local peaks at frequencies $f_-$ and $f_+$, with $f_- < f_0 < f_+$.  The sideband peaks can be highly asymmetric
 \citep{2003ApJ...598..597A} and observed periodograms can sometimes be much more complex \citep{2007MNRAS.377.1263S}.  
 We fold the periodogram through the main peak at $f_o$, multiply the two branches and then search for the strongest peaks
-in the resulting folded periodogram that is statistically more significant than the background noise.
-The multiplication of the two branches allows for detection of moderately asymmetric peaks
-\citep{2018MNRAS.480.1229N, 2023A&A...678A.104M}.  The background noise
+in the resulting folded periodogram that is statistically more significant than the background noise. The multiplication of the two
+branches allows for efficient detection of moderately asymmetric peaks. However, this method is not sensitive to the subset of
+modulated stars where only one sidepeak is detectable \citep{2018MNRAS.480.1229N, 2023A&A...678A.104M}.  The background noise
 is computed as the scatter of the folded periodogram estimated from the interquartile range. We require a ``signal-to-noise''
-ratio of at least 5, as well as the peak strength of at least 0.05 for ZTF, while 0.10 for LINEAR data. 
-If such a peak is found,
+ratio of at least 5, as well as the peak strength of at least 0.05 for ZTF, while 0.10 for LINEAR data.  If such a peak is found,
 and it doesn't correspond to yearly alias, we select the star as a candidate Blazhko star and compute
 its Blazhko period as 
 \begin{equation*}
@@ -314,11 +313,13 @@ or 18.1\% of the starting LINEAR-ZTF sample. Visual analysis included the follow
        Fig.~\ref{fig:phase4} shows an example of a Blazhko star where season-to-season phase and amplitude modulations
        are seen in both the LINEAR data and (especially) the ZTF data. Another example is shown in Fig.~\ref{fig:phase5}
        where only phase modulation is visible,  without any discernible amplitude modulation\footnote{The physical reason
-        for this behavior remains unclear, see \cite{2004MNRAS.354..821D, 2017MNRAS.465L...1S, 2019arXiv190200905L}.}. 
+         for large phase modulations remains unclear: stellar companions may cause small variations through the
+         light-time effect \citep{2021ApJ...915...50H}, but some RRc stars show phase variations well exceeding that
+         \cite[e.g.,][]{2004MNRAS.354..821D, 2017MNRAS.465L...1S, 2019arXiv190200905L}.}. 
 \end{enumerate}
 
 After visually analyzing the starting sample of 531 Blazhko candidates, we visually confirmed expected Blazhko
 behavior for 228 stars (214 out of 479 and 14 out of 52). LINEAR IDs and other characteristics for confirmed
 Blazhko stars are listed in Table 1 (Appendix A). Statistical properties of the selected sample of Blazhko stars are
 discussed in detail in the next section. 
-
+ 
