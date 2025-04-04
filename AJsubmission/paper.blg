@@ -6,45 +6,45 @@ Database file #1: paper.bib
 Warning--entry type for "2015zndo.....14833V" isn't style-file defined
 --line 463 of file paper.bib
 Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
-You've used 37 entries,
+You've used 46 entries,
             3168 wiz_defined-function locations,
-            974 strings with 32310 characters,
-and the built_in function-call counts, 26686 in all, are:
-= -- 1349
-> -- 3518
-< -- 18
-+ -- 1164
-- -- 1195
-* -- 3049
-:= -- 5387
-add.period$ -- 37
-call.type$ -- 37
-change.case$ -- 174
-chr.to.int$ -- 37
-cite$ -- 37
-duplicate$ -- 651
-empty$ -- 1061
-format.name$ -- 1238
-if$ -- 4927
+            1048 strings with 35266 characters,
+and the built_in function-call counts, 31421 in all, are:
+= -- 1721
+> -- 3929
+< -- 19
++ -- 1301
+- -- 1350
+* -- 3513
+:= -- 6259
+add.period$ -- 46
+call.type$ -- 46
+change.case$ -- 228
+chr.to.int$ -- 46
+cite$ -- 46
+duplicate$ -- 804
+empty$ -- 1316
+format.name$ -- 1398
+if$ -- 5871
 int.to.chr$ -- 1
 int.to.str$ -- 0
-missing$ -- 32
-newline$ -- 119
-num.names$ -- 150
-pop$ -- 185
+missing$ -- 41
+newline$ -- 146
+num.names$ -- 186
+pop$ -- 245
 preamble$ -- 1
-purify$ -- 174
+purify$ -- 228
 quote$ -- 0
-skip$ -- 562
+skip$ -- 696
 stack$ -- 0
-substring$ -- 657
+substring$ -- 846
 swap$ -- 40
 text.length$ -- 3
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 333
+type$ -- 414
 warning$ -- 0
-while$ -- 135
+while$ -- 168
 width$ -- 0
-write$ -- 415
+write$ -- 513
 (There was 1 warning)

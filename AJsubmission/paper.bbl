@@ -32,8 +32,20 @@
 \bibitem[{{Catelan}(2009)}]{2009Ap&SS.320..261C}
 {Catelan}, M. 2009, \apss, 320, 261, \dodoi{10.1007/s10509-009-9987-8}
 
+\bibitem[{{Clementini} {et~al.}(2023){Clementini}, {Ripepi}, {Garofalo}, {Molinaro}, {Muraveva}, {Leccia}, {Rimoldini}, {Holl}, {Jevardat de Fombelle}, {Sartoretti}, {Marchal}, {Audard}, {Nienartowicz}, {Andrae}, {Marconi}, {Szabados}, {Evans}, {Lecoeur-Taibi}, {Mowlavi}, {Musella}, \& {Eyer}}]{2023A&A...674A..18C}
+{Clementini}, G., {Ripepi}, V., {Garofalo}, A., {et~al.} 2023, \aap, 674, A18, \dodoi{10.1051/0004-6361/202243964}
+
+\bibitem[{{Dagne} {et~al.}(2017){Dagne}, {Berdnikov}, {Kniazev}, \& {Dambis}}]{2017IBVS.6228....1D}
+{Dagne}, T.~M., {Berdnikov}, L.~N., {Kniazev}, A.~Y., \& {Dambis}, A.~K. 2017, Information Bulletin on Variable Stars, 6228, 1, \dodoi{10.22444/IBVS.6228}
+
+\bibitem[{{Derekas} {et~al.}(2004){Derekas}, {Kiss}, {Udalski}, {Bedding}, \& {Szatm{\'a}ry}}]{2004MNRAS.354..821D}
+{Derekas}, A., {Kiss}, L.~L., {Udalski}, A., {Bedding}, T.~R., \& {Szatm{\'a}ry}, K. 2004, \mnras, 354, 821, \dodoi{10.1111/j.1365-2966.2004.08242.x}
+
 \bibitem[{{Guggenberger} {et~al.}(2012){Guggenberger}, {Kolenberg}, {Nemec}, {Smolec}, {Benk{\H{o}}}, {Ngeow}, {Cohen}, {Sesar}, {Szab{\'o}}, {Catelan}, {Moskalik}, {Kinemuchi}, {Seader}, {Smith}, {Tenenbaum}, \& {Kjeldsen}}]{2012MNRAS.424..649G}
 {Guggenberger}, E., {Kolenberg}, K., {Nemec}, J.~M., {et~al.} 2012, \mnras, 424, 649, \dodoi{10.1111/j.1365-2966.2012.21244.x}
+
+\bibitem[{{Hajdu} {et~al.}(2021){Hajdu}, {Pietrzy{\'n}ski}, {Jurcsik}, {Catelan}, {Karczmarek}, {Pilecki}, {Soszy{\'n}ski}, {Udalski}, \& {Thompson}}]{2021ApJ...915...50H}
+{Hajdu}, G., {Pietrzy{\'n}ski}, G., {Jurcsik}, J., {et~al.} 2021, \apj, 915, 50, \dodoi{10.3847/1538-4357/abff4b}
 
 \bibitem[{{Hernitschek} \& {Stassun}(2022)}]{2022ApJS..258....4H}
 {Hernitschek}, N., \& {Stassun}, K.~G. 2022, \apjs, 258, 4, \dodoi{10.3847/1538-4365/ac3baf}
@@ -59,8 +71,17 @@ Hunter, J.~D. 2007, Computing in Science \& Engineering, 9, 90, \dodoi{10.1109/M
 \bibitem[{{Kovacs}(2018)}]{2018A&A...614L...4K}
 ---. 2018, \aap, 614, L4, \dodoi{10.1051/0004-6361/201833181}
 
+\bibitem[{{Le Borgne} \& {Klotz}(2019)}]{2019arXiv190200905L}
+{Le Borgne}, J.~F., \& {Klotz}, A. 2019, arXiv e-prints, arXiv:1902.00905, \dodoi{10.48550/arXiv.1902.00905}
+
 \bibitem[{{Mizerski}(2003)}]{2003AcA....53..307M}
 {Mizerski}, T. 2003, \actaa, 53, 307, \dodoi{10.48550/arXiv.astro-ph/0401612}
+
+\bibitem[{{Moln{\'a}r} {et~al.}(2023){Moln{\'a}r}, {Plachy}, {B{\'o}di}, {P{\'a}l}, {Joyce}, {Kalup}, {Johnson}, {Dencs}, {M{\'e}sz{\'a}ros}, {Netzel}, {Kinemuchi}, {Kollmeier}, {Prieto}, \& {Derekas}}]{2023A&A...678A.104M}
+{Moln{\'a}r}, L., {Plachy}, E., {B{\'o}di}, A., {et~al.} 2023, \aap, 678, A104, \dodoi{10.1051/0004-6361/202346507}
+
+\bibitem[{{Netzel} {et~al.}(2018){Netzel}, {Smolec}, {Soszy{\'n}ski}, \& {Udalski}}]{2018MNRAS.480.1229N}
+{Netzel}, H., {Smolec}, R., {Soszy{\'n}ski}, I., \& {Udalski}, A. 2018, \mnras, 480, 1229, \dodoi{10.1093/mnras/sty1883}
 
 \bibitem[{{Palaversa} {et~al.}(2013){Palaversa}, {Ivezi{\'c}}, {Eyer}, {Ru{\v{z}}djak}, {Sudar}, {Galin}, {Kroflin}, {Mesari{\'c}}, {Munk}, {Vrbanec}, {Bo{\v{z}}i{\'c}}, {Loebman}, {Sesar}, {Rimoldini}, {Hunt-Walker}, {VanderPlas}, {Westman}, {Stuart}, {Becker}, {Srdo{\v{c}}}, {Wozniak}, \& {Oluseyi}}]{2013AJ....146..101P}
 {Palaversa}, L., {Ivezi{\'c}}, {\v{Z}}., {Eyer}, L., {et~al.} 2013, \aj, 146, 101, \dodoi{10.1088/0004-6256/146/4/101}
@@ -89,6 +110,9 @@ Hunter, J.~D. 2007, Computing in Science \& Engineering, 9, 90, \dodoi{10.1109/M
 \bibitem[{{Smith}(1995)}]{1995CAS....27.....S}
 {Smith}, H.~A. 1995, Cambridge Astrophysics Series, 27
 
+\bibitem[{{S{\'o}dor} {et~al.}(2017){S{\'o}dor}, {Skarka}, {Li{\v{s}}ka}, \& {Bogn{\'a}r}}]{2017MNRAS.465L...1S}
+{S{\'o}dor}, {\'A}., {Skarka}, M., {Li{\v{s}}ka}, J., \& {Bogn{\'a}r}, Z. 2017, \mnras, 465, L1, \dodoi{10.1093/mnrasl/slw194}
+
 \bibitem[{{Soszy{\'n}ski} {et~al.}(2010){Soszy{\'n}ski}, {Udalski}, {Szyma{\'n}ski}, {Kubiak}, {Pietrzy{\'n}ski}, {Wyrzykowski}, {Ulaczyk}, \& {Poleski}}]{2010AcA....60..165S}
 {Soszy{\'n}ski}, I., {Udalski}, A., {Szyma{\'n}ski}, M.~K., {et~al.} 2010, \actaa, 60, 165, \dodoi{10.48550/arXiv.1009.0528}
 
@@ -106,6 +130,9 @@ Hunter, J.~D. 2007, Computing in Science \& Engineering, 9, 90, \dodoi{10.1109/M
 
 \bibitem[{{Szczygie{\l}} \& {Fabrycky}(2007)}]{2007MNRAS.377.1263S}
 {Szczygie{\l}}, D.~M., \& {Fabrycky}, D.~C. 2007, \mnras, 377, 1263, \dodoi{10.1111/j.1365-2966.2007.11678.x}
+
+\bibitem[{{Szeidl} {et~al.}(2011){Szeidl}, {Hurta}, {Jurcsik}, {Clement}, \& {Lovas}}]{2011MNRAS.411.1744S}
+{Szeidl}, B., {Hurta}, Z., {Jurcsik}, J., {Clement}, C., \& {Lovas}, M. 2011, \mnras, 411, 1744, \dodoi{10.1111/j.1365-2966.2010.17815.x}
 
 \bibitem[{{Vanderplas}(2015)}]{2015zndo.....14833V}
 {Vanderplas}, J. 2015, {gatspy: General tools for Astronomical Time Series in Python}, v0.1.1,  Zenodo, \dodoi{10.5281/zenodo.14833}

@@ -1,14 +1,14 @@
 # Fdb version 4
-["bibtex paper"] 1742766192.71799 "paper.aux" "paper.bbl" "paper" 1742766407.63159 0
+["bibtex paper"] 1743775779.11655 "paper.aux" "paper.bbl" "paper" 1743775791.91875 0
   "./aasjournal.bst" 1742765929.9142 36130 1e2d4614828005814bd64e3c665b8e99 ""
-  "./paper.bib" 1742765929.97994 48034 cb96b8b27b65e8513d3898ddccc2de4d ""
-  "paper.aux" 1742766407.27952 18342 cbf74695068c0516be155f5e19ce5535 "pdflatex"
+  "./paper.bib" 1743614189.68999 55987 d301b1114ac32517b0970c8036122267 ""
+  "paper.aux" 1743775791.5661 20006 c2a9e5ee1a42a523e28aa027edaede6f "pdflatex"
   (generated)
   "paper.bbl"
   "paper.blg"
   (rewritten before read)
-["pdflatex"] 1742766395.55415 "/Users/emadonev/Documents/PROJECTS/var_stars/AJsubmission/paper.tex" "paper.pdf" "paper" 1742766407.63173 0
-  "/Users/emadonev/Documents/PROJECTS/var_stars/AJsubmission/paper.tex" 1742766395.28321 5534 406d0a00988ee9903e0df46cc32dc848 ""
+["pdflatex"] 1743775779.3149 "/Users/emadonev/Documents/PROJECTS/var_stars/AJsubmission/paper.tex" "paper.pdf" "paper" 1743775791.9189 0
+  "/Users/emadonev/Documents/PROJECTS/var_stars/AJsubmission/paper.tex" 1742766548.48634 5534 406d0a00988ee9903e0df46cc32dc848 ""
   "/usr/local/texlive/2024/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1136849721 2971 def0b6c1f0b107b3b936def894055589 ""
   "/usr/local/texlive/2024/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2024/texmf-dist/fonts/tfm/adobe/helvetic/phvr.tfm" 1136768653 2504 ba6584b616b92101c768b6c4ffb32dd0 ""
@@ -171,19 +171,19 @@
   "LCplotBySeason10030349.png" 1742766243.76657 732723 6d61563f3f20be1669c1e386f2890b19 ""
   "LCplot_10030349.png" 1742766240.96908 666327 9c2440d7aeb4a8d61e841ee1546574c3 ""
   "aastex631.cls" 1742765929.9155 231673 3a8503ea2dc529eec05658a2b11d12d0 ""
-  "analysis.tex" 1742765929.91568 20747 0980e5067cc676b8fc6d36f04bf53740 ""
+  "analysis.tex" 1743614189.68842 21690 8d46dfa31aaddbb6519af955bbd0a057 ""
   "be_small.tex" 1742765929.91639 2471 84d63a35a932ac703434fb6145cd895a ""
   "candidate_metrics.png" 1742765929.91715 107610 7faf623aa5a49ce4461ed538a71dccd5 ""
   "chi2_select.png" 1742765929.91815 168414 5960653205426425e2e80a53f4f4244f ""
   "cumulative_distib_L.png" 1742765929.92032 378598 3361ab935e8685726ffa331229517215 ""
   "discussion.tex" 1742765929.92071 3924 187a2e66d36ab1a3bbf5a00c02ed1eb8 ""
   "final_chi2_b.png" 1742765929.92167 109191 0c12ee9affa236a219deb14681ab8f98 ""
-  "intro.tex" 1742765929.92189 3118 d41483403597f041c228a2baea4ecf0c ""
-  "lc_pair.png" 1742766045.45919 3020824 fc279a098bc36246a9a9961fd238b776 ""
-  "paper.aux" 1742766407.27952 18342 cbf74695068c0516be155f5e19ce5535 "pdflatex"
-  "paper.bbl" 1742766192.82084 17472 28ef4c001efca284ea585adce0677dfd "bibtex paper"
-  "paper.out" 1742766407.28089 2607 9fe4c221dab960b85500d686664ef1b1 "pdflatex"
-  "paper.tex" 1742766395.28321 5534 406d0a00988ee9903e0df46cc32dc848 ""
+  "intro.tex" 1742890470.3768 3173 acf5b15e0f5f32b74d41fa5d49237571 ""
+  "lc_pair.png" 1743775778.39131 4300233 ad54e8c92b144857efc49076c4e3e02d ""
+  "paper.aux" 1743775791.5661 20006 c2a9e5ee1a42a523e28aa027edaede6f "pdflatex"
+  "paper.bbl" 1743775779.30137 19944 fd3ba79aa85fd23cc7bee68973403236 "bibtex paper"
+  "paper.out" 1743775791.56743 2607 9fe4c221dab960b85500d686664ef1b1 "pdflatex"
+  "paper.tex" 1742766548.48634 5534 406d0a00988ee9903e0df46cc32dc848 ""
   "periodogram.png" 1742765930.06961 1108530 f850d0940d86f59751ee8d961f1c8afd ""
   "results.tex" 1742765930.07039 5693 9115a0f7fd5822ce4b8846dfc9aca89c ""
   "season_plot10030349.png" 1742766242.36523 258050 34efdac41af21d674b08fbff8879c562 ""
